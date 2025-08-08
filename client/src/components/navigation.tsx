@@ -43,22 +43,19 @@ export function Navigation() {
               </div>
             </div>
 
-            {/* User Profile */}
-            <div className="flex items-center">
-              <div className="ml-3 relative">
-                <div className="flex items-center text-sm">
-                  <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2">
-                    <span className="font-medium">SA</span>
-                  </div>
-                  <span className="hidden sm:block font-medium">Sarah Adams</span>
+            {/* Right Side - User Profile and Mobile Menu */}
+            <div className="flex items-center space-x-4">
+              {/* User Profile */}
+              <div className="flex items-center text-sm">
+                <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2">
+                  <span className="font-medium">SA</span>
                 </div>
+                <span className="hidden sm:block font-medium text-neutral-800">Sarah Adams</span>
               </div>
-            </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden">
+              {/* Mobile menu button */}
               <button 
-                className="text-neutral-500 hover:text-neutral-800"
+                className="md:hidden text-neutral-500 hover:text-neutral-800"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 <i className="fas fa-bars text-xl"></i>
