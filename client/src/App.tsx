@@ -18,7 +18,6 @@ function Router() {
       <Route path="/scenarios/:id" component={ScenarioDetailPage} />
       <Route path="/profile" component={ProfilePage} />
       <Route path="/progress" component={() => <div className="p-6">Progress page coming soon...</div>} />
-      <Route path="/settings" component={() => <div className="p-6">Settings page coming soon...</div>} />
       <Route component={NotFound} />
     </Switch>
   );
