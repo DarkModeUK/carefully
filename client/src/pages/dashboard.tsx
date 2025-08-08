@@ -167,7 +167,6 @@ export default function Dashboard() {
                     <ScenarioCard
                       key={scenario.id}
                       scenario={scenario}
-                      onClick={() => handleStartScenario(scenario)}
                     />
                   ))}
                 </div>

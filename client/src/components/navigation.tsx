@@ -30,13 +30,13 @@ export function Navigation() {
               <div className="ml-10 flex items-baseline space-x-4">
                 {navItems.map((item) => (
                   <Link key={item.href} href={item.href}>
-                    <a className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    <span className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
                       location === item.href
                         ? "bg-primary text-white"
                         : "text-neutral-500 hover:text-neutral-800"
                     }`}>
                       {item.label}
-                    </a>
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -72,8 +72,8 @@ export function Navigation() {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-neutral-200">
               {navItems.map((item) => (
                 <Link key={item.href} href={item.href}>
-                  <a 
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  <span 
+                    className={`block px-3 py-2 rounded-md text-base font-medium cursor-pointer ${
                       location === item.href
                         ? "bg-primary text-white"
                         : "text-neutral-500 hover:text-neutral-800"
@@ -81,7 +81,7 @@ export function Navigation() {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.label}
-                  </a>
+                  </span>
                 </Link>
               ))}
             </div>
@@ -94,12 +94,12 @@ export function Navigation() {
         <div className="grid grid-cols-4 py-2">
           {navItems.map((item) => (
             <Link key={item.href} href={item.href}>
-              <a className={`flex flex-col items-center py-2 ${
+              <span className={`flex flex-col items-center py-2 cursor-pointer ${
                 location === item.href ? "text-primary" : "text-neutral-500"
               }`}>
                 <i className={`${item.icon} text-lg`}></i>
                 <span className="text-xs mt-1">{item.label}</span>
-              </a>
+              </span>
             </Link>
           ))}
         </div>

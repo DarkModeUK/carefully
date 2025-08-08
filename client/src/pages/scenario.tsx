@@ -125,7 +125,6 @@ export default function ScenariosPage() {
                 <div key={scenario.id} className="h-fit">
                   <ScenarioCard
                     scenario={scenario}
-                    onClick={() => handleStartScenario(scenario)}
                   />
                 </div>
               ))}
