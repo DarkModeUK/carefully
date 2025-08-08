@@ -74,25 +74,25 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
           value={user?.totalScenarios || 0}
-          label="Scenarios Completed"
+          title="Scenarios Completed"
           icon="fas fa-check-circle"
           color="secondary"
         />
         <StatCard
           value={`${Math.round(Object.values(user?.skillLevels || {}).reduce((a, b) => a + b, 0) / Object.keys(user?.skillLevels || {}).length || 0)}%`}
-          label="Skill Level"
+          title="Skill Level"
           icon="fas fa-chart-line"
           color="accent"
         />
         <StatCard
           value={user?.weeklyStreak || 0}
-          label="Day Streak"
+          title="Day Streak"
           icon="fas fa-fire"
           color="primary"
         />
         <StatCard
           value={`${((user?.totalTime || 0) / 60).toFixed(1)}h`}
-          label="This Week"
+          title="This Week"
           icon="fas fa-clock"
           color="neutral"
         />
