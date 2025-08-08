@@ -1,0 +1,49 @@
+AI-powered, human-centred skills training for care that truly cares.
+Carefully prepares care workers for the moments that matter most—through short, personalised simulations that build confidence, empathy, and judgement.
+
+⸻
+
+What Carefully Does
+
+Carefully lets care workers practise real-world care situations in a safe, supportive environment. Each scenario is powered by AI and tailored to the user’s role, experience, and language needs, so training is relevant and engaging from day one.
+
+Workers interact with realistic roleplay situations—like calming a distressed resident with dementia or handling a sensitive family conversation—and receive instant, constructive feedback they can apply straight away.
+
+⸻
+
+Key Features
+
+🗣️ Scenario-Based Roleplay
+	•	Practise situations that drive quality and compliance risk: dementia distress, safeguarding, family conflict, refusals of care, end-of-life conversations.
+	•	Text or voice interaction with an AI “resident”, “relative”, or “colleague”.
+
+🧠 Personalised Feedback
+	•	Feedback on empathy, tone, clarity, and decision-making.
+	•	Coaching-style guidance that encourages growth, not just grading.
+
+📊 Progress Tracking
+	•	Badges and skill heatmaps to visualise growth.
+	•	Weekly usage stats and scenario pass rates.
+	•	Manager dashboard (optional) for assigning and tracking team training.
+
+🌍 Inclusive & Accessible
+	•	Multilingual support and cultural competence tips.
+	•	Mobile-first design for on-shift learning.
+	•	Simple interface for all digital skill levels.
+
+⸻
+
+Who It’s For
+	•	Care workers — build confidence and skills in minutes a day.
+	•	L&D teams — scale meaningful training, evidence compliance, and target high-risk skills gaps.
+	•	Recruitment teams — assess candidate empathy, communication, and judgement before hire.
+
+⸻
+
+Why Carefully Works
+
+Unlike passive e-learning or time-consuming classroom training, Carefully is:
+	•	Bite-sized — 10–15 min sessions fit around busy shifts.
+	•	Realistic — scenarios mirror actual workplace challenges.
+	•	Measurable — progress is tracked and reported for audits.
+	•	Engaging — interactive, supportive, and human-centred.
