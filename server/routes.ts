@@ -9,7 +9,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get current user (demo user for MVP)
   app.get("/api/user", async (req, res) => {
     try {
-      const user = await storage.getUser("demo-user-1");
+      // Get demo user by username since ID is generated
+      const user = await storage.getUserByUsername("sarah.adams");
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -22,7 +23,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update user profile
   app.patch("/api/user", async (req, res) => {
     try {
-      const userId = "demo-user-1";
+      // Get demo user by username to get the actual ID
+      const currentUser = await storage.getUserByUsername("sarah.adams");
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const userId = currentUser.id;
       const updates = req.body;
       
       // Calculate profile completion if basic fields are updated
@@ -75,7 +81,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's scenario progress
   app.get("/api/user/scenarios", async (req, res) => {
     try {
-      const userScenarios = await storage.getUserScenarios("demo-user-1");
+      const user = await storage.getUserByUsername("sarah.adams");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const userScenarios = await storage.getUserScenarios(user.id);
       res.json(userScenarios);
     } catch (error) {
       res.status(500).json({ message: "Failed to get user scenarios" });
@@ -86,7 +96,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/scenarios/:id/start", async (req, res) => {
     try {
       const scenarioId = req.params.id;
-      const userId = "demo-user-1";
+      const user = await storage.getUserByUsername("sarah.adams");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const userId = user.id;
       
       // Check if user scenario already exists
       let userScenario = await storage.getUserScenario(userId, scenarioId);
@@ -164,7 +178,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/scenarios/:id/complete", async (req, res) => {
     try {
       const scenarioId = req.params.id;
-      const userId = "demo-user-1";
+      const user = await storage.getUserByUsername("sarah.adams");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const userId = user.id;
       
       const userScenario = await storage.getUserScenario(userId, scenarioId);
       if (!userScenario) {
@@ -179,11 +197,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Update user stats
-      const user = await storage.getUser(userId);
-      if (user) {
+      const currentUser = await storage.getUser(userId);
+      if (currentUser) {
         await storage.updateUser(userId, {
-          totalScenarios: (user.totalScenarios || 0) + 1,
-          totalTime: (user.totalTime || 0) + (completedScenario?.totalTime || 0),
+          totalScenarios: (currentUser.totalScenarios || 0) + 1,
+          totalTime: (currentUser.totalTime || 0) + (completedScenario?.totalTime || 0),
         });
       }
 
@@ -196,7 +214,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user achievements
   app.get("/api/user/achievements", async (req, res) => {
     try {
-      const achievements = await storage.getUserAchievements("demo-user-1");
+      const user = await storage.getUserByUsername("sarah.adams");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const achievements = await storage.getUserAchievements(user.id);
       res.json(achievements);
     } catch (error) {
       res.status(500).json({ message: "Failed to get achievements" });

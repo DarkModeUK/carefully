@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import { pgTable, text, varchar, integer, timestamp, jsonb, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -86,6 +86,34 @@ export const insertAchievementSchema = createInsertSchema(achievements).omit({
   id: true,
   unlockedAt: true,
 });
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  userScenarios: many(userScenarios),
+  achievements: many(achievements),
+}));
+
+export const scenariosRelations = relations(scenarios, ({ many }) => ({
+  userScenarios: many(userScenarios),
+}));
+
+export const userScenariosRelations = relations(userScenarios, ({ one }) => ({
+  user: one(users, {
+    fields: [userScenarios.userId],
+    references: [users.id],
+  }),
+  scenario: one(scenarios, {
+    fields: [userScenarios.scenarioId],
+    references: [scenarios.id],
+  }),
+}));
+
+export const achievementsRelations = relations(achievements, ({ one }) => ({
+  user: one(users, {
+    fields: [achievements.userId],
+    references: [users.id],
+  }),
+}));
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
