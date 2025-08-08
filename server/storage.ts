@@ -57,6 +57,20 @@ export class MemStorage implements IStorage {
       totalScenarios: 12,
       weeklyStreak: 5,
       totalTime: 138, // 2.3 hours in minutes
+      preferences: {
+        trainingDuration: 15,
+        difficultyPreference: 'adaptive',
+        focusAreas: ['dementia_care', 'family_communication'],
+        notifications: {
+          dailyReminders: true,
+          weeklyProgress: true,
+          newScenarios: false,
+          achievements: true
+        },
+        learningGoals: "I want to improve my communication skills with families and handle challenging behaviors better."
+      },
+      profileCompletion: 85,
+      lastAssessment: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
       createdAt: new Date(),
     };
     this.users.set(demoUser.id, demoUser);
@@ -179,7 +193,19 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { ...insertUser, id, createdAt: new Date() };
+    const user: User = { 
+      ...insertUser, 
+      id, 
+      createdAt: new Date(),
+      role: insertUser.role || "care_worker",
+      skillLevels: insertUser.skillLevels || {},
+      totalScenarios: insertUser.totalScenarios || 0,
+      weeklyStreak: insertUser.weeklyStreak || 0,
+      totalTime: insertUser.totalTime || 0,
+      preferences: insertUser.preferences || {},
+      profileCompletion: insertUser.profileCompletion || 0,
+      lastAssessment: insertUser.lastAssessment || null
+    };
     this.users.set(id, user);
     return user;
   }
@@ -203,7 +229,13 @@ export class MemStorage implements IStorage {
 
   async createScenario(insertScenario: InsertScenario): Promise<Scenario> {
     const id = randomUUID();
-    const scenario: Scenario = { ...insertScenario, id };
+    const scenario: Scenario = { 
+      ...insertScenario, 
+      id,
+      priority: insertScenario.priority || "medium",
+      learningObjectives: insertScenario.learningObjectives || [],
+      isActive: insertScenario.isActive !== undefined ? insertScenario.isActive : true
+    };
     this.scenarios.set(id, scenario);
     return scenario;
   }
@@ -225,6 +257,12 @@ export class MemStorage implements IStorage {
       id,
       startedAt: new Date(),
       completedAt: null,
+      status: insertUserScenario.status || "not_started",
+      progress: insertUserScenario.progress || 0,
+      responses: insertUserScenario.responses || [],
+      feedback: insertUserScenario.feedback || [],
+      totalTime: insertUserScenario.totalTime || 0,
+      score: insertUserScenario.score || 0
     };
     this.userScenarios.set(id, userScenario);
     return userScenario;

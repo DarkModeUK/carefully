@@ -19,6 +19,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user profile
+  app.patch("/api/user", async (req, res) => {
+    try {
+      const userId = "demo-user-1";
+      const updates = req.body;
+      
+      // Calculate profile completion if basic fields are updated
+      if (updates.name || updates.email || updates.role || updates.skillLevels) {
+        const currentUser = await storage.getUser(userId);
+        if (currentUser) {
+          let completion = 0;
+          const updatedUser = { ...currentUser, ...updates };
+          if (updatedUser.name) completion += 20;
+          if (updatedUser.email) completion += 20;
+          if (updatedUser.role) completion += 20;
+          if (updatedUser.skillLevels && Object.keys(updatedUser.skillLevels).length > 0) completion += 40;
+          updates.profileCompletion = completion;
+        }
+      }
+      
+      const updatedUser = await storage.updateUser(userId, updates);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
   // Get all available scenarios
   app.get("/api/scenarios", async (req, res) => {
     try {
@@ -152,8 +182,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       if (user) {
         await storage.updateUser(userId, {
-          totalScenarios: user.totalScenarios + 1,
-          totalTime: user.totalTime + (completedScenario?.totalTime || 0),
+          totalScenarios: (user.totalScenarios || 0) + 1,
+          totalTime: (user.totalTime || 0) + (completedScenario?.totalTime || 0),
         });
       }
 

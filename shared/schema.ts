@@ -13,6 +13,20 @@ export const users = pgTable("users", {
   totalScenarios: integer("total_scenarios").default(0),
   weeklyStreak: integer("weekly_streak").default(0),
   totalTime: integer("total_time").default(0), // in minutes
+  preferences: jsonb("preferences").$type<{
+    trainingDuration?: number;
+    difficultyPreference?: 'beginner' | 'intermediate' | 'advanced' | 'adaptive';
+    focusAreas?: string[];
+    notifications?: {
+      dailyReminders?: boolean;
+      weeklyProgress?: boolean;
+      newScenarios?: boolean;
+      achievements?: boolean;
+    };
+    learningGoals?: string;
+  }>().default({}),
+  profileCompletion: integer("profile_completion").default(0),
+  lastAssessment: timestamp("last_assessment"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
