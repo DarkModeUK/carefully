@@ -1,0 +1,109 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+
+export function Navigation() {
+  const [location] = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { href: "/", label: "Dashboard", icon: "fas fa-home" },
+    { href: "/scenarios", label: "Scenarios", icon: "fas fa-play" },
+    { href: "/progress", label: "Progress", icon: "fas fa-chart-bar" },
+    { href: "/settings", label: "Settings", icon: "fas fa-cog" },
+  ];
+
+  return (
+    <>
+      {/* Desktop Navigation */}
+      <nav className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 flex items-center">
+                <i className="fas fa-heart text-primary text-2xl mr-2"></i>
+                <h1 className="text-xl font-bold text-neutral-800">Carefully</h1>
+              </div>
+            </div>
+            
+            {/* Desktop Navigation Links */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                {navItems.map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    <a className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      location === item.href
+                        ? "bg-primary text-white"
+                        : "text-neutral-500 hover:text-neutral-800"
+                    }`}>
+                      {item.label}
+                    </a>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* User Profile */}
+            <div className="flex items-center">
+              <div className="ml-3 relative">
+                <div className="flex items-center text-sm">
+                  <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2">
+                    <span className="font-medium">SA</span>
+                  </div>
+                  <span className="hidden sm:block font-medium">Sarah Adams</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button 
+                className="text-neutral-500 hover:text-neutral-800"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                <i className="fas fa-bars text-xl"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-neutral-200">
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href}>
+                  <a 
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${
+                      location === item.href
+                        ? "bg-primary text-white"
+                        : "text-neutral-500 hover:text-neutral-800"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 z-40">
+        <div className="grid grid-cols-4 py-2">
+          {navItems.map((item) => (
+            <Link key={item.href} href={item.href}>
+              <a className={`flex flex-col items-center py-2 ${
+                location === item.href ? "text-primary" : "text-neutral-500"
+              }`}>
+                <i className={`${item.icon} text-lg`}></i>
+                <span className="text-xs mt-1">{item.label}</span>
+              </a>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
