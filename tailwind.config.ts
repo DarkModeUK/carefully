@@ -65,6 +65,11 @@ export default {
         'neutral-200': 'var(--neutral-200)',
         'neutral-500': 'var(--neutral-500)',
         'neutral-800': 'var(--neutral-800)',
+        'brand-purple': '#907AD6',
+        'brand-cyan': '#7FDEFF',
+        'brand-dark': '#2C2A4A',
+        'brand-light-purple': '#DABFFF',
+        'brand-medium': '#4F518C',
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "sans-serif"],

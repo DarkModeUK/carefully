@@ -11,9 +11,9 @@ const skillLabels = {
 
 const skillColors = {
   empathy: 'bg-secondary',
-  conflict_resolution: 'bg-accent',
+  conflict_resolution: 'bg-brand-light-purple',
   safeguarding: 'bg-primary',
-  decision_making: 'bg-red-400'
+  decision_making: 'bg-brand-medium'
 };
 
 export function SkillProgress({ skills }: SkillProgressProps) {

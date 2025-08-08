@@ -10,6 +10,17 @@ The application is built as a full-stack web platform with a React frontend and 
 
 Preferred communication style: Simple, everyday language.
 
+## Design System
+
+**Color Palette:**
+- Primary Purple: #907AD6 (hsl(253, 56%, 66%))
+- Secondary Cyan: #7FDEFF (hsl(192, 100%, 75%))
+- Dark Navy: #2C2A4A (hsl(245, 32%, 25%))
+- Light Purple: #DABFFF (hsl(267, 100%, 87%))
+- Medium Purple: #4F518C (hsl(244, 19%, 40%))
+
+Updated: August 8, 2025 - Implemented custom color palette for brand consistency.
+
 ## System Architecture
 
 ### Frontend Architecture

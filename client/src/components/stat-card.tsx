@@ -8,8 +8,8 @@ interface StatCardProps {
 const colorClasses = {
   primary: 'bg-primary bg-opacity-20 text-primary',
   secondary: 'bg-secondary bg-opacity-20 text-secondary',
-  accent: 'bg-accent bg-opacity-20 text-accent',
-  neutral: 'bg-neutral-500 bg-opacity-20 text-neutral-500'
+  accent: 'bg-brand-light-purple bg-opacity-20 text-brand-medium',
+  neutral: 'bg-brand-medium bg-opacity-20 text-brand-medium'
 };
 
 export function StatCard({ value, label, icon, color }: StatCardProps) {
