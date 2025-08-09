@@ -10,10 +10,22 @@ interface ScenarioCardProps {
   onClick?: () => void;
 }
 
-const priorityColors = {
-  high: 'bg-brand-light-purple text-brand-dark',
-  medium: 'bg-brand-cyan text-brand-dark',
-  low: 'bg-brand-purple bg-opacity-20 text-brand-medium'
+const priorityConfig = {
+  high: {
+    color: 'bg-red-100 text-red-700 border-red-200',
+    icon: 'fas fa-exclamation-triangle',
+    label: 'High Priority'
+  },
+  medium: {
+    color: 'bg-amber-100 text-amber-700 border-amber-200',
+    icon: 'fas fa-minus-circle',
+    label: 'Medium Priority'
+  },
+  low: {
+    color: 'bg-green-100 text-green-700 border-green-200',
+    icon: 'fas fa-check-circle',
+    label: 'Low Priority'
+  }
 };
 
 const difficultyIcons = {
@@ -45,8 +57,9 @@ export const ScenarioCard = memo(({ scenario, onClick }: ScenarioCardProps) => {
     <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleClick}>
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-3">
-          <Badge className={priorityColors[scenario.priority as keyof typeof priorityColors]}>
-            {scenario.priority}
+          <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color}`}>
+            <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs`}></i>
+            <span className="capitalize font-medium">{scenario.priority}</span>
           </Badge>
           <div className="flex items-center gap-2 text-neutral-500">
             <i className={difficultyIcons[scenario.difficulty as keyof typeof difficultyIcons]}></i>
