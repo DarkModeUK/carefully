@@ -50,17 +50,13 @@ export default function Simulation() {
         { role: 'ai', content: data.aiResponse, feedback: data.feedback }
       ]);
       setUserResponse("");
-      setCurrentStep(prev => prev + 1);
+      const newStep = currentStep + 1;
+      setCurrentStep(newStep);
       
-      // Check if this is the final step (5 responses)
-      if (currentStep >= 4) {
-        setIsCompleted(true);
-        queryClient.invalidateQueries({ queryKey: ['/api/user/scenarios'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
-        toast({
-          title: "Scenario Completed!",
-          description: "Well done! Your responses have been saved and analysed.",
-        });
+      // Check if this is the final step (3 responses for quicker testing)
+      if (newStep >= 3) {
+        // Call complete scenario endpoint
+        completeScenarioMutation.mutate();
       }
     },
     onError: (error: any) => {
@@ -68,6 +64,30 @@ export default function Simulation() {
       toast({
         title: "Error",
         description: "Failed to submit response. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Complete scenario mutation
+  const completeScenarioMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('POST', `/api/scenarios/${scenarioId}/complete`);
+    },
+    onSuccess: () => {
+      setIsCompleted(true);
+      queryClient.invalidateQueries({ queryKey: ['/api/user/scenarios'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
+      toast({
+        title: "Scenario Completed!",
+        description: "Well done! Your responses have been saved and analysed.",
+      });
+    },
+    onError: (error: any) => {
+      console.error('Complete scenario error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to complete scenario. Please try again.",
         variant: "destructive",
       });
     }
@@ -319,7 +339,7 @@ export default function Simulation() {
               <h3 className="text-xl font-semibold text-green-800 mb-2">Scenario Completed!</h3>
               <p className="text-green-700 mb-4">
                 Well done! You've successfully completed this training scenario. 
-                Your responses have been saved and you can review your progress on the dashboard.
+                Click "View Results" to see your detailed performance analysis and feedback.
               </p>
               <div className="space-x-4">
                 <Button 
