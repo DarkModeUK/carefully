@@ -13,6 +13,7 @@ export function Navigation() {
     { href: "/scenarios", label: "Scenarios", icon: "fas fa-play" },
     { href: "/profile", label: "Profile", icon: "fas fa-user" },
     { href: "/progress", label: "Progress", icon: "fas fa-chart-bar" },
+    { href: "/settings", label: "Settings", icon: "fas fa-cog" },
   ];
 
   return (

@@ -10,6 +10,7 @@ import ScenariosPage from "@/pages/scenario";
 import ScenarioDetailPage from "@/pages/scenario-detail";
 import ProfilePage from "@/pages/profile";
 import ProgressPage from "@/pages/progress";
+import SettingsPage from "@/pages/settings";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/not-found";
 
@@ -27,6 +28,7 @@ function Router() {
           <Route path="/scenarios/:id" component={ScenarioDetailPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/progress" component={ProgressPage} />
+          <Route path="/settings" component={SettingsPage} />
         </>
       )}
       <Route component={NotFound} />
