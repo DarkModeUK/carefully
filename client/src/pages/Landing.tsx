@@ -1,134 +1,359 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Hero Section */}
-          <div className="mb-16">
-            <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Welcome to <span className="text-[#907AD6]">Carefully</span>
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              AI-powered training platform for care workers. Practice real-world scenarios 
-              through interactive role-play simulations and build confidence with personalised feedback.
-            </p>
-            <Button 
-              onClick={() => window.location.href = '/api/login'}
-              size="lg"
-              className="bg-[#907AD6] hover:bg-[#7C66C4] text-white px-8 py-3 text-lg"
-            >
-              Sign In to Get Started
-            </Button>
-          </div>
-
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <Card className="border-2 border-gray-100 dark:border-gray-700">
-              <CardHeader>
-                <div className="w-12 h-12 bg-[#907AD6] rounded-lg flex items-center justify-center mb-4 mx-auto">
-                  <i className="fas fa-brain text-white text-xl"></i>
-                </div>
-                <CardTitle className="text-[#2C2A4A] dark:text-white">AI-Powered Training</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 dark:text-gray-300">
-                  Practise with intelligent AI characters that respond naturally to your care approaches and communication style.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-gray-100 dark:border-gray-700">
-              <CardHeader>
-                <div className="w-12 h-12 bg-[#7FDEFF] rounded-lg flex items-center justify-center mb-4 mx-auto">
-                  <i className="fas fa-heart text-[#2C2A4A] text-xl"></i>
-                </div>
-                <CardTitle className="text-[#2C2A4A] dark:text-white">Real-World Scenarios</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 dark:text-gray-300">
-                  Train on dementia care, safeguarding, family conflicts, and end-of-life conversations in a safe environment.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-gray-100 dark:border-gray-700">
-              <CardHeader>
-                <div className="w-12 h-12 bg-[#DABFFF] rounded-lg flex items-center justify-center mb-4 mx-auto">
-                  <i className="fas fa-chart-line text-[#2C2A4A] text-xl"></i>
-                </div>
-                <CardTitle className="text-[#2C2A4A] dark:text-white">Progress Tracking</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 dark:text-gray-300">
-                  Monitor your skill development with detailed feedback on empathy, communication, and decision-making.
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Key Benefits */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-            <h2 className="text-3xl font-bold text-[#2C2A4A] dark:text-white mb-6">
-              Why Choose Carefully?
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6 text-left">
-              <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-[#907AD6] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <i className="fas fa-check text-white text-xs"></i>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-[#2C2A4A] dark:text-white mb-1">Safe Learning Environment</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">Practise difficult conversations without real-world consequences</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-[#907AD6] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <i className="fas fa-check text-white text-xs"></i>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-[#2C2A4A] dark:text-white mb-1">Personalised Feedback</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">Get specific insights on your communication and care approach</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-[#907AD6] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <i className="fas fa-check text-white text-xs"></i>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-[#2C2A4A] dark:text-white mb-1">Flexible Training</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">Train at your own pace, anytime, anywhere</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-[#907AD6] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <i className="fas fa-check text-white text-xs"></i>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-[#2C2A4A] dark:text-white mb-1">Evidence-Based</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">Built on best practices in care work and adult learning</p>
-                </div>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50">
+      {/* Header */}
+      <header className="px-4 lg:px-6 py-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-lg flex items-center justify-center">
+              <i className="fas fa-heart text-white text-sm"></i>
             </div>
+            <span className="text-xl font-bold text-[#2C2A4A]">Carefully</span>
           </div>
-
-          {/* Call to Action */}
-          <div className="mt-16">
-            <h3 className="text-2xl font-bold text-[#2C2A4A] dark:text-white mb-4">
-              Ready to enhance your care skills?
-            </h3>
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" className="text-gray-600 hover:text-gray-800">
+              Watch Demo
+            </Button>
             <Button 
-              onClick={() => window.location.href = '/api/login'}
-              size="lg"
-              className="bg-[#907AD6] hover:bg-[#7C66C4] text-white px-8 py-3 text-lg"
+              onClick={() => window.location.href = '/api/login'} 
+              className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white"
             >
-              Sign In Now
+              Try Carefully
             </Button>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="px-4 lg:px-6 py-16">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-5xl lg:text-6xl font-bold text-[#2C2A4A] mb-6">
+            Care training that <span className="text-[#907AD6]">cares back</span>.
+          </h1>
+          <p className="text-xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed">
+            AI-powered simulations to build the human skills that matter most in health & social care.
+          </p>
+          <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
+            Carefully gives every care worker a safe space to practise, improve, and shine — turning essential 
+            care skills into engaging, game-like challenges you can complete without ever leaving the rota.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button 
+              onClick={() => window.location.href = '/api/login'}
+              size="lg"
+              className="bg-[#907AD6] hover:bg-[#7C66C4] text-white px-8 py-4 text-lg font-medium"
+            >
+              Try Carefully
+            </Button>
+            <Button 
+              variant="outline"
+              size="lg"
+              className="px-8 py-4 text-lg"
+            >
+              Watch a Demo
+            </Button>
+          </div>
+          
+          <p className="text-sm text-gray-500 mt-4">
+            See the difference in just weeks.
+          </p>
+        </div>
+      </section>
+
+      {/* Problems Section */}
+      <section className="px-4 lg:px-6 py-16 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">
+              Most care training doesn't prepare you for real life.
+            </h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="border-l-4 border-l-red-400">
+              <CardHeader>
+                <CardTitle className="text-red-600 text-lg">Generic</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  One-size-fits-all e-learning that skips the hard stuff.
+                </CardDescription>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-l-4 border-l-orange-400">
+              <CardHeader>
+                <CardTitle className="text-orange-600 text-lg">Passive</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  No practice, no feedback, no growth.
+                </CardDescription>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-l-4 border-l-amber-400">
+              <CardHeader>
+                <CardTitle className="text-amber-600 text-lg">Incomplete</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Only 29% of care staff get dementia-specific training, despite dementia being a majority of the workload.
+                </CardDescription>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-l-4 border-l-red-500">
+              <CardHeader>
+                <CardTitle className="text-red-700 text-lg">Culturally Unprepared</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  International recruits face challenges with local language and expectations, risking misunderstandings and higher turnover.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Solution Section */}
+      <section className="px-4 lg:px-6 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">
+              From tick-box training to real human skill.
+            </h2>
+            <p className="text-xl text-gray-600 mb-8">
+              Carefully's browser-based AI roleplay lets staff:
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="border-2 border-[#907AD6]/20 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="w-12 h-12 bg-[#907AD6] rounded-lg flex items-center justify-center mb-4">
+                  <i className="fas fa-comments text-white text-xl"></i>
+                </div>
+                <CardTitle className="text-[#2C2A4A]">Practise Realistic Conversations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-600">
+                  Practise realistic care conversations with AI "residents" or "relatives" in safe, repeatable simulations.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-[#7FDEFF]/20 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="w-12 h-12 bg-[#7FDEFF] rounded-lg flex items-center justify-center mb-4">
+                  <i className="fas fa-chart-line text-[#2C2A4A] text-xl"></i>
+                </div>
+                <CardTitle className="text-[#2C2A4A]">Improve Through Feedback</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-600">
+                  Improve through instant, targeted feedback on empathy, clarity, and judgement.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-[#DABFFF]/20 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="w-12 h-12 bg-[#DABFFF] rounded-lg flex items-center justify-center mb-4">
+                  <i className="fas fa-globe text-[#2C2A4A] text-xl"></i>
+                </div>
+                <CardTitle className="text-[#2C2A4A]">Adapt to Context</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-600">
+                  Adapt to language, role, and cultural context for every learner.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Why It Works Section */}
+      <section className="px-4 lg:px-6 py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">
+            Why It Works
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#907AD6] rounded-full flex items-center justify-center mb-4 mx-auto">
+                <i className="fas fa-mobile-alt text-white text-xl"></i>
+              </div>
+              <h3 className="font-semibold text-[#2C2A4A] mb-2">Bite-sized & Mobile-first</h3>
+              <p className="text-gray-600 text-sm">10–15 min sessions, anywhere, anytime.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#7FDEFF] rounded-full flex items-center justify-center mb-4 mx-auto">
+                <i className="fas fa-clipboard-check text-[#2C2A4A] text-xl"></i>
+              </div>
+              <h3 className="font-semibold text-[#2C2A4A] mb-2">Evidence-ready</h3>
+              <p className="text-gray-600 text-sm">Audit trails aligned to CQC domains.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#DABFFF] rounded-full flex items-center justify-center mb-4 mx-auto">
+                <i className="fas fa-tachometer-alt text-[#2C2A4A] text-xl"></i>
+              </div>
+              <h3 className="font-semibold text-[#2C2A4A] mb-2">Fast Coverage</h3>
+              <p className="text-gray-600 text-sm">Quickly close skills gaps, including dementia care coverage.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#4F518C] rounded-full flex items-center justify-center mb-4 mx-auto">
+                <i className="fas fa-chart-bar text-white text-xl"></i>
+              </div>
+              <h3 className="font-semibold text-[#2C2A4A] mb-2">Measured Progress</h3>
+              <p className="text-gray-600 text-sm">Dashboards on skill growth, empathy, and decision-making.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who It's For Section */}
+      <section className="px-4 lg:px-6 py-16">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">
+            Who It's For
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="border-2 border-blue-200 bg-blue-50">
+              <CardHeader>
+                <CardTitle className="text-blue-800 flex items-center gap-2">
+                  <i className="fas fa-building"></i>
+                  Care Groups & Providers
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-blue-700">
+                  Multi-site operators with CQC audit pressure.
+                </CardDescription>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 border-green-200 bg-green-50">
+              <CardHeader>
+                <CardTitle className="text-green-800 flex items-center gap-2">
+                  <i className="fas fa-city"></i>
+                  Local Authorities & ICS
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-green-700">
+                  Training at scale for diverse workforces.
+                </CardDescription>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 border-purple-200 bg-purple-50">
+              <CardHeader>
+                <CardTitle className="text-purple-800 flex items-center gap-2">
+                  <i className="fas fa-user-plus"></i>
+                  Recruiters
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-purple-700">
+                  Behavioural assessments to hire people ready for day one.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Outcomes Section */}
+      <section className="px-4 lg:px-6 py-16 bg-[#2C2A4A]">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            The difference we're working towards
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-[#7FDEFF] mb-2">📈</div>
+              <h3 className="text-white font-semibold mb-2">Higher Skills Assessment</h3>
+              <p className="text-gray-300 text-sm">Pass rates</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-3xl font-bold text-[#DABFFF] mb-2">❤️</div>
+              <h3 className="text-white font-semibold mb-2">Stronger Empathy</h3>
+              <p className="text-gray-300 text-sm">Communication scores</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-3xl font-bold text-[#907AD6] mb-2">⚡</div>
+              <h3 className="text-white font-semibold mb-2">Faster Time-to-competence</h3>
+              <p className="text-gray-300 text-sm">For new and existing staff</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-3xl font-bold text-[#7FDEFF] mb-2">🛡️</div>
+              <h3 className="text-white font-semibold mb-2">Fewer Complaints</h3>
+              <p className="text-gray-300 text-sm">Through confident care</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="px-4 lg:px-6 py-16 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF]">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            Ready to close the care skills gap?
+          </h2>
+          <p className="text-xl text-white/90 mb-8">
+            Let's get every care worker confident, competent, and compassionate.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={() => window.location.href = '/api/login'}
+              size="lg"
+              className="bg-white text-[#907AD6] hover:bg-gray-100 px-8 py-4 text-lg font-medium"
+            >
+              Try Carefully
+            </Button>
+            <Button 
+              variant="outline"
+              size="lg"
+              className="border-white text-white hover:bg-white hover:text-[#907AD6] px-8 py-4 text-lg"
+            >
+              Watch a Demo
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="px-4 lg:px-6 py-8 bg-gray-900">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-lg flex items-center justify-center">
+              <i className="fas fa-heart text-white text-xs"></i>
+            </div>
+            <span className="text-lg font-bold text-white">Carefully</span>
+          </div>
+          <p className="text-gray-400 text-sm">
+            © 2025 Carefully. Building better care through better training.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
