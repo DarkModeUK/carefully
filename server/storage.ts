@@ -1,6 +1,6 @@
 import { users, scenarios, userScenarios, achievements, type User, type InsertUser, type UpsertUser, type Scenario, type InsertScenario, type UserScenario, type InsertUserScenario, type Achievement, type InsertAchievement } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Users (required for Replit Auth)
@@ -25,6 +25,15 @@ export interface IStorage {
   // Achievements
   getUserAchievements(userId: string): Promise<Achievement[]>;
   createAchievement(achievement: InsertAchievement): Promise<Achievement>;
+  
+  // User Statistics
+  getUserStats(userId: string): Promise<{
+    completedScenarios: number;
+    totalTime: number;
+    weeklyStreak: number;
+    averageScore: number;
+    skillLevels: Record<string, number>;
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -64,7 +73,10 @@ export class DatabaseStorage implements IStorage {
   async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
     const [user] = await db
       .update(users)
-      .set(updates)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
       .where(eq(users.id, id))
       .returning();
     return user || undefined;
@@ -82,7 +94,10 @@ export class DatabaseStorage implements IStorage {
   async createScenario(insertScenario: InsertScenario): Promise<Scenario> {
     const [scenario] = await db
       .insert(scenarios)
-      .values(insertScenario)
+      .values({
+        ...insertScenario,
+        learningObjectives: insertScenario.learningObjectives || []
+      })
       .returning();
     return scenario;
   }
@@ -126,6 +141,38 @@ export class DatabaseStorage implements IStorage {
       .values(insertAchievement)
       .returning();
     return achievement;
+  }
+
+  async getUserStats(userId: string): Promise<{
+    completedScenarios: number;
+    totalTime: number;
+    weeklyStreak: number;
+    averageScore: number;
+    skillLevels: Record<string, number>;
+  }> {
+    // Get user base data
+    const user = await this.getUser(userId);
+    const userScenariosList = await this.getUserScenarios(userId);
+    
+    // Calculate completed scenarios
+    const completedScenarios = userScenariosList.filter(us => us.status === 'completed').length;
+    
+    // Calculate total time
+    const totalTime = userScenariosList.reduce((total, us) => total + (us.totalTime || 0), 0);
+    
+    // Calculate average score
+    const completedWithScores = userScenariosList.filter(us => us.status === 'completed' && (us.score || 0) > 0);
+    const averageScore = completedWithScores.length > 0 
+      ? Math.round(completedWithScores.reduce((total, us) => total + (us.score || 0), 0) / completedWithScores.length)
+      : 0;
+    
+    return {
+      completedScenarios,
+      totalTime,
+      weeklyStreak: user?.weeklyStreak || 0,
+      averageScore,
+      skillLevels: user?.skillLevels || {}
+    };
   }
 }
 

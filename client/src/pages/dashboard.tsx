@@ -15,7 +15,11 @@ export default function Dashboard() {
   const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
-    queryKey: ['/api/user']
+    queryKey: ['/api/auth/user']
+  });
+
+  const { data: userStats, isLoading: statsLoading } = useQuery({
+    queryKey: ['/api/user/stats']
   });
 
   const { data: scenarios = [], isLoading: scenariosLoading } = useQuery<Scenario[]>({
@@ -65,7 +69,7 @@ export default function Dashboard() {
       {/* Welcome Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-neutral-800 mb-2">
-          Welcome back, {`${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Sarah'}!
+          Welcome back, {user?.firstName || user?.email?.split('@')[0] || 'Care Worker'}!
         </h2>
         <p className="text-neutral-500">Continue building your care skills with personalised training scenarios.</p>
       </div>
@@ -73,26 +77,26 @@ export default function Dashboard() {
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
-          value={user?.totalScenarios || 12}
+          value={user?.totalScenarios || 0}
           title="Scenarios Completed"
           icon="fas fa-trophy"
           color="secondary"
         />
         <StatCard
-          value={`${Math.round(Object.values(user?.skillLevels || {}).reduce((a, b) => a + b, 0) / Object.keys(user?.skillLevels || {}).length || 0) || 70}%`}
+          value={`${Math.round(Object.values(user?.skillLevels || {}).reduce((a, b) => a + b, 0) / Object.keys(user?.skillLevels || {}).length) || 0}%`}
           title="Skill Level"
           icon="fas fa-chart-line"
           color="accent"
         />
         <StatCard
-          value={user?.weeklyStreak || 5}
+          value={user?.weeklyStreak || 0}
           title="Day Streak"
           icon="fas fa-fire"
           color="primary"
         />
         <StatCard
-          value={`${((user?.totalTime || 138) / 60).toFixed(1)}h`}
-          title="This Week"
+          value={`${((user?.totalTime || 0) / 60).toFixed(1)}h`}
+          title="Training Time"
           icon="fas fa-clock"
           color="neutral"
         />
