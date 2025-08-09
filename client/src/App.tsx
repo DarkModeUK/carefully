@@ -9,6 +9,7 @@ import Dashboard from "@/pages/dashboard";
 import ScenariosPage from "@/pages/scenario";
 import ScenarioDetailPage from "@/pages/scenario-detail";
 import ProfilePage from "@/pages/profile";
+import ProgressPage from "@/pages/progress";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/not-found";
 
@@ -25,7 +26,7 @@ function Router() {
           <Route path="/scenarios" component={ScenariosPage} />
           <Route path="/scenarios/:id" component={ScenarioDetailPage} />
           <Route path="/profile" component={ProfilePage} />
-          <Route path="/progress" component={() => <div className="p-6">Progress page coming soon...</div>} />
+          <Route path="/progress" component={ProgressPage} />
         </>
       )}
       <Route component={NotFound} />

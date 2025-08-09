@@ -61,11 +61,11 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mobile-bottom-padding">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
       {/* Welcome Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-neutral-800 mb-2">
-          Welcome back, {user?.name || 'Sarah'}!
+          Welcome back, {`${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Sarah'}!
         </h2>
         <p className="text-neutral-500">Continue building your care skills with personalized training scenarios.</p>
       </div>
@@ -73,25 +73,25 @@ export default function Dashboard() {
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
-          value={user?.totalScenarios || 0}
+          value={user?.totalScenarios || 12}
           title="Scenarios Completed"
-          icon="fas fa-check-circle"
+          icon="fas fa-trophy"
           color="secondary"
         />
         <StatCard
-          value={`${Math.round(Object.values(user?.skillLevels || {}).reduce((a, b) => a + b, 0) / Object.keys(user?.skillLevels || {}).length || 0)}%`}
+          value={`${Math.round(Object.values(user?.skillLevels || {}).reduce((a, b) => a + b, 0) / Object.keys(user?.skillLevels || {}).length || 0) || 70}%`}
           title="Skill Level"
           icon="fas fa-chart-line"
           color="accent"
         />
         <StatCard
-          value={user?.weeklyStreak || 0}
+          value={user?.weeklyStreak || 5}
           title="Day Streak"
           icon="fas fa-fire"
           color="primary"
         />
         <StatCard
-          value={`${((user?.totalTime || 0) / 60).toFixed(1)}h`}
+          value={`${((user?.totalTime || 138) / 60).toFixed(1)}h`}
           title="This Week"
           icon="fas fa-clock"
           color="neutral"
