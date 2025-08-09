@@ -329,13 +329,7 @@ export default function Landing() {
             >
               Try Carefully
             </Button>
-            <Button 
-              variant="outline"
-              size="lg"
-              className="border-white text-white hover:bg-white hover:text-[#907AD6] px-8 py-4 text-lg"
-            >
-              Watch a Demo
-            </Button>
+
           </div>
         </div>
       </section>
