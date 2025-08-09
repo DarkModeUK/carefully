@@ -27,7 +27,7 @@ export default function Landing() {
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl lg:text-6xl font-bold text-[#2C2A4A] mb-6">
-            Human-centred skills training with personalised feedback that <span className="text-[#907AD6]">transforms care quality</span>
+            Human-centred skills training that <span className="text-[#907AD6]">transforms care quality</span>
           </h1>
 
           <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
