@@ -15,9 +15,6 @@ export default function Landing() {
             <span className="text-xl font-bold text-[#2C2A4A]">Carefully</span>
           </div>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="text-gray-600 hover:text-gray-800">
-              Watch Demo
-            </Button>
             <Button 
               onClick={() => window.location.href = '/api/login'} 
               className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white"
