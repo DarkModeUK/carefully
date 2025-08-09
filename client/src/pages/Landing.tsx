@@ -10,7 +10,7 @@ export default function Landing() {
       <header className="px-4 lg:px-6 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img src={carefullyLogo} alt="Carefully" className="h-12" />
+            <img src={carefullyLogo} alt="Carefully" className="h-16" />
           </div>
           <div className="flex items-center space-x-4">
             <Button 
@@ -324,7 +324,7 @@ export default function Landing() {
       <footer className="px-4 lg:px-6 py-8 bg-gray-900">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img src={carefullyLogo} alt="Carefully" className="h-8 brightness-0 invert" />
+            <img src={carefullyLogo} alt="Carefully" className="h-10 brightness-0 invert" />
           </div>
           <p className="text-gray-400 text-sm">
             © 2025 Carefully. Building better care through better training.
