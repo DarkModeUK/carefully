@@ -18,7 +18,13 @@ export default function Dashboard() {
     queryKey: ['/api/auth/user']
   });
 
-  const { data: userStats, isLoading: statsLoading } = useQuery({
+  const { data: userStats, isLoading: statsLoading } = useQuery<{
+    completedScenarios: number;
+    totalTime: number;
+    weeklyStreak: number;
+    averageScore: number;
+    skillLevels: Record<string, number>;
+  }>({
     queryKey: ['/api/user/stats']
   });
 
@@ -69,7 +75,7 @@ export default function Dashboard() {
       {/* Welcome Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-neutral-800 mb-2">
-          Welcome back, {user?.firstName || user?.email?.split('@')[0] || 'Care Worker'}!
+          Welcome back, {user?.firstName || 'Care Worker'}!
         </h2>
         <p className="text-neutral-500">Continue building your care skills with personalised training scenarios.</p>
       </div>
