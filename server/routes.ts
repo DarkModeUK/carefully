@@ -162,7 +162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })).default([])
   });
 
-  app.post("/api/scenarios/:id/conversation", async (req, res) => {
+  app.post("/api/scenarios/:id/conversation", isAuthenticated, async (req: any, res) => {
     try {
       const scenarioId = req.params.id;
       const { message, conversationHistory } = conversationSchema.parse(req.body);

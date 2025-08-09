@@ -39,10 +39,17 @@ export default function SimulationPage() {
       // Convert conversation to the expected format
       const conversationHistory = conversation
         .filter(msg => msg.role !== 'system')
-        .map(msg => ({
-          role: msg.role === 'user' ? 'user' : 'character',
-          message: msg.content
-        }));
+        .map(msg => {
+          // Ensure we always map roles correctly
+          const mappedRole = msg.role === 'user' ? 'user' : 'character';
+          console.log('Mapping role:', msg.role, '->', mappedRole, 'message:', msg.content?.substring(0, 50));
+          return {
+            role: mappedRole,
+            message: msg.content
+          };
+        });
+      
+      console.log('Final conversation history:', conversationHistory);
       
       return await apiRequest('POST', `/api/scenarios/${scenarioId}/conversation`, {
         message: response,
@@ -142,6 +149,10 @@ export default function SimulationPage() {
   }, [scenario, userScenario]);
 
   const handleStartSimulation = () => {
+    // Clear any existing conversation state
+    setConversation([]);
+    setCurrentStep(0);
+    setIsCompleted(false);
     startScenarioMutation.mutate();
   };
 
