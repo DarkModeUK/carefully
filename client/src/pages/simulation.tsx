@@ -43,7 +43,7 @@ export default function Simulation() {
         conversationHistory: conversation.map(c => ({ role: c.role, message: c.content }))
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       setConversation(prev => [
         ...prev,
         { role: 'user', content: userResponse },
@@ -63,7 +63,8 @@ export default function Simulation() {
         });
       }
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Submit response error:', error);
       toast({
         title: "Error",
         description: "Failed to submit response. Please try again.",

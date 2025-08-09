@@ -21,17 +21,20 @@ export default function ScenarioDetailPage() {
 
   const scenarioId = params?.id;
 
-  const { data: scenario, isLoading: scenarioLoading } = useQuery<Scenario>({
+  const { data: scenario, isLoading: scenarioLoading, error: scenarioError } = useQuery<Scenario>({
     queryKey: ['/api/scenarios', scenarioId],
-    enabled: !!scenarioId
+    enabled: !!scenarioId,
+    retry: false
   });
 
   const { data: user } = useQuery<User>({
-    queryKey: ['/api/user']
+    queryKey: ['/api/auth/user'],
+    retry: false
   });
 
   const { data: userScenarios = [] } = useQuery<UserScenario[]>({
-    queryKey: ['/api/user/scenarios']
+    queryKey: ['/api/user/scenarios'],
+    retry: false
   });
 
   const userScenario = userScenarios.find(us => us.scenarioId === scenarioId);
@@ -40,14 +43,21 @@ export default function ScenarioDetailPage() {
 
   const completeMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", `/api/scenarios/${scenarioId}/complete`);
-      return response.json();
+      return await apiRequest(`/api/scenarios/${scenarioId}/complete`, 'POST');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user/scenarios'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user'] });
       setShowEvaluation(true);
       setCurrentStep('evaluation');
+    },
+    onError: (error: any) => {
+      console.error('Complete scenario error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to complete scenario. Please try again.",
+        variant: "destructive",
+      });
     }
   });
 
