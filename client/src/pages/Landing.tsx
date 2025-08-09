@@ -35,8 +35,7 @@ export default function Landing() {
             AI-powered simulations to build the human skills that matter most in health & social care.
           </p>
           <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
-            Carefully gives every care worker a safe space to practise, improve, and shine — turning essential 
-            care skills into engaging, game-like challenges you can complete without ever leaving the rota.
+            From your phone to the floor, Carefully delivers bite-sized, feedback-rich simulations that help care teams communicate better, think faster, and provide more confident, compassionate care — without leaving the rota.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
