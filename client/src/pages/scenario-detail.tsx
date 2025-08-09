@@ -43,7 +43,7 @@ export default function ScenarioDetailPage() {
 
   const completeMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest(`/api/scenarios/${scenarioId}/complete`, 'POST');
+      return await apiRequest('POST', `/api/scenarios/${scenarioId}/complete`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user/scenarios'] });

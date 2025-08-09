@@ -21,7 +21,7 @@ export default function SettingsPage() {
 
   const updateUserMutation = useMutation({
     mutationFn: async (updates: Partial<User>) => {
-      return apiRequest('/api/user', 'PATCH', updates);
+      return apiRequest('PATCH', '/api/user', updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user'] });

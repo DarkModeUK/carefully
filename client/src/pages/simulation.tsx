@@ -38,7 +38,7 @@ export default function Simulation() {
   // Submit response mutation
   const submitResponseMutation = useMutation({
     mutationFn: async (response: string) => {
-      return await apiRequest(`/api/scenarios/${scenarioId}/conversation`, 'POST', { 
+      return await apiRequest('POST', `/api/scenarios/${scenarioId}/conversation`, { 
         message: response,
         conversationHistory: conversation.map(c => ({ role: c.role, message: c.content }))
       });
@@ -76,7 +76,7 @@ export default function Simulation() {
   // Start scenario mutation
   const startScenarioMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest(`/api/scenarios/${scenarioId}/start`, 'POST');
+      return await apiRequest('POST', `/api/scenarios/${scenarioId}/start`);
     },
     onSuccess: (data) => {
       setConversation([{ role: 'system', content: scenario?.context || 'Welcome to this training scenario.' }]);
