@@ -13,7 +13,7 @@ export default function Landing() {
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               AI-powered training platform for care workers. Practice real-world scenarios 
-              through interactive role-play simulations and build confidence with personalized feedback.
+              through interactive role-play simulations and build confidence with personalised feedback.
             </p>
             <Button 
               onClick={() => window.location.href = '/api/login'}
@@ -35,7 +35,7 @@ export default function Landing() {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-gray-600 dark:text-gray-300">
-                  Practice with intelligent AI characters that respond naturally to your care approaches and communication style.
+                  Practise with intelligent AI characters that respond naturally to your care approaches and communication style.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -81,7 +81,7 @@ export default function Landing() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-[#2C2A4A] dark:text-white mb-1">Safe Learning Environment</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">Practice difficult conversations without real-world consequences</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">Practise difficult conversations without real-world consequences</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
@@ -89,7 +89,7 @@ export default function Landing() {
                   <i className="fas fa-check text-white text-xs"></i>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#2C2A4A] dark:text-white mb-1">Personalized Feedback</h3>
+                  <h3 className="font-semibold text-[#2C2A4A] dark:text-white mb-1">Personalised Feedback</h3>
                   <p className="text-gray-600 dark:text-gray-300 text-sm">Get specific insights on your communication and care approach</p>
                 </div>
               </div>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Carefully is an AI-powered training platform designed for care workers to practice real-world scenarios through interactive role-play simulations. The platform provides personalized feedback to help care workers build confidence, empathy, and decision-making skills in a safe environment. Key scenarios include dementia care, safeguarding, family conflict resolution, and end-of-life conversations.
+Carefully is an AI-powered training platform designed for care workers to practise real-world scenarios through interactive role-play simulations. The platform provides personalised feedback to help care workers build confidence, empathy, and decision-making skills in a safe environment. Key scenarios include dementia care, safeguarding, family conflict resolution, and end-of-life conversations.
 
 The application is built as a full-stack web platform with a React frontend and Express backend, featuring AI-driven conversation simulations, progress tracking, and skills assessment.
 
@@ -12,14 +12,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Design System
 
-**Color Palette:**
+**Colour Palette:**
 - Primary Purple: #907AD6 (hsl(253, 56%, 66%))
 - Secondary Cyan: #7FDEFF (hsl(192, 100%, 75%))
 - Dark Navy: #2C2A4A (hsl(245, 32%, 25%))
 - Light Purple: #DABFFF (hsl(267, 100%, 87%))
 - Medium Purple: #4F518C (hsl(244, 19%, 40%))
 
-Updated: August 8, 2025 - Implemented custom color palette for brand consistency.
+Updated: August 8, 2025 - Implemented custom colour palette for brand consistency.
+Updated: August 9, 2025 - Converted all content to British English spelling and grammar throughout the application.
 
 ## Recent Changes
 
@@ -29,6 +30,7 @@ Updated: August 8, 2025 - Implemented custom color palette for brand consistency
 - Added Drizzle ORM relations for users, scenarios, userScenarios, and achievements
 - Successfully pushed database schema and seeded with demo data
 - All database operations are fully functional and type-safe
+- Converted all user-facing content to British English spelling (personalised, practise, colour, etc.)
 
 ## System Architecture
 
@@ -61,7 +63,7 @@ Key entities:
 - **Conversational AI**: Real-time role-play with AI characters using OpenAI's GPT-4o
 - **Feedback System**: Automated analysis of empathy, tone, clarity, and decision-making
 - **Progress Tracking**: Skill-based progression with visual progress indicators
-- **Scenario Engine**: Dynamic scenario generation with personalized difficulty adjustment
+- **Scenario Engine**: Dynamic scenario generation with personalised difficulty adjustment
 
 ### Development and Deployment
 - **Development**: Hot-reload development server with Vite integration

@@ -67,7 +67,7 @@ export default function Dashboard() {
         <h2 className="text-2xl font-bold text-neutral-800 mb-2">
           Welcome back, {`${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Sarah'}!
         </h2>
-        <p className="text-neutral-500">Continue building your care skills with personalized training scenarios.</p>
+        <p className="text-neutral-500">Continue building your care skills with personalised training scenarios.</p>
       </div>
 
       {/* Stats Overview */}
