@@ -39,17 +39,10 @@ export default function SimulationPage() {
       // Convert conversation to the expected format
       const conversationHistory = conversation
         .filter(msg => msg.role !== 'system')
-        .map(msg => {
-          // Ensure we always map roles correctly
-          const mappedRole = msg.role === 'user' ? 'user' : 'character';
-          console.log('Mapping role:', msg.role, '->', mappedRole, 'message:', msg.content?.substring(0, 50));
-          return {
-            role: mappedRole,
-            message: msg.content
-          };
-        });
-      
-      console.log('Final conversation history:', conversationHistory);
+        .map(msg => ({
+          role: msg.role === 'user' ? 'user' : 'character',
+          message: msg.content
+        }));
       
       return await apiRequest('POST', `/api/scenarios/${scenarioId}/conversation`, {
         message: response,
@@ -113,7 +106,12 @@ export default function SimulationPage() {
       return await apiRequest('POST', `/api/scenarios/${scenarioId}/start`);
     },
     onSuccess: (data: any) => {
-      setConversation([{ role: 'system', content: data.initialMessage || 'Welcome to this training scenario. Let\'s begin.' }]);
+      // Set up the conversation with the patient's opening message
+      const initialMessages = [
+        { role: 'system' as const, content: 'Training simulation started. The patient will now speak to you.' },
+        { role: 'character' as const, content: data.initialMessage || 'Hello, I need to speak with someone about my care...' }
+      ];
+      setConversation(initialMessages);
       setViewState('simulation');
       queryClient.invalidateQueries({ queryKey: ['/api/user/scenarios', scenarioId] });
     },
@@ -130,11 +128,14 @@ export default function SimulationPage() {
   useEffect(() => {
     if (userScenario?.responses?.length) {
       // Restore conversation from saved responses
-      const restoredConversation = userScenario.responses.map((response: any, index: number) => [
-        { role: 'system' as const, content: response.aiMessage },
-        { role: 'user' as const, content: response.userResponse },
-        { role: 'character' as const, content: response.aiResponse, feedback: response.feedback }
-      ]).flat().filter(Boolean);
+      const systemMessage = { role: 'system' as const, content: 'Training simulation in progress.' };
+      const restoredConversation = [
+        systemMessage,
+        ...userScenario.responses.map((response: any, index: number) => [
+          { role: 'user' as const, content: response.userResponse },
+          { role: 'character' as const, content: response.aiResponse, feedback: response.feedback }
+        ]).flat().filter(Boolean)
+      ];
       setConversation(restoredConversation);
       setCurrentStep(userScenario.responses.length);
       if (userScenario.status === 'completed') {
@@ -431,7 +432,7 @@ export default function SimulationPage() {
                 <div className="flex justify-start">
                   <div className="flex items-start gap-3 max-w-2xl">
                     <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-robot text-white"></i>
+                      <i className="fas fa-user-nurse text-white"></i>
                     </div>
                     <div className="bg-white px-6 py-4 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
                       <div className="flex items-center gap-3">
@@ -440,7 +441,7 @@ export default function SimulationPage() {
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                         </div>
-                        <span className="text-gray-500">Analysing your response...</span>
+                        <span className="text-gray-500">Patient is thinking...</span>
                       </div>
                     </div>
                   </div>

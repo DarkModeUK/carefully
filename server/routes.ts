@@ -125,6 +125,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const scenarioId = req.params.id;
       const userId = req.user.claims.sub;
       
+      // Get scenario details for generating opening message
+      const scenario = await storage.getScenario(scenarioId);
+      if (!scenario) {
+        return res.status(404).json({ message: "Scenario not found" });
+      }
+      
       // Check if user scenario already exists
       let userScenario = await storage.getUserScenario(userId, scenarioId);
       
@@ -147,7 +153,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      res.json(userScenario);
+      // Generate opening message from the patient/character
+      const initialMessage = await generateConversationResponse(
+        scenario.context,
+        [],
+        "care recipient"
+      );
+      
+      res.json({ 
+        ...userScenario, 
+        initialMessage 
+      });
     } catch (error) {
       res.status(500).json({ message: "Failed to start scenario" });
     }
