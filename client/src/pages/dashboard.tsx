@@ -106,38 +106,45 @@ export default function Dashboard() {
           
           {/* Continue Training Section */}
           {currentScenario && currentScenarioData && (
-            <Card>
+            <Card className="border-l-4 border-l-[#907AD6] shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-neutral-800">Continue Training</h3>
-                  <Badge className="bg-accent bg-opacity-20 text-accent">In Progress</Badge>
+                  <Badge className="bg-green-100 text-green-700 border-green-200">In Progress</Badge>
                 </div>
                 
-                <div className="flex items-start space-x-4">
-                  <div className="bg-primary bg-opacity-20 rounded-lg p-3 flex-shrink-0">
-                    <i className="fas fa-user-nurse text-primary text-xl"></i>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-neutral-800 mb-1">{currentScenarioData.title}</h4>
-                    <p className="text-sm text-neutral-500 mb-3">{currentScenarioData.description}</p>
-                    
-                    {/* Progress Bar */}
-                    <div className="mb-4">
-                      <div className="flex justify-between text-xs text-neutral-500 mb-1">
-                        <span>Progress</span>
-                        <span>{currentScenario.progress}%</span>
-                      </div>
-                      <div className="w-full bg-neutral-200 rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full" 
-                          style={{ width: `${currentScenario.progress}%` }}
-                        ></div>
-                      </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-neutral-800 mb-1">{currentScenarioData.title}</h4>
+                      <p className="text-sm text-neutral-500">{currentScenarioData.description}</p>
                     </div>
-                    
-                    <Button onClick={handleContinueTraining}>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-neutral-600 font-medium">Progress</span>
+                      <span className="text-neutral-800 font-semibold">{currentScenario.progress}% Complete</span>
+                    </div>
+                    <div className="w-full bg-neutral-200 rounded-full h-3">
+                      <div 
+                        className="bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] h-3 rounded-full transition-all duration-300" 
+                        style={{ width: `${currentScenario.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      onClick={handleContinueTraining} 
+                      className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                    >
                       <i className="fas fa-play mr-2"></i>Continue Training
                     </Button>
+                    <div className="text-xs text-neutral-500">
+                      Last activity: {currentScenario.startedAt ? new Date(currentScenario.startedAt).toLocaleDateString() : 'Today'}
+                    </div>
                   </div>
                 </div>
               </CardContent>
