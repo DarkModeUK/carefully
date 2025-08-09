@@ -17,7 +17,7 @@ export default function SimulationPage() {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [userResponse, setUserResponse] = useState("");
-  const [conversation, setConversation] = useState<{ role: 'user' | 'ai' | 'system'; content: string; feedback?: any }[]>([]);
+  const [conversation, setConversation] = useState<{ role: 'user' | 'character' | 'system'; content: string; feedback?: any }[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [viewState, setViewState] = useState<'preparation' | 'simulation' | 'completed'>('preparation');
 
@@ -36,13 +36,24 @@ export default function SimulationPage() {
   // Submit response mutation
   const submitResponseMutation = useMutation({
     mutationFn: async (response: string) => {
-      return await apiRequest('POST', `/api/scenarios/${scenarioId}/respond`, { response });
+      // Convert conversation to the expected format
+      const conversationHistory = conversation
+        .filter(msg => msg.role !== 'system')
+        .map(msg => ({
+          role: msg.role === 'user' ? 'user' : 'character',
+          message: msg.content
+        }));
+      
+      return await apiRequest('POST', `/api/scenarios/${scenarioId}/conversation`, {
+        message: response,
+        conversationHistory
+      });
     },
     onSuccess: (data) => {
       setConversation(prev => [
         ...prev,
         { role: 'user', content: userResponse },
-        { role: 'ai', content: data.aiResponse, feedback: data.feedback }
+        { role: 'character', content: data.aiResponse, feedback: data.feedback }
       ]);
       setUserResponse("");
       const newStep = currentStep + 1;
@@ -115,7 +126,7 @@ export default function SimulationPage() {
       const restoredConversation = userScenario.responses.map((response: any, index: number) => [
         { role: 'system' as const, content: response.aiMessage },
         { role: 'user' as const, content: response.userResponse },
-        { role: 'ai' as const, content: response.aiResponse, feedback: response.feedback }
+        { role: 'character' as const, content: response.aiResponse, feedback: response.feedback }
       ]).flat().filter(Boolean);
       setConversation(restoredConversation);
       setCurrentStep(userScenario.responses.length);
@@ -364,7 +375,7 @@ export default function SimulationPage() {
                           ? 'fas fa-user' 
                           : message.role === 'system'
                           ? 'fas fa-info'
-                          : 'fas fa-robot'
+                          : 'fas fa-user-nurse'
                       }`}></i>
                     </div>
                     
