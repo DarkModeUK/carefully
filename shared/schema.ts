@@ -131,6 +131,7 @@ export const achievementsRelations = relations(achievements, ({ one }) => ({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+export type UpsertUser = typeof users.$inferInsert;
 export type InsertScenario = z.infer<typeof insertScenarioSchema>;
 export type Scenario = typeof scenarios.$inferSelect;
 export type InsertUserScenario = z.infer<typeof insertUserScenarioSchema>;
