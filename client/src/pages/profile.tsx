@@ -47,7 +47,8 @@ export default function ProfilePage() {
   const getProfileCompletion = (user: User | undefined) => {
     if (!user) return 0;
     let completion = 0;
-    if (user.name) completion += 20;
+    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    if (fullName) completion += 20;
     if (user.email) completion += 20;
     if (user.role) completion += 20;
     if (user.skillLevels && Object.keys(user.skillLevels).length > 0) completion += 40;
@@ -117,7 +118,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mobile-bottom-padding">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 overflow-hidden">
       
       {/* Header */}
       <div className="mb-8">
@@ -159,10 +160,10 @@ export default function ProfilePage() {
           <Progress value={profileCompletion} className="h-3" />
           
           {profileCompletion < 100 && (
-            <div className="mt-4 p-4 bg-brand-light-purple bg-opacity-20 rounded-lg">
-              <h4 className="font-medium text-brand-dark mb-2">Complete these steps to improve your experience:</h4>
-              <ul className="text-sm text-brand-medium space-y-1">
-                {!user?.name && <li>• Add your full name</li>}
+            <div className="mt-4 p-4 bg-[#DABFFF] bg-opacity-20 rounded-lg">
+              <h4 className="font-medium text-[#2C2A4A] mb-2">Complete these steps to improve your experience:</h4>
+              <ul className="text-sm text-[#4F518C] space-y-1">
+                {!(user?.firstName || user?.lastName) && <li>• Add your full name</li>}
                 {!user?.email && <li>• Verify your email address</li>}
                 {!user?.role && <li>• Select your care role</li>}
                 {(!user?.skillLevels || Object.keys(user.skillLevels).length === 0) && <li>• Complete skill assessment</li>}
@@ -173,7 +174,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Navigation Tabs */}
-      <div className="flex space-x-1 mb-8 bg-neutral-200 p-1 rounded-lg">
+      <div className="flex space-x-1 mb-8 bg-neutral-200 p-1 rounded-lg overflow-x-auto">
         {[
           { key: 'overview', label: 'Overview', icon: 'fas fa-user' },
           { key: 'assessment', label: 'Skills', icon: 'fas fa-chart-line' },
@@ -183,7 +184,7 @@ export default function ProfilePage() {
           <button
             key={tab.key}
             onClick={() => setCurrentStep(tab.key as any)}
-            className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
               currentStep === tab.key
                 ? 'bg-white text-primary shadow-sm'
                 : 'text-neutral-600 hover:text-neutral-800'
@@ -196,8 +197,9 @@ export default function ProfilePage() {
       </div>
 
       {/* Tab Content */}
-      {currentStep === 'overview' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="min-h-0 flex-1">
+        {currentStep === 'overview' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Basic Information */}
           <div className="lg:col-span-2">
@@ -214,15 +216,15 @@ export default function ProfilePage() {
                     <div>
                       <label className="text-sm font-medium text-neutral-700 mb-2 block">Full Name</label>
                       {isEditing ? (
-                        <Input defaultValue={user?.name} placeholder="Enter your full name" />
+                        <Input defaultValue={`${user?.firstName || ''} ${user?.lastName || ''}`.trim()} placeholder="Enter your full name" />
                       ) : (
-                        <p className="text-neutral-800">{user?.name || 'Not provided'}</p>
+                        <p className="text-neutral-800">{`${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Not provided'}</p>
                       )}
                     </div>
                     <div>
                       <label className="text-sm font-medium text-neutral-700 mb-2 block">Email</label>
                       {isEditing ? (
-                        <Input defaultValue={user?.email} placeholder="Enter your email" />
+                        <Input defaultValue={user?.email || ''} placeholder="Enter your email" />
                       ) : (
                         <p className="text-neutral-800">{user?.email || 'Not provided'}</p>
                       )}
@@ -570,6 +572,7 @@ export default function ProfilePage() {
           </Card>
         </div>
       )}
+      </div>
     </div>
   );
 }
