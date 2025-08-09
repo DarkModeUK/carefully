@@ -72,10 +72,10 @@ export default {
         'brand-medium': '#4F518C',
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Inter", "sans-serif"],
+        sans: ["var(--font-sans)", "sans-serif"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
-        inter: ["Inter", "sans-serif"],
+        'dm-sans': ["DM Sans", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
