@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Dashboard from "@/pages/dashboard";
 import ScenariosPage from "@/pages/scenario";
 import ScenarioDetailPage from "@/pages/scenario-detail";
+import SimulationPage from "@/pages/simulation";
 import ProfilePage from "@/pages/profile";
 import ProgressPage from "@/pages/progress";
 import SettingsPage from "@/pages/settings";
@@ -26,6 +27,7 @@ function Router() {
           <Route path="/" component={Dashboard} />
           <Route path="/scenarios" component={ScenariosPage} />
           <Route path="/scenarios/:id" component={ScenarioDetailPage} />
+          <Route path="/simulation/:scenarioId" component={SimulationPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/progress" component={ProgressPage} />
           <Route path="/settings" component={SettingsPage} />

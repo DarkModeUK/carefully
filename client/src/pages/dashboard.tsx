@@ -1,9 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { StatCard } from "@/components/stat-card";
 import { ScenarioCard } from "@/components/scenario-card";
 import { SkillProgress } from "@/components/skill-progress";
-import { TrainingModal } from "@/components/training-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +9,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { User, Scenario, UserScenario, Achievement } from "@shared/schema";
 
 export default function Dashboard() {
-  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
-  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ['/api/auth/user']
@@ -44,14 +40,12 @@ export default function Dashboard() {
   const currentScenarioData = scenarios.find(s => s.id === currentScenario?.scenarioId);
 
   const handleStartScenario = (scenario: Scenario) => {
-    setSelectedScenario(scenario);
-    setIsTrainingModalOpen(true);
+    window.location.href = `/simulation/${scenario.id}`;
   };
 
   const handleContinueTraining = () => {
     if (currentScenarioData) {
-      setSelectedScenario(currentScenarioData);
-      setIsTrainingModalOpen(true);
+      window.location.href = `/simulation/${currentScenarioData.id}`;
     }
   };
 
@@ -283,15 +277,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Training Modal */}
-      <TrainingModal
-        scenario={selectedScenario}
-        isOpen={isTrainingModalOpen}
-        onClose={() => {
-          setIsTrainingModalOpen(false);
-          setSelectedScenario(null);
-        }}
-      />
+
     </div>
   );
 }
