@@ -49,7 +49,7 @@ export default function Dashboard() {
     }
   };
 
-  if (userLoading) {
+  if (userLoading || statsLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="space-y-6">
@@ -77,25 +77,25 @@ export default function Dashboard() {
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
-          value={user?.totalScenarios || 0}
+          value={userStats?.completedScenarios || 0}
           title="Scenarios Completed"
           icon="fas fa-trophy"
           color="secondary"
         />
         <StatCard
-          value={`${Math.round(Object.values(user?.skillLevels || {}).reduce((a, b) => a + b, 0) / Object.keys(user?.skillLevels || {}).length) || 0}%`}
-          title="Skill Level"
+          value={userStats?.averageScore ? `${userStats.averageScore}%` : '0%'}
+          title="Average Score"
           icon="fas fa-chart-line"
           color="accent"
         />
         <StatCard
-          value={user?.weeklyStreak || 0}
+          value={userStats?.weeklyStreak || 0}
           title="Day Streak"
           icon="fas fa-fire"
           color="primary"
         />
         <StatCard
-          value={`${((user?.totalTime || 0) / 60).toFixed(1)}h`}
+          value={`${((userStats?.totalTime || 0) / 60).toFixed(1)}h`}
           title="Training Time"
           icon="fas fa-clock"
           color="neutral"
