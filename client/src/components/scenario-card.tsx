@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import type { Scenario } from "@shared/schema";
+import { memo } from "react";
 
 interface ScenarioCardProps {
   scenario: Scenario;
@@ -29,7 +30,7 @@ const categoryLabels: Record<string, string> = {
   safeguarding: 'Safeguarding'
 };
 
-export function ScenarioCard({ scenario, onClick }: ScenarioCardProps) {
+export const ScenarioCard = memo(({ scenario, onClick }: ScenarioCardProps) => {
   const [, setLocation] = useLocation();
   
   const handleClick = () => {
@@ -83,4 +84,4 @@ export function ScenarioCard({ scenario, onClick }: ScenarioCardProps) {
       </CardContent>
     </Card>
   );
-}
+});

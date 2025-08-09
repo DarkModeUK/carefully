@@ -79,9 +79,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all available scenarios
+  // Get all available scenarios with caching
   app.get("/api/scenarios", async (req, res) => {
     try {
+      // Add cache headers for better performance
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minutes
+      
       const scenarios = await storage.getAllScenarios();
       res.json(scenarios);
     } catch (error) {
@@ -89,9 +92,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get specific scenario
+  // Get specific scenario with caching
   app.get("/api/scenarios/:id", async (req, res) => {
     try {
+      // Add cache headers for individual scenarios
+      res.set('Cache-Control', 'public, max-age=600'); // 10 minutes
+      
       const scenario = await storage.getScenario(req.params.id);
       if (!scenario) {
         return res.status(404).json({ message: "Scenario not found" });
