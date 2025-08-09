@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import type { User } from "@shared/schema";
+import carefullyLogo from "@assets/Carefully_1754777567823.png";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -23,8 +24,7 @@ export function Navigation() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
-                <i className="fas fa-heart text-primary text-2xl mr-2"></i>
-                <h1 className="text-xl font-bold text-neutral-800">Carefully</h1>
+                <img src={carefullyLogo} alt="Carefully" className="h-12" />
               </div>
             </div>
             
