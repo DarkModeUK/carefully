@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import carefullyLogo from "@assets/Carefully-logo@2x@2x_1754776385668.png";
 
 export default function Landing() {
   return (
@@ -9,10 +10,7 @@ export default function Landing() {
       <header className="px-4 lg:px-6 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-lg flex items-center justify-center">
-              <i className="fas fa-heart text-white text-sm"></i>
-            </div>
-            <span className="text-xl font-bold text-[#2C2A4A]">Carefully</span>
+            <img src={carefullyLogo} alt="Carefully" className="h-8" />
           </div>
           <div className="flex items-center space-x-4">
             <Button 
@@ -326,10 +324,7 @@ export default function Landing() {
       <footer className="px-4 lg:px-6 py-8 bg-gray-900">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-lg flex items-center justify-center">
-              <i className="fas fa-heart text-white text-xs"></i>
-            </div>
-            <span className="text-lg font-bold text-white">Carefully</span>
+            <img src={carefullyLogo} alt="Carefully" className="h-6 brightness-0 invert" />
           </div>
           <p className="text-gray-400 text-sm">
             © 2025 Carefully. Building better care through better training.
