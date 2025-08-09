@@ -3,8 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force DM Sans font family */
-* {
+/* Force DM Sans font family for text elements, but preserve icon fonts */
+body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, select {
   font-family: 'DM Sans', sans-serif !important;
 }
 
