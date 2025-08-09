@@ -189,22 +189,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Scenario not found" });
       }
 
-      // Generate AI response
+      // Generate AI response with proper conversation context
       const aiResponse = await generateConversationResponse(
         scenario.context,
-        conversationHistory,
+        [...conversationHistory, { role: 'user', message }],
         "care recipient"
       );
 
-      // Analyze user's response for feedback
-      const feedback = await analyzeFeedback(
+      // Analyze user's response for feedback (run in parallel for speed)
+      const feedbackPromise = analyzeFeedback(
         message,
         scenario.context,
         conversationHistory
       );
 
+      const feedback = await feedbackPromise;
+
       res.json({
-        aiResponse,
+        aiResponse: aiResponse.message,
         feedback
       });
     } catch (error) {

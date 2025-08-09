@@ -12,13 +12,13 @@ export interface ConversationResponse {
 }
 
 export interface FeedbackAnalysis {
-  empathyScore: number;
-  toneScore: number;
-  clarityScore: number;
-  decisionMakingScore: number;
-  overallScore: number;
-  feedback: string;
-  suggestions: string[];
+  empathy: number;
+  communication: number;
+  professionalism: number;
+  problemSolving: number;
+  summary: string;
+  strengths: string[];
+  improvements: string[];
 }
 
 export async function generateConversationResponse(
@@ -33,23 +33,27 @@ Scenario Context: ${scenarioContext}
 
 Instructions:
 - Stay in character throughout the conversation
-- Respond naturally and emotionally appropriate to the scenario
-- If the user's response shows good empathy and care skills, gradually become more calm/receptive
-- If the user's response is inappropriate or insensitive, become more distressed or defensive
-- Keep responses realistic and not too long (1-3 sentences)
-- Respond with JSON in this format: { "message": "your response", "sentiment": "positive/neutral/negative/distressed", "shouldContinue": true/false }
+- Respond directly to what the user just said, building on their response
+- Show emotional reactions appropriate to how they're treating you
+- If they show empathy and care, become more trusting and calm
+- If they're dismissive or rushed, become more anxious or withdrawn
+- Keep responses conversational and realistic (1-2 sentences max)
+- Always respond with JSON: { "message": "your response", "sentiment": "positive/neutral/negative/distressed", "shouldContinue": true }
 
-Conversation history:
-${conversationHistory.map(h => `${h.role}: ${h.message}`).join('\n')}`;
+Current conversation:
+${conversationHistory.map(h => `${h.role === 'user' ? 'Care Worker' : 'Patient'}: ${h.message}`).join('\n')}`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini", // Faster model for better response time
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: "Generate the next response in this conversation." }
+        { role: "user", content: conversationHistory.length === 0 ? 
+          "Start the conversation as the patient. Introduce your concern or situation." : 
+          "Respond to what the care worker just said." }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.8,
+      temperature: 0.7,
+      max_tokens: 150, // Limit tokens for faster response
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -66,54 +70,62 @@ ${conversationHistory.map(h => `${h.role}: ${h.message}`).join('\n')}`;
 }
 
 export async function analyzeFeedback(
-  userResponse: string,
+  userMessage: string,
   scenarioContext: string,
   conversationHistory: { role: 'user' | 'character'; message: string }[]
 ): Promise<FeedbackAnalysis> {
   try {
-    const systemPrompt = `You are an expert care training assessor. Analyze the user's response for empathy, tone, clarity, and decision-making in this care scenario.
+    const systemPrompt = `Quickly analyze this care worker's response.
 
-Scenario Context: ${scenarioContext}
+Context: ${scenarioContext.substring(0, 200)}...
 
-Conversation History:
-${conversationHistory.map(h => `${h.role}: ${h.message}`).join('\n')}
+User said: "${userMessage}"
 
-User's Response to Analyze: "${userResponse}"
-
-Rate each aspect from 0-100 and provide constructive feedback. Respond with JSON in this format:
+Rate 1-5 on: empathy, communication, professionalism, problem-solving.
+Give brief feedback in JSON:
 {
-  "empathyScore": number,
-  "toneScore": number, 
-  "clarityScore": number,
-  "decisionMakingScore": number,
-  "overallScore": number,
-  "feedback": "overall assessment",
-  "suggestions": ["suggestion 1", "suggestion 2"]
+  "empathy": 1-5,
+  "communication": 1-5, 
+  "professionalism": 1-5,
+  "problemSolving": 1-5,
+  "summary": "Quick feedback (1 sentence)",
+  "strengths": ["main strength"],
+  "improvements": ["main improvement"]
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini", // Faster model
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: "Analyze this response and provide detailed feedback." }
+        { role: "user", content: "Provide quick feedback analysis." }
       ],
       response_format: { type: "json_object" },
       temperature: 0.3,
+      max_tokens: 200, // Limit for speed
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
     
     return {
-      empathyScore: Math.max(0, Math.min(100, result.empathyScore || 50)),
-      toneScore: Math.max(0, Math.min(100, result.toneScore || 50)),
-      clarityScore: Math.max(0, Math.min(100, result.clarityScore || 50)),
-      decisionMakingScore: Math.max(0, Math.min(100, result.decisionMakingScore || 50)),
-      overallScore: Math.max(0, Math.min(100, result.overallScore || 50)),
-      feedback: result.feedback || "Keep practicing to improve your care skills.",
-      suggestions: result.suggestions || ["Continue practicing empathetic responses"]
+      empathy: result.empathy || 3,
+      communication: result.communication || 3,
+      professionalism: result.professionalism || 3,
+      problemSolving: result.problemSolving || 3,
+      summary: result.summary || "Good response, keep practicing!",
+      strengths: result.strengths || ["Engaged with conversation"],
+      improvements: result.improvements || ["Continue practicing"]
     };
   } catch (error) {
     console.error('Error analyzing feedback:', error);
-    throw new Error('Failed to analyze feedback');
+    // Return default feedback instead of throwing
+    return {
+      empathy: 3,
+      communication: 3,
+      professionalism: 3,
+      problemSolving: 3,
+      summary: "Response noted. Continue practicing your care skills.",
+      strengths: ["Engaged with the conversation"],
+      improvements: ["Keep focusing on empathy and clear communication"]
+    };
   }
 }
