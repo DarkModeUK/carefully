@@ -111,7 +111,7 @@ export default function ScenarioDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mobile-bottom-padding">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
       
       {/* Header */}
       <div className="mb-6">
@@ -152,8 +152,9 @@ export default function ScenarioDetailPage() {
 
       {/* Progress Steps */}
       <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
+        <CardContent className="p-4 sm:p-6">
+          {/* Desktop Layout */}
+          <div className="hidden md:flex items-center justify-between mb-4">
             <div className={`flex items-center gap-2 ${currentStep === 'overview' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 currentStep === 'overview' ? 'bg-primary text-white' : 
@@ -161,9 +162,9 @@ export default function ScenarioDetailPage() {
               }`}>
                 1
               </div>
-              <span className="font-medium">Overview</span>
+              <span className="font-medium whitespace-nowrap">Overview</span>
             </div>
-            <div className="flex-1 h-0.5 bg-neutral-200 mx-4"></div>
+            <div className="flex-1 h-0.5 bg-neutral-200 mx-2 min-w-4"></div>
             <div className={`flex items-center gap-2 ${currentStep === 'preparation' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 currentStep === 'preparation' ? 'bg-primary text-white' : 
@@ -171,9 +172,9 @@ export default function ScenarioDetailPage() {
               }`}>
                 2
               </div>
-              <span className="font-medium">Preparation</span>
+              <span className="font-medium whitespace-nowrap">Preparation</span>
             </div>
-            <div className="flex-1 h-0.5 bg-neutral-200 mx-4"></div>
+            <div className="flex-1 h-0.5 bg-neutral-200 mx-2 min-w-4"></div>
             <div className={`flex items-center gap-2 ${currentStep === 'training' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 currentStep === 'training' ? 'bg-primary text-white' : 
@@ -181,9 +182,9 @@ export default function ScenarioDetailPage() {
               }`}>
                 3
               </div>
-              <span className="font-medium">Training</span>
+              <span className="font-medium whitespace-nowrap">Training</span>
             </div>
-            <div className="flex-1 h-0.5 bg-neutral-200 mx-4"></div>
+            <div className="flex-1 h-0.5 bg-neutral-200 mx-2 min-w-4"></div>
             <div className={`flex items-center gap-2 ${currentStep === 'evaluation' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 currentStep === 'evaluation' ? 'bg-primary text-white' : 
@@ -191,7 +192,52 @@ export default function ScenarioDetailPage() {
               }`}>
                 4
               </div>
-              <span className="font-medium">Evaluation</span>
+              <span className="font-medium whitespace-nowrap">Evaluation</span>
+            </div>
+          </div>
+
+          {/* Mobile Layout */}
+          <div className="md:hidden">
+            <div className="flex justify-between items-center mb-4">
+              <div className={`flex flex-col items-center gap-1 flex-1 ${currentStep === 'overview' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep === 'overview' ? 'bg-primary text-white' : 
+                  isCompleted ? 'bg-secondary text-white' : 'bg-neutral-200'
+                }`}>
+                  1
+                </div>
+                <span className="text-xs font-medium text-center">Overview</span>
+              </div>
+              <div className="w-8 h-0.5 bg-neutral-200 mx-1"></div>
+              <div className={`flex flex-col items-center gap-1 flex-1 ${currentStep === 'preparation' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep === 'preparation' ? 'bg-primary text-white' : 
+                  isCompleted ? 'bg-secondary text-white' : 'bg-neutral-200'
+                }`}>
+                  2
+                </div>
+                <span className="text-xs font-medium text-center">Prep</span>
+              </div>
+              <div className="w-8 h-0.5 bg-neutral-200 mx-1"></div>
+              <div className={`flex flex-col items-center gap-1 flex-1 ${currentStep === 'training' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep === 'training' ? 'bg-primary text-white' : 
+                  isCompleted ? 'bg-secondary text-white' : 'bg-neutral-200'
+                }`}>
+                  3
+                </div>
+                <span className="text-xs font-medium text-center">Training</span>
+              </div>
+              <div className="w-8 h-0.5 bg-neutral-200 mx-1"></div>
+              <div className={`flex flex-col items-center gap-1 flex-1 ${currentStep === 'evaluation' ? 'text-primary' : isCompleted ? 'text-secondary' : 'text-neutral-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep === 'evaluation' ? 'bg-primary text-white' : 
+                  isCompleted ? 'bg-secondary text-white' : 'bg-neutral-200'
+                }`}>
+                  4
+                </div>
+                <span className="text-xs font-medium text-center">Results</span>
+              </div>
             </div>
           </div>
         </CardContent>
