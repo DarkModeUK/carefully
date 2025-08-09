@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
+import type { User } from "@shared/schema";
 
 export function Navigation() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth() as { user: User | null; isLoading: boolean; isAuthenticated: boolean };
 
   const navItems = [
     { href: "/", label: "Dashboard", icon: "fas fa-home" },
@@ -45,12 +48,24 @@ export function Navigation() {
             {/* Right Side - User Profile and Mobile Menu */}
             <div className="flex items-center space-x-4">
               {/* User Profile */}
-              <div className="flex items-center text-sm">
-                <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2">
-                  <span className="font-medium">SA</span>
+              <Link href="/profile">
+                <div className="flex items-center text-sm cursor-pointer hover:opacity-80 transition-opacity duration-200">
+                  <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2">
+                    <span className="font-medium">
+                      {user?.firstName && user?.lastName 
+                        ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+                        : user?.email?.[0]?.toUpperCase() || 'U'
+                      }
+                    </span>
+                  </div>
+                  <span className="hidden sm:block font-medium text-neutral-800">
+                    {user?.firstName && user?.lastName 
+                      ? `${user.firstName} ${user.lastName}`
+                      : user?.email?.split('@')[0] || 'User'
+                    }
+                  </span>
                 </div>
-                <span className="hidden sm:block font-medium text-neutral-800">Sarah Adams</span>
-              </div>
+              </Link>
 
               {/* Mobile menu button */}
               <button 
