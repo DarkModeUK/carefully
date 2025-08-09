@@ -189,23 +189,25 @@ export default function Dashboard() {
         {/* Right Column - Progress & Achievements */}
         <div className="space-y-8">
           
-          {/* Skill Progress */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Skill Progress</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {user?.skillLevels ? (
-                <SkillProgress skills={user.skillLevels} />
-              ) : (
-                <div className="space-y-4">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <Skeleton key={i} className="h-8" />
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Skill Progress - Only show if user has completed scenarios */}
+          {userStats && userStats.completedScenarios > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Skill Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {user?.skillLevels ? (
+                  <SkillProgress skills={user.skillLevels} />
+                ) : (
+                  <div className="space-y-4">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <Skeleton key={i} className="h-8" />
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Recent Achievements */}
           <Card>
