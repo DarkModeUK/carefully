@@ -112,6 +112,7 @@ export default function ScenarioDetailPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
+      
       {/* Header */}
       <div className="mb-6">
         <Button 
@@ -415,79 +416,226 @@ export default function ScenarioDetailPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <i className="fas fa-lightbulb text-accent"></i>
-                    Preparation Tips
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">Communication Approach</h4>
-                      <p className="text-blue-800 text-sm">Use a calm, empathetic tone. Listen actively and validate emotions before offering solutions.</p>
-                    </div>
-                    
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-green-900 mb-2">Key Strategies</h4>
-                      <ul className="text-green-800 text-sm space-y-1">
-                        <li>• Ask open-ended questions to understand concerns</li>
-                        <li>• Provide clear, simple explanations</li>
-                        <li>• Offer choices when appropriate</li>
-                        <li>• Respect dignity and autonomy</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="bg-amber-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-amber-900 mb-2">What to Avoid</h4>
-                      <ul className="text-amber-800 text-sm space-y-1">
-                        <li>• Dismissing or minimizing concerns</li>
-                        <li>• Using medical jargon</li>
-                        <li>• Making decisions without consultation</li>
-                        <li>• Rushing the conversation</li>
-                      </ul>
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <i className="fas fa-lightbulb text-accent"></i>
+                  Preparation Tips
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h4 className="font-medium text-blue-900 mb-2">Communication Approach</h4>
+                    <p className="text-blue-800 text-sm">Use a calm, empathetic tone. Listen actively and validate emotions before offering solutions.</p>
+                  </div>
+                  
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h4 className="font-medium text-green-900 mb-2">Key Strategies</h4>
+                    <ul className="text-green-800 text-sm space-y-1">
+                      <li>• Ask open-ended questions to understand concerns</li>
+                      <li>• Provide clear, simple explanations</li>
+                      <li>• Offer choices when appropriate</li>
+                      <li>• Respect dignity and autonomy</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-amber-50 p-4 rounded-lg">
+                    <h4 className="font-medium text-amber-900 mb-2">What to Avoid</h4>
+                    <ul className="text-amber-800 text-sm space-y-1">
+                      <li>• Dismissing or minimizing concerns</li>
+                      <li>• Using medical jargon</li>
+                      <li>• Making decisions without consultation</li>
+                      <li>• Rushing the conversation</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div>
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Ready to Start?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="text-sm text-neutral-600">
+                    <p className="mb-2">This roleplay will take approximately <strong>{scenario.estimatedTime} minutes</strong>.</p>
+                    <p>You'll have a conversation with a virtual care recipient and receive real-time feedback on your responses.</p>
+                  </div>
+                  
+                  <div className="bg-neutral-50 p-3 rounded-lg">
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                      <i className="fas fa-info-circle"></i>
+                      <span>Your progress will be automatically saved</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
 
-            <div>
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle>Ready to Start?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="text-sm text-neutral-600">
-                      <p className="mb-2">This roleplay will take approximately <strong>{scenario.estimatedTime} minutes</strong>.</p>
-                      <p>You'll have a conversation with a virtual care recipient and receive real-time feedback on your responses.</p>
-                    </div>
-                    
-                    <div className="bg-neutral-50 p-3 rounded-lg">
-                      <div className="flex items-center gap-2 text-sm text-neutral-600">
-                        <i className="fas fa-info-circle"></i>
-                        <span>Your progress will be automatically saved</span>
-                      </div>
-                    </div>
+            <div className="space-y-3 hidden lg:block">
+              <Button onClick={handleStartTraining} className="w-full bg-[#907AD6] hover:bg-[#7C66C4] text-white" size="lg">
+                <i className="fas fa-play mr-2"></i>Start Training
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setCurrentStep('overview')} 
+                className="w-full"
+              >
+                <i className="fas fa-arrow-left mr-2"></i>Back to Overview
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {currentStep === 'evaluation' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <i className="fas fa-trophy text-accent"></i>
+                  Training Complete!
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center mb-6">
+                  <div className="bg-secondary bg-opacity-20 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl font-bold text-secondary">{userScenario?.score || 85}</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <h3 className="text-xl font-semibold text-neutral-800 mb-2">Overall Score</h3>
+                  <p className="text-neutral-600">Great job on completing this scenario!</p>
+                </div>
 
-              <div className="space-y-3 hidden lg:block">
-                <Button onClick={handleStartTraining} className="w-full bg-[#907AD6] hover:bg-[#7C66C4] text-white" size="lg">
-                  <i className="fas fa-play mr-2"></i>Start Training
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setCurrentStep('overview')} 
-                  className="w-full"
-                >
-                  <i className="fas fa-arrow-left mr-2"></i>Back to Overview
-                </Button>
-              </div>
-            </div>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{userScenario?.totalTime || 12}</div>
+                    <div className="text-sm text-neutral-500">Minutes</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-secondary">8</div>
+                    <div className="text-sm text-neutral-500">Responses</div>
+                  </div>
+                </div>
+
+                {/* Skill Breakdown */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-neutral-800">Performance Breakdown</h4>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Empathy & Communication</span>
+                      <span className="text-secondary font-medium">92%</span>
+                    </div>
+                    <Progress value={92} className="h-2" />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Tone & Approach</span>
+                      <span className="text-accent font-medium">88%</span>
+                    </div>
+                    <Progress value={88} className="h-2" />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Clarity</span>
+                      <span className="text-primary font-medium">85%</span>
+                    </div>
+                    <Progress value={85} className="h-2" />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Decision Making</span>
+                      <span className="text-red-500 font-medium">78%</span>
+                    </div>
+                    <Progress value={78} className="h-2" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Detailed Feedback */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <i className="fas fa-comment-dots text-primary"></i>
+                  Detailed Feedback
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h5 className="font-medium text-green-900 mb-2">Strengths</h5>
+                    <ul className="text-green-800 text-sm space-y-1">
+                      <li>• Excellent use of validation techniques</li>
+                      <li>• Showed genuine empathy and understanding</li>
+                      <li>• Maintained a calm, reassuring tone throughout</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-amber-50 p-4 rounded-lg">
+                    <h5 className="font-medium text-amber-900 mb-2">Areas for Improvement</h5>
+                    <ul className="text-amber-800 text-sm space-y-1">
+                      <li>• Consider asking more open-ended questions</li>
+                      <li>• Take more time before offering solutions</li>
+                      <li>• Practice active listening techniques</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h5 className="font-medium text-blue-900 mb-2">Next Steps</h5>
+                    <ul className="text-blue-800 text-sm space-y-1">
+                      <li>• Try the "Family Conflict Resolution" scenario</li>
+                      <li>• Focus on decision-making skills practice</li>
+                      <li>• Review active listening resources</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div>
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Next Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button className="w-full" onClick={() => setLocation('/scenarios')}>
+                    <i className="fas fa-list mr-2"></i>Try Another Scenario
+                  </Button>
+                  <Button variant="outline" className="w-full" onClick={() => setCurrentStep('overview')}>
+                    <i className="fas fa-redo mr-2"></i>Review This Scenario
+                  </Button>
+                  <Button variant="outline" className="w-full" onClick={() => setLocation('/progress')}>
+                    <i className="fas fa-chart-bar mr-2"></i>View Full Progress
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Achievement Unlocked!</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center">
+                  <div className="bg-accent bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i className="fas fa-medal text-accent text-2xl"></i>
+                  </div>
+                  <h4 className="font-medium text-neutral-800 mb-1">Dementia Care Expert</h4>
+                  <p className="text-sm text-neutral-600">Completed advanced dementia scenario</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       )}
