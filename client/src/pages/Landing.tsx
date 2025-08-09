@@ -31,9 +31,7 @@ export default function Landing() {
           <h1 className="text-5xl lg:text-6xl font-bold text-[#2C2A4A] mb-6">
             Human-centred skills training with personalised feedback that <span className="text-[#907AD6]">transforms care quality</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed">
-            AI-powered simulations to build the human skills that matter most in health & social care.
-          </p>
+
           <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
             From your phone to the floor, Carefully delivers bite-sized, feedback-rich simulations that help care teams communicate better, think faster, and provide more confident, compassionate care — without leaving the rota.
           </p>
