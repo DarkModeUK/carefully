@@ -177,7 +177,7 @@ export default function Simulation() {
                   </span>
                   <span className="text-sm text-gray-500">
                     <i className="fas fa-tag mr-1"></i>
-                    {scenario.category}
+                    {scenario.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                 </div>
               </div>
