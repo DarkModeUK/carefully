@@ -240,94 +240,167 @@ export default function Simulation() {
           </CardContent>
         </Card>
 
-        {/* Conversation Area */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <i className="fas fa-comments text-green-500"></i>
-              Training Simulation
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4 max-h-96 overflow-y-auto">
+        {/* Interactive Chat Interface */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+          {/* Chat Header */}
+          <div className="bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] px-6 py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <i className="fas fa-user-nurse text-white text-lg"></i>
+              </div>
+              <div className="text-white">
+                <h3 className="font-semibold">Training Simulation</h3>
+                <p className="text-sm opacity-90">Practise real-world care scenarios</p>
+              </div>
+              <div className="ml-auto">
+                <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-white">Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Chat Messages */}
+          <div className="h-96 overflow-y-auto px-6 py-4 bg-gray-50">
+            <div className="space-y-4">
               {conversation.map((message, index) => (
                 <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                    message.role === 'user' 
-                      ? 'bg-[#907AD6] text-white' 
-                      : message.role === 'ai'
-                      ? 'bg-gray-100 text-gray-800'
-                      : 'bg-blue-50 text-blue-800 border border-blue-200'
-                  }`}>
-                    <p className="text-sm">{message.content}</p>
-                    {message.feedback && (
-                      <div className="mt-2 pt-2 border-t border-gray-200">
-                        <p className="text-xs text-gray-600">
-                          <strong>Feedback:</strong> {message.feedback.summary}
-                        </p>
+                  <div className={`flex items-start gap-3 max-w-sm lg:max-w-md ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                    {/* Avatar */}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      message.role === 'user' 
+                        ? 'bg-[#907AD6]' 
+                        : message.role === 'system'
+                        ? 'bg-blue-500'
+                        : 'bg-gray-400'
+                    }`}>
+                      <i className={`text-white text-xs ${
+                        message.role === 'user' 
+                          ? 'fas fa-user' 
+                          : message.role === 'system'
+                          ? 'fas fa-info'
+                          : 'fas fa-robot'
+                      }`}></i>
+                    </div>
+                    
+                    {/* Message Content */}
+                    <div className={`px-4 py-3 rounded-2xl ${
+                      message.role === 'user' 
+                        ? 'bg-[#907AD6] text-white rounded-br-md' 
+                        : message.role === 'system'
+                        ? 'bg-blue-100 text-blue-800 border border-blue-200 rounded-bl-md'
+                        : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm'
+                    }`}>
+                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      
+                      {/* Timestamp */}
+                      <div className={`text-xs mt-2 opacity-70 ${
+                        message.role === 'user' ? 'text-white' : 'text-gray-500'
+                      }`}>
+                        {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
-                    )}
+                      
+                      {/* Feedback */}
+                      {message.feedback && (
+                        <div className="mt-3 pt-3 border-t border-gray-200/30">
+                          <div className="flex items-start gap-2">
+                            <i className="fas fa-lightbulb text-yellow-500 text-xs mt-1"></i>
+                            <div>
+                              <p className="text-xs font-medium opacity-90 mb-1">Feedback:</p>
+                              <p className="text-xs opacity-75 leading-relaxed">
+                                {message.feedback.summary}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
+              
+              {/* Typing Indicator */}
               {submitResponseMutation.isPending && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-600"></div>
-                      <span className="text-sm">Analysing your response...</span>
+                  <div className="flex items-start gap-3 max-w-sm">
+                    <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fas fa-robot text-white text-xs"></i>
+                    </div>
+                    <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                        </div>
+                        <span className="text-sm text-gray-500">Analysing your response...</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Response Area */}
-        {!isCompleted && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <i className="fas fa-reply text-purple-500"></i>
-                Your Response
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Textarea
-                  placeholder="Type your response to the scenario here..."
-                  value={userResponse}
-                  onChange={(e) => setUserResponse(e.target.value)}
-                  rows={4}
-                  className="resize-none"
-                />
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">
-                    Take your time to consider your response. Focus on empathy, clarity, and appropriate care approaches.
-                  </p>
-                  <Button 
-                    onClick={handleSubmitResponse}
-                    disabled={!userResponse.trim() || submitResponseMutation.isPending}
-                    className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white"
-                  >
-                    {submitResponseMutation.isPending ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Submitting...
-                      </>
-                    ) : (
-                      <>
-                        Submit Response
-                        <i className="fas fa-paper-plane ml-2"></i>
-                      </>
-                    )}
-                  </Button>
+          {/* Chat Input */}
+          {!isCompleted && (
+            <div className="bg-white border-t border-gray-200 p-4">
+              <div className="flex items-end gap-3">
+                <div className="flex-1">
+                  <Textarea
+                    placeholder="Type your response here... Focus on empathy, clarity, and appropriate care approaches."
+                    value={userResponse}
+                    onChange={(e) => setUserResponse(e.target.value)}
+                    rows={2}
+                    className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-xl"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (userResponse.trim() && !submitResponseMutation.isPending) {
+                          handleSubmitResponse();
+                        }
+                      }
+                    }}
+                  />
+                </div>
+                <Button 
+                  onClick={handleSubmitResponse}
+                  disabled={!userResponse.trim() || submitResponseMutation.isPending}
+                  className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-2 h-auto rounded-xl"
+                  size="lg"
+                >
+                  {submitResponseMutation.isPending ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  ) : (
+                    <i className="fas fa-paper-plane text-lg"></i>
+                  )}
+                </Button>
+              </div>
+              
+              {/* Helper Text */}
+              <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
+                <div className="flex items-center gap-2">
+                  <i className="fas fa-info-circle"></i>
+                  <span>Press Enter to send, Shift+Enter for new line</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>Step {currentStep + 1} of 3</span>
+                  <div className="flex gap-1">
+                    {[0, 1, 2].map((step) => (
+                      <div
+                        key={step}
+                        className={`w-2 h-2 rounded-full ${
+                          step <= currentStep ? 'bg-[#907AD6]' : 'bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          )}
+        </div>
 
         {/* Completion Card */}
         {isCompleted && (
