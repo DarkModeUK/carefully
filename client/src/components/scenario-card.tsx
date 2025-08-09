@@ -36,7 +36,7 @@ export function ScenarioCard({ scenario, onClick }: ScenarioCardProps) {
     if (onClick) {
       onClick();
     } else {
-      setLocation(`/scenarios/${scenario.id}`);
+      setLocation(`/simulation/${scenario.id}`);
     }
   };
 
@@ -75,9 +75,9 @@ export function ScenarioCard({ scenario, onClick }: ScenarioCardProps) {
           
           <Button variant="outline" size="sm" onClick={(e) => {
             e.stopPropagation();
-            handleClick();
+            setLocation(`/simulation/${scenario.id}`);
           }}>
-            Start
+            Start Training
           </Button>
         </div>
       </CardContent>

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrainingModal } from "@/components/training-modal";
+
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Scenario, UserScenario, User } from "@shared/schema";
@@ -14,8 +14,7 @@ import type { Scenario, UserScenario, User } from "@shared/schema";
 export default function ScenarioDetailPage() {
   const [, params] = useRoute("/scenarios/:id");
   const [, setLocation] = useLocation();
-  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
-  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
+
   const [showEvaluation, setShowEvaluation] = useState(false);
   const [currentStep, setCurrentStep] = useState<'overview' | 'preparation' | 'training' | 'evaluation'>('overview');
   const { toast } = useToast();
@@ -52,15 +51,10 @@ export default function ScenarioDetailPage() {
     }
   });
 
-  useEffect(() => {
-    if (scenario && currentStep === 'training') {
-      setSelectedScenario(scenario);
-      setIsTrainingModalOpen(true);
-    }
-  }, [scenario, currentStep]);
+
 
   const handleStartTraining = () => {
-    setCurrentStep('training');
+    setLocation(`/simulation/${scenarioId}`);
   };
 
   const handleCompleteScenario = () => {
@@ -492,16 +486,7 @@ export default function ScenarioDetailPage() {
         </div>
       )}
 
-      {/* Training Modal */}
-      <TrainingModal
-        scenario={selectedScenario}
-        isOpen={isTrainingModalOpen}
-        onClose={() => {
-          setIsTrainingModalOpen(false);
-          setSelectedScenario(null);
-          handleCompleteScenario();
-        }}
-      />
+
     </div>
   );
 }
