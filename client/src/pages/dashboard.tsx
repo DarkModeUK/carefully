@@ -209,19 +209,13 @@ export default function Dashboard() {
             </Card>
           )}
 
-          {/* Recent Achievements */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Achievements</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {achievementsLoading ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <Skeleton key={i} className="h-12" />
-                  ))}
-                </div>
-              ) : (
+          {/* Recent Achievements - Only show if user has achievements */}
+          {!achievementsLoading && achievements.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Achievements</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className="space-y-3">
                   {achievements.slice(0, 3).map((achievement) => (
                     <div key={achievement.id} className="flex items-center space-x-3">
@@ -239,9 +233,9 @@ export default function Dashboard() {
                     View All Achievements
                   </Button>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Quick Actions */}
           <Card>
