@@ -64,6 +64,7 @@ export default function ScenarioDetailPage() {
 
 
   const handleStartTraining = () => {
+    setCurrentStep('training');
     setLocation(`/simulation/${scenarioId}`);
   };
 

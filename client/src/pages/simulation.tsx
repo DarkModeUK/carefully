@@ -321,9 +321,22 @@ export default function Simulation() {
                 Well done! You've successfully completed this training scenario. 
                 Your responses have been saved and you can review your progress on the dashboard.
               </p>
-              <Button onClick={handleReturnToDashboard} className="bg-green-600 hover:bg-green-700 text-white">
-                Return to Dashboard
-              </Button>
+              <div className="space-x-4">
+                <Button 
+                  onClick={() => setLocation(`/simulation/${scenarioId}/results`)} 
+                  className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white"
+                >
+                  <i className="fas fa-chart-line mr-2"></i>
+                  View Results
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => setLocation('/dashboard')} 
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                >
+                  Skip to Dashboard
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}

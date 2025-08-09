@@ -13,6 +13,7 @@ const Dashboard = lazy(() => import("@/pages/dashboard"));
 const ScenariosPage = lazy(() => import("@/pages/scenario"));
 const ScenarioDetailPage = lazy(() => import("@/pages/scenario-detail"));
 const SimulationPage = lazy(() => import("@/pages/simulation"));
+const SimulationResultsPage = lazy(() => import("@/pages/simulation-results"));
 const ProfilePage = lazy(() => import("@/pages/profile"));
 const ProgressPage = lazy(() => import("@/pages/progress"));
 const SettingsPage = lazy(() => import("@/pages/settings"));
@@ -53,6 +54,7 @@ function Router() {
             <Route path="/scenarios" component={ScenariosPage} />
             <Route path="/scenarios/:id" component={ScenarioDetailPage} />
             <Route path="/simulation/:scenarioId" component={SimulationPage} />
+            <Route path="/simulation/:scenarioId/results" component={SimulationResultsPage} />
             <Route path="/profile" component={ProfilePage} />
             <Route path="/progress" component={ProgressPage} />
             <Route path="/settings" component={SettingsPage} />
