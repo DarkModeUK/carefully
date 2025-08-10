@@ -40,7 +40,7 @@ export default function ScenariosPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mobile-bottom-padding">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-neutral-800 mb-2">Training Scenarios</h1>
+        <h1 className="text-3xl font-bold text-neutral-800 mb-2">Explore Simulation Library</h1>
         <p className="text-neutral-500">Practice real-world care situations with AI-powered roleplay</p>
       </div>
 
