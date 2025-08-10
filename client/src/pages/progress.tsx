@@ -35,11 +35,83 @@ export default function ProgressPage() {
   const completedScenarios = userScenarios.filter(us => us.status === 'completed');
   const inProgressScenarios = userScenarios.filter(us => us.status === 'in_progress');
 
-  // Calculate statistics
-  const totalTime = userScenarios.reduce((sum, us) => sum + (us.totalTime || 0), 0);
-  const averageScore = completedScenarios.length > 0 
-    ? Math.round(completedScenarios.reduce((sum, us) => sum + (us.score || 0), 0) / completedScenarios.length)
+  // Calculate dynamic statistics based on timeframe
+  const getTimeframeDates = () => {
+    const now = new Date();
+    let startDate: Date;
+    
+    switch (timeframe) {
+      case 'week':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case 'month':
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      default: // 'all'
+        startDate = new Date(0);
+    }
+    
+    return { startDate, endDate: now };
+  };
+
+  const { startDate } = getTimeframeDates();
+  
+  const timeframeScenarios = userScenarios.filter(us => {
+    if (timeframe === 'all') return true;
+    const updatedAt = us.updatedAt ? new Date(us.updatedAt) : new Date(us.createdAt || 0);
+    return updatedAt >= startDate;
+  });
+  
+  const timeframeCompleted = timeframeScenarios.filter(us => us.status === 'completed');
+  
+  const totalTime = timeframeScenarios.reduce((sum, us) => sum + (us.totalTime || 0), 0);
+  const averageScore = timeframeCompleted.length > 0 
+    ? Math.round(timeframeCompleted.reduce((sum, us) => sum + (us.score || 0), 0) / timeframeCompleted.length)
     : 0;
+
+  // Calculate current streak (consecutive days with completed scenarios)
+  const getCurrentStreak = () => {
+    const sortedCompleted = completedScenarios
+      .filter(us => us.completedAt)
+      .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime());
+    
+    if (sortedCompleted.length === 0) return 0;
+    
+    let streak = 0;
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    
+    // Check if there's activity today or yesterday
+    const latestCompletion = new Date(sortedCompleted[0].completedAt!);
+    latestCompletion.setHours(0, 0, 0, 0);
+    
+    const daysDiff = Math.floor((currentDate.getTime() - latestCompletion.getTime()) / (1000 * 60 * 60 * 24));
+    if (daysDiff > 1) return 0; // Streak broken if no activity for more than 1 day
+    
+    // Count consecutive days
+    const uniqueDays = new Set();
+    sortedCompleted.forEach(us => {
+      const date = new Date(us.completedAt!);
+      date.setHours(0, 0, 0, 0);
+      uniqueDays.add(date.getTime());
+    });
+    
+    const sortedDays = Array.from(uniqueDays).sort((a, b) => b - a);
+    streak = 1; // At least 1 day if we get here
+    
+    for (let i = 1; i < sortedDays.length; i++) {
+      const dayDiff = (sortedDays[i-1] - sortedDays[i]) / (1000 * 60 * 60 * 24);
+      if (dayDiff === 1) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    
+    return streak;
+  };
+
+  const currentStreak = getCurrentStreak();
 
   // Get recent activity (last 7 days)
   const getRecentActivity = () => {
