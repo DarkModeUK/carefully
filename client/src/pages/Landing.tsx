@@ -72,7 +72,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="border-l-4 border-l-red-400">
               <CardHeader>
-                <CardTitle className="text-red-600 text-lg">Generic</CardTitle>
+                <CardTitle className="text-red-600 text-lg">Generic Content</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription>
