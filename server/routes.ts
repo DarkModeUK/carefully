@@ -207,11 +207,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         aiResponse: aiResponse.message,
-        feedback
+        feedback,
+        // Quick Win: Quick feedback summary (one sentence takeaway)
+        quickSummary: feedback.summary || "Good response, keep practicing!"
       });
     } catch (error) {
       console.error('Conversation error:', error);
       res.status(500).json({ message: "Failed to process conversation" });
+    }
+  });
+
+  // Quick Win: Bookmark scenario endpoint
+  app.post("/api/scenarios/:id/bookmark", isAuthenticated, async (req: any, res) => {
+    try {
+      const scenarioId = req.params.id;
+      const userId = req.user.claims.sub;
+      const { bookmarked } = req.body;
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const currentBookmarks = user.preferences?.bookmarkedScenarios || [];
+      let updatedBookmarks;
+      
+      if (bookmarked) {
+        updatedBookmarks = [...currentBookmarks, scenarioId];
+      } else {
+        updatedBookmarks = currentBookmarks.filter(id => id !== scenarioId);
+      }
+      
+      await storage.updateUser(userId, {
+        preferences: {
+          ...user.preferences,
+          bookmarkedScenarios: updatedBookmarks
+        }
+      });
+      
+      res.json({ success: true, bookmarked });
+    } catch (error) {
+      console.error('Bookmark error:', error);
+      res.status(500).json({ message: "Failed to update bookmark" });
     }
   });
 

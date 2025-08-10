@@ -5,6 +5,7 @@ interface StatCardProps {
   value: string | number;
   icon: string;
   color: 'primary' | 'secondary' | 'accent' | 'neutral';
+  subtitle?: string; // Quick Win: Subtitle support for streak details
 }
 
 const colorClasses = {
@@ -14,7 +15,7 @@ const colorClasses = {
   neutral: 'bg-[#4F518C] bg-opacity-20 text-[#4F518C]'
 };
 
-export function StatCard({ title, value, icon, color }: StatCardProps) {
+export function StatCard({ title, value, icon, color, subtitle }: StatCardProps) {
   return (
     <Card>
       <CardContent className="p-6">
@@ -25,6 +26,9 @@ export function StatCard({ title, value, icon, color }: StatCardProps) {
           <div>
             <p className="text-sm text-neutral-600">{title}</p>
             <p className="text-2xl font-bold text-neutral-800">{value}</p>
+            {subtitle && (
+              <p className="text-xs text-neutral-500 mt-1">{subtitle}</p>
+            )}
           </div>
         </div>
       </CardContent>

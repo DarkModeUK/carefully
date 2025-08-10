@@ -89,10 +89,11 @@ export default function Dashboard() {
           color="accent"
         />
         <StatCard
-          value={userStats?.weeklyStreak || 0}
-          title="Day Streak"
+          value={user?.currentStreak || 0}
+          title="Current Streak"
           icon="fas fa-fire"
           color="primary"
+          subtitle={`Longest: ${user?.longestStreak || 0} days`}
         />
         <StatCard
           value={`${((userStats?.totalTime || 0) / 60).toFixed(1)}h`}
@@ -155,6 +156,32 @@ export default function Dashboard() {
             </Card>
           )}
 
+          {/* Quick Win: Bookmarked Scenarios */}
+          {user?.preferences?.bookmarkedScenarios && user.preferences.bookmarkedScenarios.length > 0 && (
+            <Card className="border-l-4 border-l-yellow-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <i className="fas fa-bookmark text-yellow-500"></i>
+                  Bookmarked Scenarios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {scenarios.filter(scenario => 
+                    user.preferences?.bookmarkedScenarios?.includes(scenario.id)
+                  ).slice(0, 2).map((scenario) => (
+                    <ScenarioCard
+                      key={scenario.id}
+                      scenario={scenario}
+                      isBookmarked={true}
+                      showBookmark={false}
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Available Scenarios */}
           <Card>
             <CardHeader>
@@ -178,6 +205,7 @@ export default function Dashboard() {
                     <ScenarioCard
                       key={scenario.id}
                       scenario={scenario}
+                      isBookmarked={user?.preferences?.bookmarkedScenarios?.includes(scenario.id)}
                     />
                   ))}
                 </div>

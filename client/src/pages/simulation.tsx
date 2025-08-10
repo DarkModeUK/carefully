@@ -20,6 +20,7 @@ export default function SimulationPage() {
   const [conversation, setConversation] = useState<{ role: 'user' | 'character' | 'system'; content: string; feedback?: any }[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [viewState, setViewState] = useState<'preparation' | 'simulation' | 'completed'>('preparation');
+  const [isListening, setIsListening] = useState(false); // Quick Win: Voice responses
 
   // Fetch scenario data
   const { data: scenario, isLoading: scenarioLoading } = useQuery({
@@ -160,6 +161,50 @@ export default function SimulationPage() {
   const handleSubmitResponse = () => {
     if (!userResponse.trim()) return;
     submitResponseMutation.mutate(userResponse);
+  };
+
+  // Quick Win: Voice responses using Web Speech API
+  const startVoiceRecognition = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast({
+        title: "Voice not supported",
+        description: "Your browser doesn't support voice recognition. Please type your response.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-GB'; // British English to match app language
+    
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setUserResponse(transcript);
+      setIsListening(false);
+    };
+    
+    recognition.onerror = (event) => {
+      setIsListening(false);
+      toast({
+        title: "Voice recognition failed",
+        description: "Please try again or type your response.",
+        variant: "destructive",
+      });
+    };
+    
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+    
+    recognition.start();
   };
 
   if (!scenario) return <div>Loading...</div>;
@@ -454,13 +499,14 @@ export default function SimulationPage() {
           {!isCompleted && (
             <div className="bg-white border-t border-gray-200 px-6 py-4">
               <div className="flex items-end gap-4">
-                <div className="flex-1">
+                <div className="flex-1 relative">
                   <Textarea
                     placeholder="Type your response here... Focus on empathy, clarity, and appropriate care approaches."
                     value={userResponse}
                     onChange={(e) => setUserResponse(e.target.value)}
                     rows={3}
-                    className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-xl"
+                    className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-xl pr-12"
+                    disabled={isListening}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -470,6 +516,21 @@ export default function SimulationPage() {
                       }
                     }}
                   />
+                  {/* Quick Win: Voice input button */}
+                  <Button
+                    type="button"
+                    onClick={startVoiceRecognition}
+                    disabled={submitResponseMutation.isPending || isListening}
+                    className={`absolute right-2 top-2 p-2 h-8 w-8 ${
+                      isListening 
+                        ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                    }`}
+                    variant="ghost"
+                    title={isListening ? "Listening... Speak now" : "Click to speak your response"}
+                  >
+                    <i className={`fas ${isListening ? 'fa-stop' : 'fa-microphone'} text-sm`}></i>
+                  </Button>
                 </div>
                 <Button 
                   onClick={handleSubmitResponse}
@@ -489,7 +550,7 @@ export default function SimulationPage() {
               <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <i className="fas fa-info-circle"></i>
-                  <span>Press Enter to send, Shift+Enter for new line</span>
+                  <span>{isListening ? "Listening... Speak clearly" : "Press Enter to send, Shift+Enter for new line"}</span>
                 </div>
                 <div className="text-right">
                   <span>Focus on empathy, clarity, and care approaches</span>

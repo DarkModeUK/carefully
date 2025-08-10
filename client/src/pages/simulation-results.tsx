@@ -152,6 +152,18 @@ export default function SimulationResults() {
                 You've successfully completed this care scenario. Your responses showed thoughtful consideration 
                 of the care situation and demonstrated your developing skills in this area.
               </p>
+              {/* Quick Win: Quick feedback summary */}
+              {userScenario?.feedback?.[0]?.quickSummary && (
+                <div className="bg-white rounded-lg p-4 mt-6 border border-green-200">
+                  <div className="flex items-start gap-3">
+                    <i className="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                    <div>
+                      <p className="font-medium text-gray-800 mb-1">Key Takeaway</p>
+                      <p className="text-gray-700">{userScenario.feedback[0].quickSummary}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

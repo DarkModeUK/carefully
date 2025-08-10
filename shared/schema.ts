@@ -37,7 +37,11 @@ export const users = pgTable("users", {
       achievements?: boolean;
     };
     learningGoals?: string;
+    bookmarkedScenarios?: string[]; // Quick Win: Scenario bookmarking
   }>().default({}),
+  currentStreak: integer("current_streak").default(0), // Quick Win: Progress streaks
+  longestStreak: integer("longest_streak").default(0),
+  lastPracticeDate: timestamp("last_practice_date"),
   profileCompletion: integer("profile_completion").default(0),
   lastAssessment: timestamp("last_assessment"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -55,6 +59,7 @@ export const scenarios = pgTable("scenarios", {
   context: text("context").notNull(),
   learningObjectives: jsonb("learning_objectives").$type<string[]>().default([]),
   isActive: boolean("is_active").default(true),
+  tags: jsonb("tags").$type<string[]>().default([]), // Quick Win: Difficulty tags and categorisation
 });
 
 export const userScenarios = pgTable("user_scenarios", {

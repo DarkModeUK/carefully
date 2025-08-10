@@ -2,12 +2,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import type { Scenario } from "@shared/schema";
-import { memo } from "react";
+import { memo, useState } from "react";
 
 interface ScenarioCardProps {
   scenario: Scenario;
   onClick?: () => void;
+  isBookmarked?: boolean; // Quick Win: Scenario bookmarking
+  showBookmark?: boolean;
 }
 
 const priorityConfig = {
@@ -28,10 +33,22 @@ const priorityConfig = {
   }
 };
 
-const difficultyIcons = {
-  beginner: 'fas fa-seedling',
-  intermediate: 'fas fa-graduation-cap',
-  advanced: 'fas fa-trophy'
+const difficultyConfig = {
+  beginner: {
+    icon: 'fas fa-seedling',
+    color: 'bg-green-100 text-green-700 border-green-200',
+    label: 'Beginner'
+  },
+  intermediate: {
+    icon: 'fas fa-graduation-cap', 
+    color: 'bg-amber-100 text-amber-700 border-amber-200',
+    label: 'Intermediate'
+  },
+  advanced: {
+    icon: 'fas fa-trophy',
+    color: 'bg-red-100 text-red-700 border-red-200', 
+    label: 'Advanced'
+  }
 };
 
 const categoryLabels: Record<string, string> = {
@@ -42,8 +59,11 @@ const categoryLabels: Record<string, string> = {
   safeguarding: 'Safeguarding'
 };
 
-export const ScenarioCard = memo(({ scenario, onClick }: ScenarioCardProps) => {
+export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, showBookmark = true }: ScenarioCardProps) => {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [bookmarked, setBookmarked] = useState(isBookmarked);
   
   const handleClick = () => {
     if (onClick) {
@@ -53,18 +73,66 @@ export const ScenarioCard = memo(({ scenario, onClick }: ScenarioCardProps) => {
     }
   };
 
+  // Quick Win: Bookmark functionality
+  const bookmarkMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('POST', `/api/scenarios/${scenario.id}/bookmark`, {
+        bookmarked: !bookmarked
+      });
+    },
+    onSuccess: () => {
+      setBookmarked(!bookmarked);
+      toast({
+        title: bookmarked ? "Bookmark removed" : "Scenario bookmarked",
+        description: bookmarked 
+          ? "Scenario removed from your bookmarks" 
+          : "Scenario saved to your bookmarks for easy access",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update bookmark. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    bookmarkMutation.mutate();
+  };
+
   return (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleClick}>
+    <Card className="hover:shadow-lg transition-shadow cursor-pointer relative" onClick={handleClick}>
       <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-3">
+        {/* Quick Win: Bookmark button */}
+        {showBookmark && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`absolute top-2 right-2 p-2 h-8 w-8 ${
+              bookmarked ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-gray-600'
+            }`}
+            onClick={handleBookmarkClick}
+            disabled={bookmarkMutation.isPending}
+            title={bookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
+          >
+            <i className={`fas ${bookmarked ? 'fa-bookmark' : 'fa-bookmark-o'} text-sm`}></i>
+          </Button>
+        )}
+        
+        <div className="flex items-start justify-between mb-3 pr-8">
           <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color}`}>
             <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs`}></i>
             <span className="capitalize font-medium">{scenario.priority}</span>
           </Badge>
-          <div className="flex items-center gap-2 text-neutral-500">
-            <i className={difficultyIcons[scenario.difficulty as keyof typeof difficultyIcons]}></i>
-            <span className="text-sm capitalize">{scenario.difficulty}</span>
-          </div>
+          {/* Quick Win: Enhanced difficulty tags */}
+          <Badge className={`flex items-center gap-1 ${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].color}`}>
+            <i className={`${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].icon} text-xs`}></i>
+            <span className="text-sm font-medium">{difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].label}</span>
+          </Badge>
         </div>
         
         <h3 className="text-lg font-semibold text-neutral-800 mb-2 line-clamp-2">
