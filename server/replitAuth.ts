@@ -14,9 +14,14 @@ if (!process.env.REPLIT_DOMAINS) {
 
 const getOidcConfig = memoize(
   async () => {
+    const issuerUrl = process.env.ISSUER_URL ?? "https://replit.com/oidc";
+    const clientId = process.env.REPL_ID!;
+    console.log('OAuth config - Issuer URL:', issuerUrl);
+    console.log('OAuth config - Client ID:', clientId);
+    
     return await client.discovery(
-      new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
-      process.env.REPL_ID!
+      new URL(issuerUrl),
+      clientId
     );
   },
   { maxAge: 3600 * 1000 }
@@ -84,16 +89,33 @@ export async function setupAuth(app: Express) {
     next();
   });
 
-  const config = await getOidcConfig();
+  let config;
+  try {
+    config = await getOidcConfig();
+    console.log('OAuth config loaded successfully');
+  } catch (error) {
+    console.error('Failed to load OAuth config:', error);
+    throw error;
+  }
 
   const verify: VerifyFunction = async (
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
     verified: passport.AuthenticateCallback
   ) => {
-    const user = {};
-    updateUserSession(user, tokens);
-    await upsertUser(tokens.claims());
-    verified(null, user);
+    try {
+      console.log('OAuth verify function called');
+      console.log('Token claims:', tokens.claims());
+      
+      const user = {};
+      updateUserSession(user, tokens);
+      await upsertUser(tokens.claims());
+      
+      console.log('User created successfully:', user);
+      verified(null, user);
+    } catch (error) {
+      console.error('OAuth verify error:', error);
+      verified(error, null);
+    }
   };
 
   // Set up strategies for both localhost and production domains
@@ -105,6 +127,9 @@ export async function setupAuth(app: Express) {
     const protocol = isLocalhost ? "http" : "https";
     const callbackURL = `${protocol}://${domain}/api/callback`;
     
+    console.log(`Registering strategy for domain: ${domain}`);
+    console.log(`Callback URL: ${callbackURL}`);
+    
     const strategy = new Strategy(
       {
         name: `replitauth:${domain}`,
@@ -115,18 +140,29 @@ export async function setupAuth(app: Express) {
       verify,
     );
     passport.use(strategy);
+    console.log(`Strategy registered: replitauth:${domain}`);
   }
 
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
   app.get("/api/login", (req, res, next) => {
+    console.log('Login request received');
+    console.log('Hostname:', req.hostname);
+    
     // Use localhost:5000 for local development, actual hostname for production
     const strategyName = req.hostname === 'localhost' ? 'localhost:5000' : req.hostname;
-    passport.authenticate(`replitauth:${strategyName}`, {
-      prompt: "login consent",
-      scope: ["openid", "email", "profile", "offline_access"],
-    })(req, res, next);
+    console.log('Using strategy for login:', strategyName);
+    
+    try {
+      passport.authenticate(`replitauth:${strategyName}`, {
+        prompt: "login consent",
+        scope: ["openid", "email", "profile", "offline_access"],
+      })(req, res, next);
+    } catch (error: any) {
+      console.error('Login authentication error:', error);
+      res.status(500).json({ message: 'Authentication error', error: error?.message });
+    }
   });
 
   app.get("/api/callback", (req, res, next) => {
@@ -138,9 +174,31 @@ export async function setupAuth(app: Express) {
     const strategyName = req.hostname === 'localhost' ? 'localhost:5000' : req.hostname;
     console.log('Using strategy:', strategyName);
     
-    passport.authenticate(`replitauth:${strategyName}`, {
-      successReturnToOrRedirect: "/dashboard",
-      failureRedirect: "/api/login",
+    passport.authenticate(`replitauth:${strategyName}`, (err: any, user: any, info: any) => {
+      console.log('OAuth callback complete');
+      console.log('Error:', err);
+      console.log('User:', user ? 'exists' : 'null');
+      console.log('Info:', info);
+      
+      if (err) {
+        console.error('OAuth callback error:', err);
+        return res.redirect('/api/login');
+      }
+      
+      if (!user) {
+        console.log('No user returned from OAuth');
+        return res.redirect('/api/login');
+      }
+      
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          console.error('Login error:', loginErr);
+          return res.redirect('/api/login');
+        }
+        
+        console.log('User successfully logged in, redirecting to dashboard');
+        return res.redirect('/dashboard');
+      });
     })(req, res, next);
   });
 
