@@ -7,6 +7,7 @@ import { Navigation } from "@/components/navigation";
 import { WelcomeWizard } from "@/components/welcome-wizard";
 import { useAuth } from "@/hooks/useAuth";
 import { usePreloadData } from "@/hooks/usePreloadData";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Suspense, lazy, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -56,6 +57,9 @@ function PageLoader() {
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [showWizard, setShowWizard] = useState(false);
+  
+  // Scroll to top on route changes
+  useScrollToTop();
   
   // Preload critical data for better performance
   usePreloadData();
