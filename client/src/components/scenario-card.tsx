@@ -152,10 +152,6 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
         
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3 pr-6 sm:pr-8">
           <div className="flex flex-wrap items-center gap-1.5">
-            <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color} transition-all duration-300 hover:scale-105 hover-bounce text-xs`}>
-              <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
-              <span className="capitalize font-medium">{scenario.priority}</span>
-            </Badge>
             {/* Progress status badge */}
             <Badge className={`flex items-center gap-1 ${statusConfig[status as keyof typeof statusConfig].color} transition-all duration-300 hover:scale-105 hover-bounce text-xs`}>
               <i className={`${statusConfig[status as keyof typeof statusConfig].icon} text-xs transition-transform duration-300 ${status === 'in_progress' ? 'fa-spin' : 'group-hover:rotate-12'}`}></i>
