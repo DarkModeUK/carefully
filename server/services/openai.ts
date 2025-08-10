@@ -27,6 +27,10 @@ export async function generateConversationResponse(
   characterType: string
 ): Promise<ConversationResponse> {
   try {
+    console.log('🔹 Generating AI response...');
+    console.log('📝 Conversation history length:', conversationHistory.length);
+    console.log('🎭 Character type:', characterType);
+    
     const systemPrompt = `You are roleplaying as a ${characterType} in a care training scenario. 
 
 Scenario Context: ${scenarioContext}
@@ -43,6 +47,7 @@ Instructions:
 Current conversation:
 ${conversationHistory.map(h => `${h.role === 'user' ? 'Care Worker' : 'Patient'}: ${h.message}`).join('\n')}`;
 
+    console.log('🤖 Making OpenAI API call...');
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Faster model for better response time
       messages: [
@@ -56,7 +61,9 @@ ${conversationHistory.map(h => `${h.role === 'user' ? 'Care Worker' : 'Patient'}
       max_tokens: 150, // Limit tokens for faster response
     });
 
+    console.log('✅ OpenAI response received');
     const result = JSON.parse(response.choices[0].message.content || '{}');
+    console.log('🎯 Parsed response:', result);
     
     return {
       message: result.message || "I don't know what to say...",
@@ -64,7 +71,12 @@ ${conversationHistory.map(h => `${h.role === 'user' ? 'Care Worker' : 'Patient'}
       shouldContinue: result.shouldContinue !== false
     };
   } catch (error) {
-    console.error('Error generating conversation response:', error);
+    console.error('❌ Error generating conversation response:', error);
+    console.error('📊 Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack?.split('\n')[0]
+    });
     throw new Error('Failed to generate conversation response');
   }
 }

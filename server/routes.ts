@@ -260,14 +260,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/scenarios/:id/conversation", isAuthenticated, async (req: any, res) => {
     try {
+      console.log('🗣️ Processing conversation request for scenario:', req.params.id);
       const scenarioId = req.params.id;
       const { message, conversationHistory } = conversationSchema.parse(req.body);
+      console.log('📨 User message:', message);
+      console.log('💬 Conversation history length:', conversationHistory?.length || 0);
       
       // Get scenario context
       const scenario = await storage.getScenario(scenarioId);
       if (!scenario) {
+        console.log('❌ Scenario not found:', scenarioId);
         return res.status(404).json({ message: "Scenario not found" });
       }
+
+      console.log('✅ Scenario found:', scenario.title);
 
       // Generate AI response with proper conversation context
       const aiResponse = await generateConversationResponse(
@@ -275,6 +281,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         [...conversationHistory, { role: 'user', message }],
         "care recipient"
       );
+
+      console.log('🤖 AI response generated:', aiResponse.message);
 
       // Analyze user's response for feedback (run in parallel for speed)
       const feedbackPromise = analyzeFeedback(
@@ -284,16 +292,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
 
       const feedback = await feedbackPromise;
+      console.log('📊 Feedback generated');
 
-      res.json({
+      const responseData = {
         aiResponse: aiResponse.message,
         feedback,
         // Quick Win: Quick feedback summary (one sentence takeaway)
         quickSummary: feedback.summary || "Good response, keep practicing!"
-      });
+      };
+
+      console.log('✅ Sending response to client');
+      res.json(responseData);
     } catch (error) {
-      console.error('Conversation error:', error);
-      res.status(500).json({ message: "Failed to process conversation" });
+      console.error('❌ Conversation error:', error);
+      console.error('🔍 Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack?.split('\n').slice(0, 3).join('\n')
+      });
+      res.status(500).json({ message: "Failed to process conversation", error: error.message });
     }
   });
 
