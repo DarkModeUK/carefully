@@ -42,6 +42,17 @@ export const users = pgTable("users", {
   currentStreak: integer("current_streak").default(0), // Quick Win: Progress streaks
   longestStreak: integer("longest_streak").default(0),
   lastPracticeDate: timestamp("last_practice_date"),
+  emotionalState: jsonb("emotional_state").$type<{
+    confidence?: number; // 1-10 scale
+    stress?: number;
+    empathy?: number;
+    resilience?: number;
+  }>().default({}),
+  culturalCompetency: jsonb("cultural_competency").$type<{
+    awarenessLevel?: number;
+    completedCultures?: string[];
+    sensitivityScore?: number;
+  }>().default({}),
   profileCompletion: integer("profile_completion").default(0),
   lastAssessment: timestamp("last_assessment"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -60,6 +71,23 @@ export const scenarios = pgTable("scenarios", {
   learningObjectives: jsonb("learning_objectives").$type<string[]>().default([]),
   isActive: boolean("is_active").default(true),
   tags: jsonb("tags").$type<string[]>().default([]), // Quick Win: Difficulty tags and categorisation
+  visualAids: jsonb("visual_aids").$type<{
+    images?: string[];
+    videos?: string[];
+    diagrams?: string[];
+  }>().default({}),
+  culturalContext: jsonb("cultural_context").$type<{
+    cultures?: string[];
+    sensitivities?: string[];
+    considerations?: string[];
+  }>().default({}),
+  nonVerbalCues: jsonb("non_verbal_cues").$type<{
+    bodyLanguage?: string[];
+    facialExpressions?: string[];
+    gestures?: string[];
+  }>().default({}),
+  isOfflineAvailable: boolean("is_offline_available").default(false),
+  isQuickPractice: boolean("is_quick_practice").default(false), // 5-10 minute scenarios
 });
 
 export const userScenarios = pgTable("user_scenarios", {
@@ -136,6 +164,127 @@ export const achievementsRelations = relations(achievements, ({ one }) => ({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Emotional state tracking
+export const emotionalStates = pgTable("emotional_states", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  scenarioId: varchar("scenario_id").references(() => scenarios.id),
+  timestamp: timestamp("timestamp").defaultNow(),
+  confidence: integer("confidence").notNull(), // 1-10
+  stress: integer("stress").notNull(),
+  empathy: integer("empathy").notNull(),
+  resilience: integer("resilience").notNull(),
+  notes: text("notes"),
+});
+
+// Discussion forums
+export const forumCategories = pgTable("forum_categories", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const forumTopics = pgTable("forum_topics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  categoryId: varchar("category_id").notNull().references(() => forumCategories.id),
+  authorId: varchar("author_id").notNull().references(() => users.id),
+  title: varchar("title").notNull(),
+  content: text("content").notNull(),
+  isPinned: boolean("is_pinned").default(false),
+  isLocked: boolean("is_locked").default(false),
+  viewCount: integer("view_count").default(0),
+  replyCount: integer("reply_count").default(0),
+  lastReplyAt: timestamp("last_reply_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const forumReplies = pgTable("forum_replies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  topicId: varchar("topic_id").notNull().references(() => forumTopics.id),
+  authorId: varchar("author_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  parentReplyId: varchar("parent_reply_id").references(() => forumReplies.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Care quality badges
+export const careQualityBadges = pgTable("care_quality_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  icon: varchar("icon").notNull(),
+  color: varchar("color").notNull(),
+  criteria: jsonb("criteria").$type<{
+    scenarioCount?: number;
+    averageScore?: number;
+    skillLevels?: Record<string, number>;
+    streakDays?: number;
+  }>().default({}),
+  tier: varchar("tier").notNull().default("bronze"), // bronze, silver, gold, platinum
+  points: integer("points").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userBadges = pgTable("user_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  badgeId: varchar("badge_id").notNull().references(() => careQualityBadges.id),
+  earnedAt: timestamp("earned_at").defaultNow(),
+  isVisible: boolean("is_visible").default(true),
+});
+
+// Reflection prompts
+export const reflectionPrompts = pgTable("reflection_prompts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  scenarioId: varchar("scenario_id").references(() => scenarios.id),
+  prompt: text("prompt").notNull(),
+  type: varchar("type").notNull(), // pre_scenario, post_scenario, mid_scenario
+  category: varchar("category"), // emotional, technical, ethical
+  isActive: boolean("is_active").default(true),
+});
+
+export const userReflections = pgTable("user_reflections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  promptId: varchar("prompt_id").notNull().references(() => reflectionPrompts.id),
+  scenarioId: varchar("scenario_id").references(() => scenarios.id),
+  response: text("response").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Manager and recruiter roles
+export const organizations = pgTable("organizations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(), // care_home, hospital, agency
+  address: text("address"),
+  contactEmail: varchar("contact_email"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userRoles = pgTable("user_roles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  organizationId: varchar("organization_id").references(() => organizations.id),
+  role: varchar("role").notNull(), // care_worker, manager, recruiter, admin
+  permissions: jsonb("permissions").$type<string[]>().default([]),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type EmotionalState = typeof emotionalStates.$inferSelect;
+export type ForumCategory = typeof forumCategories.$inferSelect;
+export type ForumTopic = typeof forumTopics.$inferSelect;
+export type ForumReply = typeof forumReplies.$inferSelect;
+export type CareQualityBadge = typeof careQualityBadges.$inferSelect;
+export type UserBadge = typeof userBadges.$inferSelect;
+export type ReflectionPrompt = typeof reflectionPrompts.$inferSelect;
+export type UserReflection = typeof userReflections.$inferSelect;
+export type Organization = typeof organizations.$inferSelect;
+export type UserRole = typeof userRoles.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;
 export type InsertScenario = z.infer<typeof insertScenarioSchema>;
 export type Scenario = typeof scenarios.$inferSelect;

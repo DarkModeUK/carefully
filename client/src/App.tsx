@@ -20,6 +20,17 @@ const SettingsPage = lazy(() => import("@/pages/settings"));
 const Landing = lazy(() => import("@/pages/Landing"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
+// New feature pages
+const Forums = lazy(() => import("@/pages/forums"));
+const EmotionalTracker = lazy(() => import("@/pages/emotional-tracker"));
+const ManagerDashboard = lazy(() => import("@/pages/manager-dashboard"));
+const RecruiterDashboard = lazy(() => import("@/pages/recruiter-dashboard"));
+const CulturalSensitivity = lazy(() => import("@/pages/cultural-sensitivity"));
+const BadgesAwards = lazy(() => import("@/pages/badges-awards"));
+const VisualAids = lazy(() => import("@/pages/visual-aids"));
+const NonVerbalCommunication = lazy(() => import("@/pages/non-verbal-communication"));
+const QuickPractice = lazy(() => import("@/pages/quick-practice"));
+
 // Loading component for lazy routes
 function PageLoader() {
   return (
@@ -58,6 +69,19 @@ function Router() {
             <Route path="/profile" component={ProfilePage} />
             <Route path="/progress" component={ProgressPage} />
             <Route path="/settings" component={SettingsPage} />
+            
+            {/* New feature routes */}
+            <Route path="/forums" component={Forums} />
+            <Route path="/emotional-tracker" component={EmotionalTracker} />
+            <Route path="/cultural-sensitivity" component={CulturalSensitivity} />
+            <Route path="/badges-awards" component={BadgesAwards} />
+            <Route path="/visual-aids" component={VisualAids} />
+            <Route path="/non-verbal-communication" component={NonVerbalCommunication} />
+            <Route path="/quick-practice" component={QuickPractice} />
+            
+            {/* Role-specific dashboards */}
+            <Route path="/manager-dashboard" component={ManagerDashboard} />
+            <Route path="/recruiter-dashboard" component={RecruiterDashboard} />
           </>
         )}
         <Route component={NotFound} />

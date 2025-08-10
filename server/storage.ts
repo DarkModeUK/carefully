@@ -34,6 +34,32 @@ export interface IStorage {
     averageScore: number;
     skillLevels: Record<string, number>;
   }>;
+
+  // New feature methods (placeholder implementations)
+  getForumCategories(): Promise<any[]>;
+  getForumTopics(categoryId?: string): Promise<any[]>;
+  createForumTopic(data: any): Promise<any>;
+  getEmotionalStates(userId: string): Promise<any[]>;
+  createEmotionalState(data: any): Promise<any>;
+  getCulturalProgress(userId: string): Promise<any>;
+  startCulturalModule(userId: string, moduleId: string): Promise<any>;
+  getUserBadges(userId: string): Promise<any[]>;
+  getAvailableBadges(): Promise<any[]>;
+  getManagerTeamData(userId: string, timeframe: string): Promise<any>;
+  getManagerAnalytics(userId: string, timeframe: string): Promise<any>;
+  getTeamWellbeingData(userId: string, timeframe: string): Promise<any>;
+  getRecruiterCandidates(role?: string, skill?: string): Promise<any[]>;
+  getRecruiterAnalytics(): Promise<any>;
+  getRecruiterAssessments(): Promise<any[]>;
+  getVisualAids(category?: string, search?: string): Promise<any[]>;
+  getVisualAidsProgress(userId: string): Promise<any>;
+  getNonVerbalProgress(userId: string): Promise<any>;
+  getCompletedNonVerbalExercises(userId: string): Promise<any[]>;
+  completeNonVerbalExercise(userId: string, exerciseId: string): Promise<any>;
+  getQuickPracticeScenarios(category?: string): Promise<any[]>;
+  getQuickPracticeProgress(userId: string): Promise<any>;
+  startQuickPractice(userId: string, scenarioId: string): Promise<any>;
+  completeDailyChallenge(userId: string, challengeId: string): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -170,6 +196,103 @@ export class DatabaseStorage implements IStorage {
       averageScore,
       skillLevels: user?.skillLevels || {}
     };
+  }
+
+  // New feature methods (placeholder implementations)
+  async getForumCategories(): Promise<any[]> {
+    return [];
+  }
+
+  async getForumTopics(categoryId?: string): Promise<any[]> {
+    return [];
+  }
+
+  async createForumTopic(data: any): Promise<any> {
+    return { id: '1', ...data };
+  }
+
+  async getEmotionalStates(userId: string): Promise<any[]> {
+    return [];
+  }
+
+  async createEmotionalState(data: any): Promise<any> {
+    return { id: '1', ...data };
+  }
+
+  async getCulturalProgress(userId: string): Promise<any> {
+    return {};
+  }
+
+  async startCulturalModule(userId: string, moduleId: string): Promise<any> {
+    return { success: true };
+  }
+
+  async getUserBadges(userId: string): Promise<any[]> {
+    return [];
+  }
+
+  async getAvailableBadges(): Promise<any[]> {
+    return [];
+  }
+
+  async getManagerTeamData(userId: string, timeframe: string): Promise<any> {
+    return { members: [] };
+  }
+
+  async getManagerAnalytics(userId: string, timeframe: string): Promise<any> {
+    return { activeUsers: 0, totalScenarios: 0, averageScore: 0 };
+  }
+
+  async getTeamWellbeingData(userId: string, timeframe: string): Promise<any> {
+    return { averageWellbeing: 7, confidence: 7, stress: 5, empathy: 8, resilience: 7 };
+  }
+
+  async getRecruiterCandidates(role?: string, skill?: string): Promise<any[]> {
+    return [];
+  }
+
+  async getRecruiterAnalytics(): Promise<any> {
+    return { activeCandidates: 0, readyCandidates: 0, averageScore: 0, culturalScore: 0 };
+  }
+
+  async getRecruiterAssessments(): Promise<any[]> {
+    return [];
+  }
+
+  async getVisualAids(category?: string, search?: string): Promise<any[]> {
+    return [];
+  }
+
+  async getVisualAidsProgress(userId: string): Promise<any> {
+    return {};
+  }
+
+  async getNonVerbalProgress(userId: string): Promise<any> {
+    return {};
+  }
+
+  async getCompletedNonVerbalExercises(userId: string): Promise<any[]> {
+    return [];
+  }
+
+  async completeNonVerbalExercise(userId: string, exerciseId: string): Promise<any> {
+    return { success: true };
+  }
+
+  async getQuickPracticeScenarios(category?: string): Promise<any[]> {
+    return [];
+  }
+
+  async getQuickPracticeProgress(userId: string): Promise<any> {
+    return { dailyStreak: 0, recentSessions: [] };
+  }
+
+  async startQuickPractice(userId: string, scenarioId: string): Promise<any> {
+    return { scenarioId };
+  }
+
+  async completeDailyChallenge(userId: string, challengeId: string): Promise<any> {
+    return { success: true };
   }
 }
 

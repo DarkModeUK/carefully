@@ -296,6 +296,152 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Forum routes
+  app.get('/api/forum/categories', isAuthenticated, async (req, res) => {
+    try {
+      const categories = await storage.getForumCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error('Error fetching forum categories:', error);
+      res.status(500).json({ message: 'Failed to fetch forum categories' });
+    }
+  });
+
+  app.get('/api/forum/topics/:categoryId?', isAuthenticated, async (req, res) => {
+    try {
+      const { categoryId } = req.params;
+      const topics = await storage.getForumTopics(categoryId);
+      res.json(topics);
+    } catch (error) {
+      console.error('Error fetching forum topics:', error);
+      res.status(500).json({ message: 'Failed to fetch forum topics' });
+    }
+  });
+
+  app.post('/api/forum/topics', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { title, content, categoryId } = req.body;
+      const topic = await storage.createForumTopic({ title, content, categoryId, authorId: userId });
+      res.status(201).json(topic);
+    } catch (error) {
+      console.error('Error creating forum topic:', error);
+      res.status(500).json({ message: 'Failed to create forum topic' });
+    }
+  });
+
+  // Emotional state tracking routes
+  app.get('/api/emotional-states', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const states = await storage.getEmotionalStates(userId);
+      res.json(states);
+    } catch (error) {
+      console.error('Error fetching emotional states:', error);
+      res.status(500).json({ message: 'Failed to fetch emotional states' });
+    }
+  });
+
+  app.post('/api/emotional-states', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const { confidence, stress, empathy, resilience, notes } = req.body;
+      const state = await storage.createEmotionalState({
+        userId,
+        confidence,
+        stress, 
+        empathy,
+        resilience,
+        notes
+      });
+      res.status(201).json(state);
+    } catch (error) {
+      console.error('Error creating emotional state:', error);
+      res.status(500).json({ message: 'Failed to record emotional state' });
+    }
+  });
+
+  // Cultural sensitivity routes
+  app.get('/api/cultural-progress', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const progress = await storage.getCulturalProgress(userId);
+      res.json(progress);
+    } catch (error) {
+      console.error('Error fetching cultural progress:', error);
+      res.status(500).json({ message: 'Failed to fetch cultural progress' });
+    }
+  });
+
+  // Placeholder routes for new features (to prevent errors)
+  app.get('/api/user/badges', isAuthenticated, async (req: any, res) => {
+    res.json([]);
+  });
+
+  app.get('/api/badges/available', isAuthenticated, async (req: any, res) => {
+    res.json([]);
+  });
+
+  app.get('/api/manager/team/:timeframe?', isAuthenticated, async (req: any, res) => {
+    res.json({ members: [] });
+  });
+
+  app.get('/api/manager/analytics/:timeframe?', isAuthenticated, async (req: any, res) => {
+    res.json({ activeUsers: 0, totalScenarios: 0, averageScore: 0 });
+  });
+
+  app.get('/api/manager/wellbeing/:timeframe?', isAuthenticated, async (req: any, res) => {
+    res.json({ averageWellbeing: 7, confidence: 7, stress: 5, empathy: 8, resilience: 7 });
+  });
+
+  app.get('/api/recruiter/candidates', isAuthenticated, async (req: any, res) => {
+    res.json([]);
+  });
+
+  app.get('/api/recruiter/analytics', isAuthenticated, async (req: any, res) => {
+    res.json({ activeCandidates: 0, readyCandidates: 0, averageScore: 0, culturalScore: 0 });
+  });
+
+  app.get('/api/recruiter/assessments', isAuthenticated, async (req: any, res) => {
+    res.json([]);
+  });
+
+  app.get('/api/visual-aids', isAuthenticated, async (req: any, res) => {
+    res.json([]);
+  });
+
+  app.get('/api/user/visual-aids-progress', isAuthenticated, async (req: any, res) => {
+    res.json({});
+  });
+
+  app.get('/api/non-verbal-progress', isAuthenticated, async (req: any, res) => {
+    res.json({});
+  });
+
+  app.get('/api/non-verbal-exercises/completed', isAuthenticated, async (req: any, res) => {
+    res.json([]);
+  });
+
+  app.post('/api/non-verbal-exercises/:exerciseId/complete', isAuthenticated, async (req: any, res) => {
+    res.json({ success: true });
+  });
+
+  app.get('/api/scenarios/quick-practice/:category?', isAuthenticated, async (req: any, res) => {
+    res.json([]);
+  });
+
+  app.get('/api/user/quick-practice-progress', isAuthenticated, async (req: any, res) => {
+    res.json({ dailyStreak: 0, recentSessions: [] });
+  });
+
+  app.post('/api/quick-practice/:scenarioId/start', isAuthenticated, async (req: any, res) => {
+    res.json({ scenarioId: req.params.scenarioId });
+  });
+
+  app.post('/api/daily-challenges/:challengeId/complete', isAuthenticated, async (req: any, res) => {
+    res.json({ success: true });
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
