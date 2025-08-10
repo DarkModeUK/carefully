@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { generateConversationResponse, analyzeFeedback } from "./services/openai";
-import { insertUserScenarioSchema } from "@shared/schema";
+import { insertUserScenarioSchema, insertReactionSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
@@ -376,6 +376,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Emoji Reactions routes
+  app.post('/api/reactions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { type, contextId, emoji, label, category, description } = req.body;
+      
+      const reactionData = {
+        userId,
+        type,
+        contextId,
+        emoji,
+        label,
+        category,
+        description,
+        createdAt: new Date()
+      };
+      
+      const reaction = await storage.createReaction(reactionData);
+      res.json(reaction);
+    } catch (error) {
+      console.error('Error creating reaction:', error);
+      res.status(500).json({ message: 'Failed to create reaction' });
+    }
+  });
+
+  app.get('/api/reactions/:type/:contextId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { type, contextId } = req.params;
+      
+      const reactions = await storage.getUserReactions(userId, type, contextId);
+      res.json(reactions);
+    } catch (error) {
+      console.error('Error fetching reactions:', error);
+      res.status(500).json({ message: 'Failed to fetch reactions' });
+    }
+  });
+
+  app.get('/api/user/reaction-analytics', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const analytics = await storage.getReactionAnalytics(userId);
+      res.json(analytics);
+    } catch (error) {
+      console.error('Error fetching reaction analytics:', error);
+      res.status(500).json({ message: 'Failed to fetch reaction analytics' });
+    }
+  });
+
   // Forum routes
   app.get('/api/forum/categories', isAuthenticated, async (req, res) => {
     try {
@@ -520,6 +569,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/daily-challenges/:challengeId/complete', isAuthenticated, async (req: any, res) => {
     res.json({ success: true });
+  });
+
+  // Emoji Reactions API
+  app.post("/api/reactions", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const reactionData = insertReactionSchema.parse({
+        ...req.body,
+        userId
+      });
+
+      const reaction = await storage.createReaction(reactionData);
+      
+      // Update user engagement metrics
+      const currentUser = await storage.getUser(userId);
+      if (currentUser) {
+        const engagementBoost = {
+          'understanding': 2,
+          'emotion': 3,
+          'confidence': 1,
+          'engagement': 2
+        };
+        
+        const skillBoost = engagementBoost[reactionData.category as keyof typeof engagementBoost] || 1;
+        
+        // Update user's emotional state and engagement
+        await storage.updateUser(userId, {
+          emotionalState: {
+            ...currentUser.emotionalState,
+            [reactionData.category]: Math.min(10, (currentUser.emotionalState?.[reactionData.category as keyof typeof currentUser.emotionalState] || 0) + skillBoost)
+          }
+        });
+      }
+
+      res.json(reaction);
+    } catch (error) {
+      console.error('Error saving reaction:', error);
+      res.status(500).json({ message: "Failed to save reaction" });
+    }
+  });
+
+  // Get user reactions for a specific context
+  app.get("/api/reactions/:type/:contextId", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { type, contextId } = req.params;
+      
+      const reactions = await storage.getUserReactions(userId, type, contextId);
+      res.json(reactions);
+    } catch (error) {
+      console.error('Error fetching reactions:', error);
+      res.status(500).json({ message: "Failed to fetch reactions" });
+    }
+  });
+
+  // Get user reaction analytics
+  app.get("/api/user/reaction-analytics", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const analytics = await storage.getReactionAnalytics(userId);
+      res.json(analytics);
+    } catch (error) {
+      console.error('Error fetching reaction analytics:', error);
+      res.status(500).json({ message: "Failed to fetch reaction analytics" });
+    }
   });
 
   const httpServer = createServer(app);

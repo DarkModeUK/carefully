@@ -1,4 +1,4 @@
-import { users, scenarios, userScenarios, achievements, type User, type InsertUser, type UpsertUser, type Scenario, type InsertScenario, type UserScenario, type InsertUserScenario, type Achievement, type InsertAchievement } from "@shared/schema";
+import { users, scenarios, userScenarios, achievements, reactions, type User, type InsertUser, type UpsertUser, type Scenario, type InsertScenario, type UserScenario, type InsertUserScenario, type Achievement, type InsertAchievement, insertReactionSchema } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
@@ -60,6 +60,11 @@ export interface IStorage {
   getQuickPracticeProgress(userId: string): Promise<any>;
   startQuickPractice(userId: string, scenarioId: string): Promise<any>;
   completeDailyChallenge(userId: string, challengeId: string): Promise<any>;
+  
+  // Emoji Reactions
+  createReaction(reaction: any): Promise<any>;
+  getUserReactions(userId: string, type: string, contextId: string): Promise<any[]>;
+  getReactionAnalytics(userId: string): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -293,6 +298,57 @@ export class DatabaseStorage implements IStorage {
 
   async completeDailyChallenge(userId: string, challengeId: string): Promise<any> {
     return { success: true };
+  }
+
+  // Emoji Reactions Implementation
+  async createReaction(reactionData: any): Promise<any> {
+    const [reaction] = await db
+      .insert(reactions)
+      .values(reactionData)
+      .returning();
+    return reaction;
+  }
+
+  async getUserReactions(userId: string, type: string, contextId: string): Promise<any[]> {
+    const userReactions = await db
+      .select()
+      .from(reactions)
+      .where(and(
+        eq(reactions.userId, userId),
+        eq(reactions.type, type),
+        eq(reactions.contextId, contextId)
+      ));
+    return userReactions;
+  }
+
+  async getReactionAnalytics(userId: string): Promise<any> {
+    const userReactions = await db
+      .select()
+      .from(reactions)
+      .where(eq(reactions.userId, userId));
+
+    const categoryCount = userReactions.reduce((acc, reaction) => {
+      acc[reaction.category] = (acc[reaction.category] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const emojiCount = userReactions.reduce((acc, reaction) => {
+      acc[reaction.emoji] = (acc[reaction.emoji] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const totalReactions = userReactions.length;
+    const mostUsedCategory = Object.keys(categoryCount).reduce((a, b) => 
+      categoryCount[a] > categoryCount[b] ? a : b, 'understanding'
+    );
+
+    return {
+      totalReactions,
+      categoryBreakdown: categoryCount,
+      emojiBreakdown: emojiCount,
+      mostUsedCategory,
+      averageReactionsPerSession: Math.round((totalReactions / Math.max(1, userReactions.length / 5)) * 100) / 100
+    };
   }
 }
 

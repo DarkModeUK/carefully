@@ -119,6 +119,18 @@ export const achievements = pgTable("achievements", {
   unlockedAt: timestamp("unlocked_at").defaultNow(),
 });
 
+export const reactions = pgTable("reactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  type: text("type").notNull(), // 'scenario', 'feedback', 'content', 'achievement'
+  contextId: varchar("context_id").notNull(), // scenarioId, feedbackId, etc.
+  emoji: text("emoji").notNull(),
+  label: text("label").notNull(),
+  category: text("category").notNull(), // 'understanding', 'emotion', 'confidence', 'engagement'
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -141,10 +153,16 @@ export const insertAchievementSchema = createInsertSchema(achievements).omit({
   unlockedAt: true,
 });
 
+export const insertReactionSchema = createInsertSchema(reactions).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   userScenarios: many(userScenarios),
   achievements: many(achievements),
+  reactions: many(reactions),
 }));
 
 export const scenariosRelations = relations(scenarios, ({ many }) => ({
@@ -165,6 +183,13 @@ export const userScenariosRelations = relations(userScenarios, ({ one }) => ({
 export const achievementsRelations = relations(achievements, ({ one }) => ({
   user: one(users, {
     fields: [achievements.userId],
+    references: [users.id],
+  }),
+}));
+
+export const reactionsRelations = relations(reactions, ({ one }) => ({
+  user: one(users, {
+    fields: [reactions.userId],
     references: [users.id],
   }),
 }));

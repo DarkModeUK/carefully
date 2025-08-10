@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-reaction-buttons";
 
 export default function SimulationPage() {
   const [, params] = useRoute("/simulation/:scenarioId");
@@ -437,13 +438,14 @@ export default function SimulationPage() {
                     </div>
                     
                     {/* Message Content */}
-                    <div className={`px-6 py-4 rounded-2xl ${
-                      message.role === 'user' 
-                        ? 'bg-[#907AD6] text-white rounded-br-md' 
-                        : message.role === 'system'
-                        ? 'bg-blue-100 text-blue-800 border border-blue-200 rounded-bl-md'
-                        : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm'
-                    }`}>
+                    <div className="flex flex-col gap-2">
+                      <div className={`px-6 py-4 rounded-2xl ${
+                        message.role === 'user' 
+                          ? 'bg-[#907AD6] text-white rounded-br-md' 
+                          : message.role === 'system'
+                          ? 'bg-blue-100 text-blue-800 border border-blue-200 rounded-bl-md'
+                          : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm'
+                      }`}>
                       <p className="leading-relaxed">{message.content}</p>
                       
                       {/* Timestamp */}
@@ -456,7 +458,7 @@ export default function SimulationPage() {
                       {/* Feedback */}
                       {message.feedback && (
                         <div className="mt-4 pt-4 border-t border-gray-200/30">
-                          <div className="flex items-start gap-2">
+                          <div className="flex items-start gap-2 mb-3">
                             <i className="fas fa-lightbulb text-yellow-500 mt-1"></i>
                             <div>
                               <p className="text-sm font-medium opacity-90 mb-2">Feedback:</p>
@@ -465,6 +467,41 @@ export default function SimulationPage() {
                               </p>
                             </div>
                           </div>
+                          
+                          {/* Emoji Reaction Buttons for Feedback */}
+                          <div className="mt-3">
+                            <QuickEmojiReaction
+                              type="feedback"
+                              contextId={`${scenarioId}-step-${index}`}
+                              onReaction={(reaction) => {
+                                toast({
+                                  title: `${reaction.emoji} ${reaction.label}!`,
+                                  description: reaction.description,
+                                  duration: 2000,
+                                });
+                              }}
+                              className="opacity-80 hover:opacity-100 transition-opacity"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      </div>
+                      
+                      {/* Emoji Reactions for AI Character Messages */}
+                      {message.role === 'character' && !message.feedback && (
+                        <div className="ml-13 mt-2">
+                          <QuickEmojiReaction
+                            type="scenario"
+                            contextId={`${scenarioId}-message-${index}`}
+                            onReaction={(reaction) => {
+                              toast({
+                                title: `${reaction.emoji} ${reaction.label}!`,
+                                description: reaction.description,
+                                duration: 2000,
+                              });
+                            }}
+                            className="opacity-70 hover:opacity-100 transition-opacity"
+                          />
                         </div>
                       )}
                     </div>
@@ -567,7 +604,7 @@ export default function SimulationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#907AD6]/5 to-[#7FDEFF]/5">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-green-200 bg-green-50 mb-6">
           <CardContent className="pt-6 text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <i className="fas fa-check text-green-600 text-2xl"></i>
@@ -595,6 +632,23 @@ export default function SimulationPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Achievement Reaction Section */}
+        <div className="max-w-2xl mx-auto">
+          <EmojiReactionButtons
+            type="achievement"
+            contextId={scenarioId || 'completion'}
+            onReaction={(reaction) => {
+              toast({
+                title: `${reaction.emoji} ${reaction.label}!`,
+                description: reaction.description,
+                duration: 3000,
+              });
+            }}
+            showPersonalized={true}
+            className="shadow-lg hover:shadow-xl transition-all duration-300"
+          />
+        </div>
       </div>
     </div>
   );
