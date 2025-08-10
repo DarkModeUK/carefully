@@ -133,7 +133,7 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
 
   return (
     <Card className="hover-lift transition-all duration-300 hover:shadow-lg hover-glow cursor-pointer relative stagger-item fade-in-up group btn-press" onClick={handleClick}>
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         {/* Quick Win: Bookmark button */}
         {showBookmark && (
           <Button
@@ -150,30 +150,30 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
           </Button>
         )}
         
-        <div className="flex items-start justify-between mb-3 pr-8">
-          <div className="flex items-center gap-2">
-            <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color} transition-all duration-300 hover:scale-105 hover-bounce`}>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3 pr-6 sm:pr-8">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color} transition-all duration-300 hover:scale-105 hover-bounce text-xs`}>
               <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
               <span className="capitalize font-medium">{scenario.priority}</span>
             </Badge>
             {/* Progress status badge */}
-            <Badge className={`flex items-center gap-1 ${statusConfig[status as keyof typeof statusConfig].color} transition-all duration-300 hover:scale-105 hover-bounce`}>
+            <Badge className={`flex items-center gap-1 ${statusConfig[status as keyof typeof statusConfig].color} transition-all duration-300 hover:scale-105 hover-bounce text-xs`}>
               <i className={`${statusConfig[status as keyof typeof statusConfig].icon} text-xs transition-transform duration-300 ${status === 'in_progress' ? 'fa-spin' : 'group-hover:rotate-12'}`}></i>
-              <span className="text-sm font-medium">{statusConfig[status as keyof typeof statusConfig].label}</span>
+              <span className="text-xs font-medium">{statusConfig[status as keyof typeof statusConfig].label}</span>
             </Badge>
           </div>
           {/* Quick Win: Enhanced difficulty tags */}
-          <Badge className={`flex items-center gap-1 ${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].color} transition-all duration-300 hover:scale-105 hover-bounce float-animation`}>
+          <Badge className={`flex items-center gap-1 ${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].color} transition-all duration-300 hover:scale-105 hover-bounce float-animation text-xs self-start`}>
             <i className={`${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
-            <span className="text-sm font-medium">{difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].label}</span>
+            <span className="text-xs font-medium">{difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].label}</span>
           </Badge>
         </div>
         
-        <h3 className="text-lg font-semibold text-neutral-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
+        <h3 className="text-base sm:text-lg font-semibold text-neutral-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300 leading-tight">
           {scenario.title}
         </h3>
         
-        <p className="text-sm text-neutral-600 mb-4 line-clamp-3 group-hover:text-neutral-800 transition-colors duration-300">
+        <p className="text-xs sm:text-sm text-neutral-600 mb-4 line-clamp-3 group-hover:text-neutral-800 transition-colors duration-300 leading-relaxed">
           {scenario.description}
         </p>
         
@@ -188,22 +188,22 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
           </div>
         )}
         
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-sm text-neutral-500 group-hover:text-neutral-700 transition-colors duration-300">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-neutral-500 group-hover:text-neutral-700 transition-colors duration-300">
             <div className="flex items-center gap-1 hover-bounce">
               <i className="fas fa-clock transition-transform duration-300 hover:scale-110"></i>
               <span>{scenario.estimatedTime} min</span>
             </div>
             <div className="flex items-center gap-1 hover-bounce">
               <i className="fas fa-tag transition-transform duration-300 hover:scale-110"></i>
-              <span>{categoryLabels[scenario.category] || scenario.category}</span>
+              <span className="truncate">{categoryLabels[scenario.category] || scenario.category}</span>
             </div>
           </div>
           
           <Button 
             variant={status === 'completed' ? 'default' : 'outline'} 
             size="sm" 
-            className={`transition-all duration-300 hover-glow btn-press btn-ripple group-hover:scale-105 ${
+            className={`transition-all duration-300 hover-glow btn-press btn-ripple group-hover:scale-105 shrink-0 ${
               status === 'completed' ? 'bg-green-600 hover:bg-green-700 text-white' :
               status === 'in_progress' ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600' :
               ''
@@ -217,7 +217,7 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
               }
             }}
           >
-            {statusConfig[status as keyof typeof statusConfig].buttonText} 
+            <span className="text-xs sm:text-sm">{statusConfig[status as keyof typeof statusConfig].buttonText}</span>
             <i className={`fas ${
               status === 'completed' ? 'fa-eye' : 
               status === 'in_progress' ? 'fa-play' : 
