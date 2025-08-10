@@ -812,21 +812,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Reflection insights API
-  app.get('/api/reflection/insights', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const userScenarios = await storage.getUserScenarios(userId);
-      const scenarios = await storage.getAllScenarios();
-      
-      // Calculate insights by category
-      const insights = calculateReflectionInsights(scenarios, userScenarios);
-      res.json(insights);
-    } catch (error) {
-      console.error('Error fetching reflection insights:', error);
-      res.status(500).json({ error: 'Failed to fetch reflection insights' });
-    }
-  });
+
 
   // Recruiter API endpoints
   app.get('/api/recruiter/candidates', isAuthenticated, async (req: any, res) => {
@@ -905,38 +891,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  function calculateReflectionInsights(scenarios: any[], userScenarios: any[]) {
-    const categories = Array.from(new Set(scenarios.map(s => s.category)));
-    
-    return categories.map(category => {
-      const categoryScenarios = scenarios.filter(s => s.category === category);
-      const userCategoryScenarios = userScenarios.filter(us => 
-        categoryScenarios.some(cs => cs.id === us.scenarioId) && us.status === 'completed'
-      );
 
-      const averageScore = userCategoryScenarios.length > 0 
-        ? userCategoryScenarios.reduce((sum, us) => sum + (us.score || 0), 0) / userCategoryScenarios.length
-        : 0;
-
-      const totalTime = userCategoryScenarios.reduce((sum, us) => sum + (us.totalTime || 0), 0);
-      const completionRate = (userCategoryScenarios.length / categoryScenarios.length) * 100;
-      const strength = Math.round((completionRate * 0.4) + (averageScore * 0.6));
-
-      return {
-        category,
-        strength,
-        completedScenarios: userCategoryScenarios.length,
-        averageScore: Math.round(averageScore),
-        timeSpent: totalTime,
-        lastActivity: userCategoryScenarios.length > 0 
-          ? userCategoryScenarios[userCategoryScenarios.length - 1].completedAt 
-          : 'Never',
-        topSkills: ['Communication', 'Empathy', 'Professionalism'],
-        improvementAreas: ['Response Depth', 'Scenario Engagement'],
-        personalizedTips: [`Focus on completing more ${category.replace('_', ' ')} scenarios to build expertise.`]
-      };
-    });
-  }
 
   const httpServer = createServer(app);
   return httpServer;

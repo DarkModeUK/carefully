@@ -15,7 +15,7 @@ const allNavItems: NavItem[] = [
   // Care Worker Navigation
   { href: "/", label: "Dashboard", icon: "fas fa-home", roles: ["care_worker"] },
   { href: "/scenarios", label: "Simulation Library", icon: "fas fa-play", roles: ["care_worker"] },
-  { href: "/reflection", label: "Reflection", icon: "fas fa-brain", roles: ["care_worker"] },
+
   { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["care_worker"] },
   { href: "/progress", label: "Progress", icon: "fas fa-chart-bar", roles: ["care_worker"] },
   
