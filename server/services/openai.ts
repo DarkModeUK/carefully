@@ -33,30 +33,31 @@ export async function generateConversationResponse(
     
     const systemPrompt = `You are a ${characterType} in a care scenario. 
 
-Context: ${scenarioContext.substring(0, 200)}...
+Context: ${scenarioContext}
 
 Rules:
-- Stay in character
+- Stay in character and consider the scenario context carefully
+- If the care worker suggests contacting someone who has passed away (as mentioned in context), respond with confusion or sadness about this
 - React to their tone and approach
 - Be empathetic if they are, anxious if they're dismissive
 - Keep responses short (1 sentence)
-- JSON format: { "message": "response", "sentiment": "positive/neutral/negative/distressed", "shouldContinue": true }
+- JSON format: { "message": "response", "sentiment": "positive/neutral/negative/distressed/confused", "shouldContinue": true }
 
 Last exchange:
 ${conversationHistory.slice(-2).map(h => `${h.role === 'user' ? 'Worker' : 'Patient'}: ${h.message}`).join('\n')}`;
 
     console.log('🤖 Making OpenAI API call...');
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // Fastest model
+      model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: conversationHistory.length === 0 ? 
           "Start the conversation as the patient. Introduce your concern or situation." : 
-          "Respond to what the care worker just said." }
+          "Respond to what the care worker just said considering the scenario context." }
       ],
       response_format: { type: "json_object" },
       temperature: 0.6,
-      max_tokens: 60, // Very short for speed
+      max_tokens: 80,
     });
 
     console.log('✅ OpenAI response received');
@@ -116,63 +117,67 @@ Assess using evidence-based care standards across these competencies:
    - Demonstrates respect for patient autonomy
 
 4. PROBLEM-SOLVING APPROACH (1-5)
-   - Offers practical, person-centred solutions
-   - Considers patient's individual needs and preferences
+   - Offers practical, person-centred solutions appropriate to scenario context
+   - Considers patient's individual needs and preferences  
    - Demonstrates critical thinking about care options
+   - IMPORTANT: Avoids suggestions that contradict scenario facts (e.g., contacting deceased family members)
 
-Provide detailed feedback in JSON format:
+Provide detailed feedback in JSON format with concise text to avoid parsing errors:
 {
   "empathy": 1-5,
   "communication": 1-5,
   "professionalism": 1-5,
   "problemSolving": 1-5,
-  "summary": "Detailed constructive feedback highlighting specific examples from their response",
-  "strengths": ["specific strength with evidence", "another strength with context"],
-  "improvements": ["specific improvement with actionable suggestion", "another improvement with clear guidance"],
-  "quickSummary": "One key actionable takeaway for immediate improvement",
-  "keyInsights": ["Important insight about care approach", "Learning opportunity identified"],
-  "nextSteps": ["Specific action to practise", "Skill to develop further"]
+  "summary": "Brief constructive feedback with specific examples",
+  "strengths": ["specific strength", "another strength"],
+  "improvements": ["specific improvement needed", "another improvement"]
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // Use faster model for feedback too
+      model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: "Provide feedback analysis." }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.3, // Lower for consistency and speed
-      max_tokens: 400, // Increased for detailed feedback
+      temperature: 0.3,
+      max_tokens: 300,
     });
 
-    const result = JSON.parse(response.choices[0].message.content || '{}');
+    const content = response.choices[0].message.content;
+    if (!content) {
+      throw new Error('No content received from OpenAI');
+    }
+
+    let result;
+    try {
+      result = JSON.parse(content);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      console.error('Raw content:', content);
+      throw new Error('Failed to parse feedback JSON');
+    }
     
     return {
       empathy: result.empathy || 3,
       communication: result.communication || 3,
       professionalism: result.professionalism || 3,
       problemSolving: result.problemSolving || 3,
-      summary: result.summary || "Your response demonstrates professional awareness and engagement. To enhance your care approach, focus on acknowledging the person's emotional state more explicitly and explore their specific concerns through thoughtful questioning before moving to solutions.",
-      strengths: result.strengths || ["Maintained professional boundaries and appropriate tone", "Engaged meaningfully with the conversation"],
-      improvements: result.improvements || ["Validate emotions with specific phrases like 'I can understand this must be difficult for you'", "Use open-ended questions to gather more information about their unique perspective and needs"],
-      quickSummary: result.quickSummary || "Lead with empathy by acknowledging their emotional experience before problem-solving",
-      keyInsights: result.keyInsights || ["Person-centred care requires balancing emotional support with practical assistance", "Active listening involves both hearing words and understanding underlying feelings"],
-      nextSteps: result.nextSteps || ["Practice reflecting feelings back to show understanding", "Develop skills in asking questions that encourage sharing"]
+      summary: result.summary || "Your response shows professional engagement. Focus on acknowledging emotions and considering scenario context before offering solutions.",
+      strengths: result.strengths || ["Maintained professional tone", "Engaged with the situation"],
+      improvements: result.improvements || ["Consider scenario context more carefully", "Validate emotions before problem-solving"]
     };
   } catch (error) {
     console.error('Error analyzing feedback:', error);
-    // Return enhanced default feedback
+    // Return default feedback
     return {
       empathy: 3,
       communication: 3,
       professionalism: 3,
       problemSolving: 3,
-      summary: "Your response demonstrates professional engagement and care awareness. To strengthen your approach, focus on explicitly acknowledging the person's emotional state and use thoughtful questioning to understand their unique perspective before moving to practical solutions.",
-      strengths: ["Maintained professional boundaries and respectful tone", "Demonstrated engagement with the care situation"],
-      improvements: ["Use empathetic validation phrases such as 'I can understand this must be challenging for you'", "Ask open-ended questions that invite the person to share more about their specific needs and feelings"],
-      quickSummary: "Begin conversations by acknowledging emotions before moving to problem-solving",
-      keyInsights: ["Effective care communication balances emotional support with practical problem-solving", "Understanding the person's perspective is essential before offering solutions"],
-      nextSteps: ["Practice using reflective listening techniques to validate feelings", "Develop a repertoire of open-ended questions that encourage deeper sharing"]
+      summary: "Your response shows professional engagement. Focus on acknowledging emotions and considering scenario context before offering solutions.",
+      strengths: ["Maintained professional tone", "Engaged with the situation"],
+      improvements: ["Consider scenario context more carefully", "Validate emotions before problem-solving"]
     };
   }
 }
