@@ -318,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('🎯 AI response generated:', aiResponse.message.substring(0, 50) + '...');
       console.log('✅ Feedback generated');
       
-      // Save the conversation turn
+      // Save the conversation turn and update time tracking
       const userId = req.user.claims.sub;
       const userScenario = await storage.getUserScenario(userId, scenarioId);
       if (userScenario) {
@@ -333,9 +333,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         ];
         
+        // Calculate approximate time spent (rough estimate: 1-2 minutes per response)
+        const estimatedTimePerResponse = 90; // seconds per response
+        const totalEstimatedTime = Math.max(
+          userScenario.totalTime || 0, 
+          updatedResponses.length * estimatedTimePerResponse
+        );
+        
         await storage.updateUserScenario(userScenario.id, {
           responses: updatedResponses,
-          progress: Math.min(Math.round((updatedResponses.length / 3) * 100), 100)
+          progress: Math.min(Math.round((updatedResponses.length / 3) * 100), 100),
+          totalTime: totalEstimatedTime
         });
       }
       
@@ -416,7 +424,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (currentUser) {
         await storage.updateUser(userId, {
           totalScenarios: (currentUser.totalScenarios || 0) + 1,
-          totalTime: (currentUser.totalTime || 0) + (totalTime || 0),
+          totalTime: (currentUser.totalTime || 0) + (completedScenario?.totalTime || 0),
         });
       }
 
