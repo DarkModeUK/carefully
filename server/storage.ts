@@ -428,6 +428,72 @@ export class DatabaseStorage implements IStorage {
       resilience: 71
     };
   }
+
+  // Enhanced Recruiter Methods
+  async getRecruiterAssessments(): Promise<any[]> {
+    return [
+      {
+        id: '1',
+        candidateName: 'Sarah Johnson',
+        status: 'in_progress',
+        startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        progress: 65,
+        role: 'Care Worker'
+      },
+      {
+        id: '2', 
+        candidateName: 'Michael Chen',
+        status: 'in_progress',
+        startedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+        progress: 80,
+        role: 'Care Worker'
+      }
+    ];
+  }
+
+  async createCandidate(candidateData: any): Promise<any> {
+    // In a real implementation, this would create a new user in the database
+    const newCandidate = {
+      id: Date.now().toString(),
+      ...candidateData,
+      status: 'pending',
+      completedScenarios: 0,
+      averageScore: 0,
+      createdAt: new Date().toISOString()
+    };
+    return newCandidate;
+  }
+
+  async updateCandidateStatus(candidateId: string, status: string, notes?: string): Promise<any> {
+    // In a real implementation, this would update the candidate in the database
+    return {
+      id: candidateId,
+      status,
+      notes,
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  async getRecruiterSkillsAnalysis(): Promise<any> {
+    return [
+      { skill: 'Communication', score: 85, color: 'bg-blue-500' },
+      { skill: 'Empathy', score: 78, color: 'bg-green-500' },
+      { skill: 'Problem Solving', score: 72, color: 'bg-purple-500' },
+      { skill: 'Professionalism', score: 88, color: 'bg-orange-500' },
+      { skill: 'Cultural Sensitivity', score: 69, color: 'bg-pink-500' }
+    ];
+  }
+
+  async getRecruitmentFunnel(): Promise<any[]> {
+    return [
+      { stage: 'Applications', count: 150, percentage: 100 },
+      { stage: 'Initial Screening', count: 120, percentage: 80 },
+      { stage: 'Assessment Started', count: 95, percentage: 63 },
+      { stage: 'Assessment Completed', count: 78, percentage: 52 },
+      { stage: 'Interview Stage', count: 45, percentage: 30 },
+      { stage: 'Offers Made', count: 12, percentage: 8 }
+    ];
+  }
 }
 
 export const storage = new DatabaseStorage();

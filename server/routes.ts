@@ -814,7 +814,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  // Recruiter API endpoints
+  // Comprehensive Recruiter API endpoints
   app.get('/api/recruiter/candidates', isAuthenticated, async (req: any, res) => {
     try {
       const { role, skill } = req.query;
@@ -833,6 +833,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching recruiter analytics:', error);
       res.status(500).json({ error: 'Failed to fetch analytics' });
+    }
+  });
+
+  app.get('/api/recruiter/assessments', isAuthenticated, async (req: any, res) => {
+    try {
+      const assessments = await storage.getRecruiterAssessments();
+      res.json(assessments);
+    } catch (error) {
+      console.error('Error fetching assessments:', error);
+      res.status(500).json({ error: 'Failed to fetch assessments' });
+    }
+  });
+
+  app.post('/api/recruiter/candidates', isAuthenticated, async (req: any, res) => {
+    try {
+      const candidate = await storage.createCandidate(req.body);
+      res.json(candidate);
+    } catch (error) {
+      console.error('Error creating candidate:', error);
+      res.status(500).json({ error: 'Failed to create candidate' });
+    }
+  });
+
+  app.patch('/api/recruiter/candidates/:id/status', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { status, notes } = req.body;
+      const candidate = await storage.updateCandidateStatus(id, status, notes);
+      res.json(candidate);
+    } catch (error) {
+      console.error('Error updating candidate status:', error);
+      res.status(500).json({ error: 'Failed to update candidate status' });
+    }
+  });
+
+  app.get('/api/recruiter/skills-analysis', isAuthenticated, async (req: any, res) => {
+    try {
+      const analysis = await storage.getRecruiterSkillsAnalysis();
+      res.json(analysis);
+    } catch (error) {
+      console.error('Error fetching skills analysis:', error);
+      res.status(500).json({ error: 'Failed to fetch skills analysis' });
+    }
+  });
+
+  app.get('/api/recruiter/recruitment-funnel', isAuthenticated, async (req: any, res) => {
+    try {
+      const funnel = await storage.getRecruitmentFunnel();
+      res.json(funnel);
+    } catch (error) {
+      console.error('Error fetching recruitment funnel:', error);
+      res.status(500).json({ error: 'Failed to fetch recruitment funnel' });
     }
   });
 
