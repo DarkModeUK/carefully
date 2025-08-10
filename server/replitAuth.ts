@@ -169,6 +169,7 @@ export async function setupAuth(app: Express) {
     console.log('OAuth callback received');
     console.log('Query params:', req.query);
     console.log('Hostname:', req.hostname);
+    console.log('Session ID before callback:', req.sessionID);
     
     // Use localhost:5000 for local development, actual hostname for production
     const strategyName = req.hostname === 'localhost' ? 'localhost:5000' : req.hostname;
@@ -182,21 +183,24 @@ export async function setupAuth(app: Express) {
       
       if (err) {
         console.error('OAuth callback error:', err);
-        return res.redirect('/api/login');
+        return res.redirect('/?error=auth_failed');
       }
       
       if (!user) {
         console.log('No user returned from OAuth');
-        return res.redirect('/api/login');
+        console.log('Auth info:', info);
+        return res.redirect('/?error=no_user');
       }
       
       req.logIn(user, (loginErr) => {
         if (loginErr) {
           console.error('Login error:', loginErr);
-          return res.redirect('/api/login');
+          return res.redirect('/?error=login_failed');
         }
         
-        console.log('User successfully logged in, redirecting to dashboard');
+        console.log('User successfully logged in');
+        console.log('Session ID after login:', req.sessionID);
+        console.log('Session passport after login:', (req.session as any).passport ? 'exists' : 'none');
         return res.redirect('/dashboard');
       });
     })(req, res, next);
