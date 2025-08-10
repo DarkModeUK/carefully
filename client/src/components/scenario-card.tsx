@@ -105,61 +105,61 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer relative" onClick={handleClick}>
+    <Card className="hover-lift transition-all duration-300 hover:shadow-lg hover-glow cursor-pointer relative stagger-item fade-in-up group btn-press" onClick={handleClick}>
       <CardContent className="p-6">
         {/* Quick Win: Bookmark button */}
         {showBookmark && (
           <Button
             variant="ghost"
             size="sm"
-            className={`absolute top-2 right-2 p-2 h-8 w-8 ${
-              bookmarked ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-gray-600'
+            className={`absolute top-2 right-2 p-2 h-8 w-8 hover-bounce transition-all duration-300 ${
+              bookmarked ? 'text-yellow-500 hover:text-yellow-600 hover-pulse' : 'text-gray-400 hover:text-yellow-500'
             }`}
             onClick={handleBookmarkClick}
             disabled={bookmarkMutation.isPending}
             title={bookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
           >
-            <i className={`fas ${bookmarked ? 'fa-bookmark' : 'fa-bookmark-o'} text-sm`}></i>
+            <i className={`fas ${bookmarked ? 'fa-bookmark' : 'fa-bookmark-o'} text-sm transition-transform duration-300 hover:scale-110`}></i>
           </Button>
         )}
         
         <div className="flex items-start justify-between mb-3 pr-8">
-          <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color}`}>
-            <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs`}></i>
+          <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color} transition-all duration-300 hover:scale-105 hover-bounce`}>
+            <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
             <span className="capitalize font-medium">{scenario.priority}</span>
           </Badge>
           {/* Quick Win: Enhanced difficulty tags */}
-          <Badge className={`flex items-center gap-1 ${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].color}`}>
-            <i className={`${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].icon} text-xs`}></i>
+          <Badge className={`flex items-center gap-1 ${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].color} transition-all duration-300 hover:scale-105 hover-bounce float-animation`}>
+            <i className={`${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
             <span className="text-sm font-medium">{difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].label}</span>
           </Badge>
         </div>
         
-        <h3 className="text-lg font-semibold text-neutral-800 mb-2 line-clamp-2">
+        <h3 className="text-lg font-semibold text-neutral-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
           {scenario.title}
         </h3>
         
-        <p className="text-sm text-neutral-600 mb-4 line-clamp-3">
+        <p className="text-sm text-neutral-600 mb-4 line-clamp-3 group-hover:text-neutral-800 transition-colors duration-300">
           {scenario.description}
         </p>
         
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-sm text-neutral-500">
-            <div className="flex items-center gap-1">
-              <i className="fas fa-clock"></i>
+          <div className="flex items-center gap-4 text-sm text-neutral-500 group-hover:text-neutral-700 transition-colors duration-300">
+            <div className="flex items-center gap-1 hover-bounce">
+              <i className="fas fa-clock transition-transform duration-300 hover:scale-110"></i>
               <span>{scenario.estimatedTime} min</span>
             </div>
-            <div className="flex items-center gap-1">
-              <i className="fas fa-tag"></i>
+            <div className="flex items-center gap-1 hover-bounce">
+              <i className="fas fa-tag transition-transform duration-300 hover:scale-110"></i>
               <span>{categoryLabels[scenario.category] || scenario.category}</span>
             </div>
           </div>
           
-          <Button variant="outline" size="sm" onClick={(e) => {
+          <Button variant="outline" size="sm" className="transition-all duration-300 hover-glow btn-press btn-ripple group-hover:scale-105" onClick={(e) => {
             e.stopPropagation();
             setLocation(`/simulation/${scenario.id}`);
           }}>
-            Start Training
+            Start Training <i className="fas fa-arrow-right ml-1 transition-transform duration-300 group-hover:translate-x-1"></i>
           </Button>
         </div>
       </CardContent>

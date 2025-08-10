@@ -33,11 +33,12 @@ export function Navigation() {
               <div className="ml-10 flex items-baseline space-x-4">
                 {navItems.map((item) => (
                   <Link key={item.href} href={item.href}>
-                    <span className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+                    <span className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 cursor-pointer hover-lift btn-press ${
                       location === item.href
-                        ? "bg-primary text-white"
-                        : "text-neutral-500 hover:text-neutral-800"
+                        ? "bg-primary text-white hover-glow"
+                        : "text-neutral-500 hover:text-neutral-800 hover:bg-gray-50"
                     }`}>
+                      <i className={`${item.icon} mr-2 transition-all duration-300`}></i>
                       {item.label}
                     </span>
                   </Link>
@@ -49,8 +50,8 @@ export function Navigation() {
             <div className="flex items-center space-x-4">
               {/* User Profile */}
               <Link href="/profile">
-                <div className="flex items-center text-sm cursor-pointer hover:opacity-80 transition-opacity duration-200">
-                  <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2">
+                <div className="flex items-center text-sm cursor-pointer transition-all duration-300 hover-bounce btn-press">
+                  <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2 hover-glow transition-all duration-300">
                     <span className="font-medium">
                       {user?.firstName && user?.lastName 
                         ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
@@ -58,7 +59,7 @@ export function Navigation() {
                       }
                     </span>
                   </div>
-                  <span className="hidden sm:block font-medium text-neutral-800">
+                  <span className="hidden sm:block font-medium text-neutral-800 transition-colors duration-300 hover:text-primary">
                     {user?.firstName && user?.lastName 
                       ? `${user.firstName} ${user.lastName}`
                       : user?.email?.split('@')[0] || 'User'

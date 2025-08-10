@@ -67,11 +67,12 @@ export default function Dashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
       {/* Welcome Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-neutral-800 mb-2">
-          Welcome back, {user?.firstName || 'Care Worker'}!
+      <div className="mb-8 fade-in-up">
+        <h2 className="text-2xl font-bold text-neutral-800 mb-2 hover:text-primary transition-colors duration-300">
+          Welcome back, {user?.firstName || 'Care Worker'}! 
+          <span className="inline-block ml-2 hover-wobble">👋</span>
         </h2>
-        <p className="text-neutral-500">Continue building your care skills with personalised training scenarios.</p>
+        <p className="text-neutral-500 fade-in-left">Continue building your care skills with personalised training scenarios.</p>
       </div>
 
       {/* Stats Overview */}
@@ -111,18 +112,18 @@ export default function Dashboard() {
           
           {/* Continue Training Section */}
           {currentScenario && currentScenarioData && (
-            <Card className="border-l-4 border-l-[#907AD6] shadow-sm hover:shadow-md transition-shadow duration-200">
+            <Card className="border-l-4 border-l-[#907AD6] shadow-sm hover:shadow-lg transition-all duration-300 hover-lift hover-glow fade-in-up group">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-neutral-800">Continue Training</h3>
-                  <Badge className="bg-green-100 text-green-700 border-green-200">In Progress</Badge>
+                  <h3 className="text-lg font-semibold text-neutral-800 group-hover:text-primary transition-colors duration-300">Continue Training</h3>
+                  <Badge className="bg-green-100 text-green-700 border-green-200 transition-all duration-300 group-hover:scale-105 hover-bounce">In Progress</Badge>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h4 className="font-medium text-neutral-800 mb-1">{currentScenarioData.title}</h4>
-                      <p className="text-sm text-neutral-500">{currentScenarioData.description}</p>
+                      <h4 className="font-medium text-neutral-800 mb-1 group-hover:text-primary transition-colors duration-300">{currentScenarioData.title}</h4>
+                      <p className="text-sm text-neutral-500 group-hover:text-neutral-700 transition-colors duration-300">{currentScenarioData.description}</p>
                     </div>
                   </div>
                   
@@ -132,9 +133,9 @@ export default function Dashboard() {
                       <span className="text-neutral-600 font-medium">Progress</span>
                       <span className="text-neutral-800 font-semibold">{currentScenario.progress}% Complete</span>
                     </div>
-                    <div className="w-full bg-neutral-200 rounded-full h-3">
+                    <div className="w-full bg-neutral-200 rounded-full h-3 overflow-hidden">
                       <div 
-                        className="bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] h-3 rounded-full transition-all duration-300" 
+                        className="bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] h-3 rounded-full transition-all duration-500 progress-glow hover:shadow-lg" 
                         style={{ width: `${currentScenario.progress}%` }}
                       ></div>
                     </div>
@@ -143,9 +144,9 @@ export default function Dashboard() {
                   <div className="flex items-center gap-3">
                     <Button 
                       onClick={handleContinueTraining} 
-                      className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                      className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 hover-lift hover-glow btn-press btn-ripple"
                     >
-                      <i className="fas fa-play mr-2"></i>Continue Training
+                      <i className="fas fa-play mr-2 transition-transform duration-300 hover:scale-110"></i>Continue Training
                     </Button>
                     <div className="text-xs text-neutral-500">
                       Last activity: {currentScenario.startedAt ? new Date(currentScenario.startedAt).toLocaleDateString() : 'Today'}
@@ -183,12 +184,12 @@ export default function Dashboard() {
           )}
 
           {/* Available Scenarios */}
-          <Card>
+          <Card className="fade-in-up hover-lift transition-all duration-300 hover:shadow-lg">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Available Scenarios</CardTitle>
-                <Button variant="ghost" size="sm">
-                  View All <i className="fas fa-arrow-right ml-1"></i>
+                <CardTitle className="hover:text-primary transition-colors duration-300">Available Scenarios</CardTitle>
+                <Button variant="ghost" size="sm" className="hover-glow transition-all duration-300 btn-press">
+                  View All <i className="fas fa-arrow-right ml-1 transition-transform duration-300 hover:translate-x-1"></i>
                 </Button>
               </div>
             </CardHeader>
@@ -219,9 +220,12 @@ export default function Dashboard() {
           
           {/* Skill Progress - Only show if user has completed scenarios */}
           {userStats && userStats.completedScenarios > 0 && (
-            <Card>
+            <Card className="fade-in-right hover-lift transition-all duration-300 hover:shadow-lg">
               <CardHeader>
-                <CardTitle>Skill Progress</CardTitle>
+                <CardTitle className="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+                  <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                  Skill Progress
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {user?.skillLevels ? (
@@ -239,26 +243,29 @@ export default function Dashboard() {
 
           {/* Recent Achievements - Only show if user has achievements */}
           {!achievementsLoading && achievements.length > 0 && (
-            <Card>
+            <Card className="fade-in-right hover-lift transition-all duration-300 hover:shadow-lg">
               <CardHeader>
-                <CardTitle>Recent Achievements</CardTitle>
+                <CardTitle className="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+                  <i className="fas fa-trophy text-accent float-animation"></i>
+                  Recent Achievements
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {achievements.slice(0, 3).map((achievement) => (
-                    <div key={achievement.id} className="flex items-center space-x-3">
-                      <div className="bg-secondary bg-opacity-20 rounded-full p-2 flex-shrink-0">
-                        <i className={`${achievement.icon} text-secondary text-sm`}></i>
+                  {achievements.slice(0, 3).map((achievement, index) => (
+                    <div key={achievement.id} className="flex items-center space-x-3 stagger-item fade-in-up hover-bounce transition-all duration-300 p-2 rounded-lg hover:bg-gray-50">
+                      <div className="bg-secondary bg-opacity-20 rounded-full p-2 flex-shrink-0 hover-wobble transition-all duration-300 float-animation">
+                        <i className={`${achievement.icon} text-secondary text-sm transition-transform duration-300 hover:rotate-12`}></i>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-neutral-800">{achievement.title}</p>
-                        <p className="text-xs text-neutral-500">{achievement.description}</p>
+                        <p className="text-sm font-medium text-neutral-800 hover:text-primary transition-colors duration-300">{achievement.title}</p>
+                        <p className="text-xs text-neutral-500 hover:text-neutral-700 transition-colors duration-300">{achievement.description}</p>
                       </div>
                     </div>
                   ))}
                   
-                  <Button variant="ghost" className="w-full mt-4" size="sm">
-                    View All Achievements
+                  <Button variant="ghost" className="w-full mt-4 hover-glow transition-all duration-300 btn-press" size="sm">
+                    View All Achievements <i className="fas fa-arrow-right ml-2 transition-transform duration-300 hover:translate-x-1"></i>
                   </Button>
                 </div>
               </CardContent>
@@ -266,34 +273,37 @@ export default function Dashboard() {
           )}
 
           {/* Quick Actions */}
-          <Card>
+          <Card className="fade-in-right hover-lift transition-all duration-300 hover:shadow-lg">
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle className="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+                <i className="fas fa-bolt text-accent"></i>
+                Quick Actions
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <Button variant="outline" className="w-full justify-between" size="sm">
+                <Button variant="outline" className="w-full justify-between stagger-item fade-in-up hover-lift hover-glow transition-all duration-300 btn-press group" size="sm">
                   <div className="flex items-center">
-                    <i className="fas fa-random text-neutral-500 mr-3"></i>
-                    <span className="font-medium text-neutral-700">Random Scenario</span>
+                    <i className="fas fa-random text-neutral-500 mr-3 transition-transform duration-300 group-hover:rotate-180"></i>
+                    <span className="font-medium text-neutral-700 group-hover:text-primary transition-colors duration-300">Random Scenario</span>
                   </div>
-                  <i className="fas fa-chevron-right text-neutral-400"></i>
+                  <i className="fas fa-chevron-right text-neutral-400 transition-transform duration-300 group-hover:translate-x-1"></i>
                 </Button>
 
-                <Button variant="outline" className="w-full justify-between" size="sm">
+                <Button variant="outline" className="w-full justify-between stagger-item fade-in-up hover-lift hover-glow transition-all duration-300 btn-press group" size="sm">
                   <div className="flex items-center">
-                    <i className="fas fa-chart-bar text-neutral-500 mr-3"></i>
-                    <span className="font-medium text-neutral-700">View Full Progress</span>
+                    <i className="fas fa-chart-bar text-neutral-500 mr-3 transition-transform duration-300 group-hover:scale-110"></i>
+                    <span className="font-medium text-neutral-700 group-hover:text-primary transition-colors duration-300">View Full Progress</span>
                   </div>
-                  <i className="fas fa-chevron-right text-neutral-400"></i>
+                  <i className="fas fa-chevron-right text-neutral-400 transition-transform duration-300 group-hover:translate-x-1"></i>
                 </Button>
 
-                <Button variant="outline" className="w-full justify-between" size="sm">
+                <Button variant="outline" className="w-full justify-between stagger-item fade-in-up hover-lift hover-glow transition-all duration-300 btn-press group" size="sm">
                   <div className="flex items-center">
-                    <i className="fas fa-cog text-neutral-500 mr-3"></i>
-                    <span className="font-medium text-neutral-700">Training Preferences</span>
+                    <i className="fas fa-cog text-neutral-500 mr-3 transition-transform duration-300 group-hover:rotate-45"></i>
+                    <span className="font-medium text-neutral-700 group-hover:text-primary transition-colors duration-300">Training Preferences</span>
                   </div>
-                  <i className="fas fa-chevron-right text-neutral-400"></i>
+                  <i className="fas fa-chevron-right text-neutral-400 transition-transform duration-300 group-hover:translate-x-1"></i>
                 </Button>
               </div>
             </CardContent>
