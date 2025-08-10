@@ -23,7 +23,9 @@ export default function SimulationResults() {
 
   const { data: userScenario, isLoading: userScenarioLoading, error: userScenarioError } = useQuery<UserScenario>({
     queryKey: ['/api/user/scenarios', scenarioId],
-    enabled: !!scenarioId
+    enabled: !!scenarioId,
+    retry: 1,
+    retryDelay: 1000
   });
 
 
@@ -65,7 +67,8 @@ export default function SimulationResults() {
     );
   }
 
-  if (!scenario || !userScenario) {
+  // Handle case where scenario doesn't exist
+  if (!scenario) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#907AD6]/5 to-[#7FDEFF]/5 flex items-center justify-center">
         <Card className="max-w-md w-full mx-4">
@@ -73,14 +76,55 @@ export default function SimulationResults() {
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <i className="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
             </div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">Results Not Found</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">Scenario Not Found</h2>
             <p className="text-gray-600 mb-4">
-              We couldn't find the results for this scenario. This may be because the scenario hasn't been completed yet.
+              The requested scenario could not be found. It may have been removed or the link is incorrect.
             </p>
 
             <Button onClick={() => setLocation('/dashboard')} className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white">
               Return to Dashboard
             </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Handle case where user scenario doesn't exist, hasn't been completed, or there's an error
+  if (userScenarioError || !userScenario || userScenario.status !== "completed") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#907AD6]/5 to-[#7FDEFF]/5 flex items-center justify-center">
+        <Card className="max-w-md w-full mx-4">
+          <CardContent className="pt-6 text-center">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="fas fa-clock text-amber-600 text-2xl"></i>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              {userScenarioError ? "Unable to Load Results" : "Scenario Not Completed"}
+            </h2>
+            <p className="text-gray-600 mb-4">
+              {userScenarioError 
+                ? "We're having trouble loading your results. Please try again or complete the scenario again."
+                : "This scenario hasn't been completed yet. Complete the scenario first to see your results."
+              }
+            </p>
+
+            <div className="space-y-2">
+              <Button 
+                onClick={() => setLocation(`/simulation/${scenarioId}`)} 
+                className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white w-full"
+              >
+                <i className="fas fa-play mr-2"></i>
+                Start Scenario
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => setLocation('/dashboard')} 
+                className="w-full"
+              >
+                Return to Dashboard
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
