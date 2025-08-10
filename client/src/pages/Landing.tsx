@@ -216,9 +216,7 @@ export default function Landing() {
       {/* Who It's For Section */}
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">
-            Who It's For
-          </h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">Who is it for?</h2>
           
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="border-2 border-blue-200 bg-blue-50">
