@@ -231,26 +231,76 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-neutral-700 mb-2 block">Care Role</label>
+                      {isEditing ? (
+                        <Select defaultValue={user?.role}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="care_worker">Care Worker</SelectItem>
+                            <SelectItem value="nurse">Nurse</SelectItem>
+                            <SelectItem value="care_manager">Care Manager</SelectItem>
+                            <SelectItem value="support_worker">Support Worker</SelectItem>
+                            <SelectItem value="healthcare_assistant">Healthcare Assistant</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Badge className="bg-primary text-white">
+                            {user?.role?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Not specified'}
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-neutral-700 mb-2 block">Experience Level</label>
+                      {isEditing ? (
+                        <Select defaultValue={user?.experienceLevel}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select experience level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="new">New to care work</SelectItem>
+                            <SelectItem value="some">Some experience (1-2 years)</SelectItem>
+                            <SelectItem value="experienced">Experienced (3+ years)</SelectItem>
+                            <SelectItem value="expert">Expert (5+ years)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <p className="text-neutral-800">
+                          {user?.experienceLevel === 'new' && 'New to care work'}
+                          {user?.experienceLevel === 'some' && 'Some experience (1-2 years)'}
+                          {user?.experienceLevel === 'experienced' && 'Experienced (3+ years)'}
+                          {user?.experienceLevel === 'expert' && 'Expert (5+ years)'}
+                          {!user?.experienceLevel && 'Not specified'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  
                   <div>
-                    <label className="text-sm font-medium text-neutral-700 mb-2 block">Care Role</label>
+                    <label className="text-sm font-medium text-neutral-700 mb-2 block">Learning Goals</label>
                     {isEditing ? (
-                      <Select defaultValue={user?.role}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="care_worker">Care Worker</SelectItem>
-                          <SelectItem value="nurse">Nurse</SelectItem>
-                          <SelectItem value="care_manager">Care Manager</SelectItem>
-                          <SelectItem value="support_worker">Support Worker</SelectItem>
-                          <SelectItem value="healthcare_assistant">Healthcare Assistant</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Textarea 
+                        placeholder="What do you want to achieve in your care work?" 
+                        defaultValue={user?.learningGoals?.join(', ') || ''}
+                      />
                     ) : (
-                      <div className="flex items-center gap-2">
-                        <Badge className="bg-primary text-white">
-                          {user?.role?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Not specified'}
-                        </Badge>
+                      <div className="space-y-2">
+                        {user?.learningGoals && user.learningGoals.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {user.learningGoals.map((goal, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {goal}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-neutral-500 italic">No learning goals set</p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -411,76 +461,112 @@ export default function ProfilePage() {
               <div className="space-y-6">
                 <div>
                   <label className="text-sm font-medium text-neutral-700 mb-2 block">Preferred Training Duration</label>
-                  <Select defaultValue="15">
+                  <Select defaultValue={user?.preferences?.sessionLength || "medium"}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="5">5-10 minutes</SelectItem>
-                      <SelectItem value="15">10-15 minutes</SelectItem>
-                      <SelectItem value="20">15-20 minutes</SelectItem>
-                      <SelectItem value="30">20+ minutes</SelectItem>
+                      <SelectItem value="short">Short sessions (5-10 minutes)</SelectItem>
+                      <SelectItem value="medium">Medium sessions (15-20 minutes)</SelectItem>
+                      <SelectItem value="long">Long sessions (30+ minutes)</SelectItem>
                     </SelectContent>
                   </Select>
+                  {user?.preferences?.sessionLength && (
+                    <p className="text-sm text-neutral-600 mt-1">
+                      Current preference: {
+                        user.preferences.sessionLength === 'short' ? 'Short sessions (5-10 minutes)' :
+                        user.preferences.sessionLength === 'medium' ? 'Medium sessions (15-20 minutes)' :
+                        user.preferences.sessionLength === 'long' ? 'Long sessions (30+ minutes)' :
+                        'Not set'
+                      }
+                    </p>
+                  )}
                 </div>
 
                 <div>
                   <label className="text-sm font-medium text-neutral-700 mb-2 block">Difficulty Preference</label>
-                  <Select defaultValue="adaptive">
+                  <Select defaultValue={user?.preferences?.difficulty || "balanced"}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="beginner">Always Beginner</SelectItem>
-                      <SelectItem value="intermediate">Always Intermediate</SelectItem>
-                      <SelectItem value="advanced">Always Advanced</SelectItem>
-                      <SelectItem value="adaptive">Adaptive (Recommended)</SelectItem>
+                      <SelectItem value="gentle">Gentle approach</SelectItem>
+                      <SelectItem value="balanced">Balanced difficulty</SelectItem>
+                      <SelectItem value="challenging">Challenging scenarios</SelectItem>
                     </SelectContent>
                   </Select>
+                  {user?.preferences?.difficulty && (
+                    <p className="text-sm text-neutral-600 mt-1">
+                      Current preference: {
+                        user.preferences.difficulty === 'gentle' ? 'Gentle approach' :
+                        user.preferences.difficulty === 'balanced' ? 'Balanced difficulty' :
+                        user.preferences.difficulty === 'challenging' ? 'Challenging scenarios' :
+                        'Not set'
+                      }
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-neutral-700 mb-2 block">Focus Areas</label>
-                  <div className="space-y-2">
-                    {[
-                      'Dementia Care',
-                      'Family Communication',
-                      'Medication Management',
-                      'End of Life Care',
-                      'Safeguarding'
-                    ].map((area) => (
-                      <label key={area} className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded border-neutral-300" defaultChecked />
-                        <span className="text-sm text-neutral-700">{area}</span>
-                      </label>
-                    ))}
+                  <label className="text-sm font-medium text-neutral-700 mb-2 block">Notification Preferences</label>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <i className="fas fa-bell text-neutral-500"></i>
+                        <span className="text-sm">Daily training reminders</span>
+                      </div>
+                      <Badge variant={user?.preferences?.notifications?.dailyReminders ? "default" : "outline"}>
+                        {user?.preferences?.notifications?.dailyReminders ? 'Enabled' : 'Disabled'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <i className="fas fa-chart-line text-neutral-500"></i>
+                        <span className="text-sm">Weekly progress updates</span>
+                      </div>
+                      <Badge variant={user?.preferences?.notifications?.progressUpdates ? "default" : "outline"}>
+                        {user?.preferences?.notifications?.progressUpdates ? 'Enabled' : 'Disabled'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <i className="fas fa-trophy text-neutral-500"></i>
+                        <span className="text-sm">Achievement notifications</span>
+                      </div>
+                      <Badge variant={user?.preferences?.notifications?.achievements ? "default" : "outline"}>
+                        {user?.preferences?.notifications?.achievements ? 'Enabled' : 'Disabled'}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
+
               </div>
 
               <div className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium text-neutral-700 mb-2 block">Notification Preferences</label>
+                  <label className="text-sm font-medium text-neutral-700 mb-2 block">Focus Areas from Onboarding</label>
                   <div className="space-y-2">
-                    {[
-                      'Daily training reminders',
-                      'Weekly progress summaries',
-                      'New scenario notifications',
-                      'Achievement unlocks'
-                    ].map((pref) => (
-                      <label key={pref} className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded border-neutral-300" defaultChecked />
-                        <span className="text-sm text-neutral-700">{pref}</span>
-                      </label>
-                    ))}
+                    {user?.learningGoals && user.learningGoals.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {user.learningGoals.map((goal, index) => (
+                          <Badge key={index} className="bg-primary/10 text-primary border-primary/20">
+                            <i className="fas fa-target mr-1"></i>
+                            {goal}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-neutral-500 italic">Complete onboarding to set learning goals</p>
+                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-neutral-700 mb-2 block">Learning Goals</label>
+                  <label className="text-sm font-medium text-neutral-700 mb-2 block">Additional Learning Goals</label>
                   <Textarea 
                     placeholder="What specific skills would you like to develop? Any particular situations you'd like to practice?"
                     className="h-24"
+                    defaultValue={user?.preferences?.learningGoals || ''}
                   />
                 </div>
               </div>
