@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-reaction-buttons";
+import { Progress } from "@/components/ui/progress";
 
 export default function SimulationPage() {
   const [, params] = useRoute("/simulation/:scenarioId");
@@ -22,6 +23,8 @@ export default function SimulationPage() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [viewState, setViewState] = useState<'preparation' | 'simulation' | 'completed'>('preparation');
   const [isListening, setIsListening] = useState(false); // Quick Win: Voice responses
+  const [timeRemaining, setTimeRemaining] = useState(0); // Countdown timer
+  const [startTime, setStartTime] = useState<Date | null>(null);
 
   // Fetch scenario data
   const { data: scenario, isLoading: scenarioLoading } = useQuery({
@@ -115,6 +118,12 @@ export default function SimulationPage() {
       ];
       setConversation(initialMessages);
       setViewState('simulation');
+      
+      // Start countdown timer
+      const estimatedTime = scenario?.estimatedTime || 15;
+      setTimeRemaining(estimatedTime * 60); // Convert minutes to seconds
+      setStartTime(new Date());
+      
       queryClient.invalidateQueries({ queryKey: ['/api/user/scenarios', scenarioId] });
     },
     onError: () => {
@@ -125,6 +134,31 @@ export default function SimulationPage() {
       });
     }
   });
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (viewState === 'simulation' && timeRemaining > 0 && !isCompleted) {
+      const interval = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            // Time's up - auto complete scenario
+            completeScenarioMutation.mutate();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [viewState, timeRemaining, isCompleted, completeScenarioMutation]);
+
+  // Format time remaining
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Initialize scenario state
   useEffect(() => {
@@ -391,6 +425,18 @@ export default function SimulationPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              {/* Timer */}
+              {timeRemaining > 0 && (
+                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${
+                  timeRemaining < 120 ? 'bg-red-500/20 text-red-100' : 'bg-white/20'
+                }`}>
+                  <i className="fas fa-clock text-sm"></i>
+                  <span className="text-sm font-medium text-white">
+                    {formatTime(timeRemaining)}
+                  </span>
+                </div>
+              )}
+              
               <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
                 <span className="text-sm text-white">Step {currentStep + 1} of 3</span>
                 <div className="flex gap-1 ml-2">
@@ -407,6 +453,24 @@ export default function SimulationPage() {
               <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="text-sm text-white">Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Patient Context Reminder */}
+        <div className="bg-amber-50 border-l-4 border-amber-400 px-6 py-3">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-start gap-3">
+              <i className="fas fa-user-injured text-amber-600 mt-1"></i>
+              <div>
+                <h4 className="font-medium text-amber-800 mb-1">Patient Context</h4>
+                <p className="text-sm text-amber-700 leading-relaxed">
+                  {scenario.context.length > 200 
+                    ? `${scenario.context.substring(0, 200)}...` 
+                    : scenario.context
+                  }
+                </p>
               </div>
             </div>
           </div>
@@ -535,6 +599,19 @@ export default function SimulationPage() {
           {/* Chat Input */}
           {!isCompleted && (
             <div className="bg-white border-t border-gray-200 px-6 py-4">
+              {/* Quick Tips Bar */}
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <i className="fas fa-lightbulb text-blue-600"></i>
+                  <span className="text-sm font-medium text-blue-800">Remember to:</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-blue-700">
+                  <span>• Show empathy and understanding</span>
+                  <span>• Listen actively to their concerns</span>
+                  <span>• Maintain professional boundaries</span>
+                </div>
+              </div>
+
               <div className="flex items-end gap-4">
                 <div className="flex-1 relative">
                   <Textarea

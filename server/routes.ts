@@ -251,10 +251,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Send message in conversation
   const conversationSchema = z.object({
-    message: z.string().min(1),
+    userResponse: z.string().min(1), // Changed from 'message' to 'userResponse'
     conversationHistory: z.array(z.object({
       role: z.enum(['user', 'character']),
-      message: z.string()
+      content: z.string() // Changed from 'message' to 'content'
     })).default([])
   });
 
@@ -262,8 +262,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('🗣️ Processing conversation request for scenario:', req.params.id);
       const scenarioId = req.params.id;
-      const { message, conversationHistory } = conversationSchema.parse(req.body);
-      console.log('📨 User message:', message);
+      const { userResponse, conversationHistory } = conversationSchema.parse(req.body);
+      console.log('📨 User response:', userResponse);
       console.log('💬 Conversation history length:', conversationHistory?.length || 0);
       
       // Get scenario context
@@ -275,34 +275,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log('✅ Scenario found:', scenario.title);
 
-      // Generate AI response with proper conversation context
+      // Convert conversation history to match OpenAI service format
+      const historyForAI = conversationHistory.map(h => ({ 
+        role: h.role, 
+        message: h.content 
+      }));
+      
+      // Generate AI response using OpenAI
+      console.log('🤖 Calling OpenAI service...');
       const aiResponse = await generateConversationResponse(
         scenario.context,
-        [...conversationHistory, { role: 'user', message }],
+        [...historyForAI, { role: 'user', message: userResponse }],
         "care recipient"
       );
-
-      console.log('🤖 AI response generated:', aiResponse.message);
-
-      // Analyze user's response for feedback (run in parallel for speed)
-      const feedbackPromise = analyzeFeedback(
-        message,
-        scenario.context,
-        conversationHistory
-      );
-
-      const feedback = await feedbackPromise;
-      console.log('📊 Feedback generated');
-
-      const responseData = {
+      console.log('🎯 AI response generated:', aiResponse.message.substring(0, 50) + '...');
+      
+      // Generate feedback for the user's response
+      console.log('📊 Generating feedback...');
+      const feedback = await analyzeFeedback(userResponse, scenario.context, historyForAI);
+      console.log('✅ Feedback generated');
+      
+      // Save the conversation turn
+      const userId = req.user.claims.sub;
+      const userScenario = await storage.getUserScenario(userId, scenarioId);
+      if (userScenario) {
+        const updatedResponses = [
+          ...(userScenario.responses || []),
+          {
+            userResponse: userResponse,
+            aiResponse: aiResponse.message,
+            sentiment: aiResponse.sentiment,
+            feedback: feedback,
+            timestamp: new Date()
+          }
+        ];
+        
+        await storage.updateUserScenario(userScenario.id, {
+          responses: updatedResponses,
+          progress: Math.min((updatedResponses.length / 3) * 100, 100)
+        });
+      }
+      
+      res.json({
         aiResponse: aiResponse.message,
-        feedback,
-        // Quick Win: Quick feedback summary (one sentence takeaway)
-        quickSummary: feedback.summary || "Good response, keep practicing!"
-      };
-
-      console.log('✅ Sending response to client');
-      res.json(responseData);
+        sentiment: aiResponse.sentiment,
+        shouldContinue: aiResponse.shouldContinue,
+        feedback: feedback
+      });
     } catch (error) {
       console.error('❌ Conversation error:', error);
       console.error('🔍 Error details:', {
