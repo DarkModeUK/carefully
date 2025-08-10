@@ -850,6 +850,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User role switching endpoint (for testing purposes)
+  app.patch('/api/user/role', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { role } = req.body;
+      
+      if (!['care_worker', 'recruiter', 'ld_manager'].includes(role)) {
+        return res.status(400).json({ error: 'Invalid role' });
+      }
+      
+      await storage.updateUser(userId, { role });
+      res.json({ success: true, role });
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      res.status(500).json({ error: 'Failed to update role' });
+    }
+  });
+
   // L&D Manager API endpoints
   app.get('/api/ld-manager/team/:timeframe', isAuthenticated, async (req: any, res) => {
     try {

@@ -1,6 +1,8 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
+import { RoleSwitcher } from "./role-switcher";
+import carefullyLogo from "@assets/Carefully-logo-final_1754861727999.png";
 
 interface NavItem {
   href: string;
@@ -50,10 +52,7 @@ export default function RoleBasedNavigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 hover-lift">
-            <div className="w-8 h-8 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">C</span>
-            </div>
-            <span className="text-xl font-bold text-[#2C2A4A]">Carefully</span>
+            <img src={carefullyLogo} alt="Carefully" className="h-10" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -74,8 +73,9 @@ export default function RoleBasedNavigation() {
             ))}
           </div>
 
-          {/* User Info */}
+          {/* User Info & Role Switcher */}
           <div className="hidden md:flex items-center space-x-4">
+            <RoleSwitcher />
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold text-xs">
@@ -123,8 +123,11 @@ export default function RoleBasedNavigation() {
               ))}
             </div>
             
-            {/* Mobile User Info */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            {/* Mobile User Info & Role Switcher */}
+            <div className="mt-4 pt-4 border-t border-gray-200 space-y-3">
+              <div className="px-4">
+                <RoleSwitcher className="w-full" />
+              </div>
               <div className="flex items-center space-x-3 px-4">
                 <div className="w-10 h-10 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-full flex items-center justify-center">
                   <span className="text-white font-semibold">
