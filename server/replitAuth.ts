@@ -83,13 +83,16 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
   
-  // Debug middleware to check session
+  // Debug middleware to check session - add detailed logging
   app.use('/api/auth', (req: any, res, next) => {
-    console.log('Session ID:', req.sessionID);
-    console.log('Session exists:', !!req.session);
-    console.log('Session passport:', req.session?.passport ? 'exists' : 'none');
-    console.log('req.isAuthenticated():', req.isAuthenticated ? req.isAuthenticated() : 'no method');
-    console.log('Cookies received:', req.headers.cookie || 'none');
+    console.log('🔍 Auth Debug:');
+    console.log('  Session ID:', req.sessionID);
+    console.log('  Session exists:', !!req.session);
+    console.log('  Session passport:', req.session?.passport ? 'exists' : 'none');
+    console.log('  req.isAuthenticated():', req.isAuthenticated ? req.isAuthenticated() : 'no method');
+    console.log('  Cookies received:', req.headers.cookie || 'none');
+    console.log('  User agent:', req.headers['user-agent'] || 'none');
+    console.log('  Referer:', req.headers.referer || 'none');
     next();
   });
 
@@ -214,14 +217,8 @@ export async function setupAuth(app: Express) {
           console.log('Session saved successfully');
           console.log('Final session ID for redirect:', req.sessionID);
           
-          // Explicitly set session cookie to ensure it persists
-          res.cookie('connect.sid', `s:${req.sessionID}`, {
-            httpOnly: true,
-            secure: false,
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            sameSite: 'lax',
-            path: '/'
-          });
+          // Log the session for debugging
+          console.log('Redirect with session ID:', req.sessionID);
           
           return res.redirect('/dashboard');
         });
