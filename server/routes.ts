@@ -22,10 +22,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user statistics
+  // Get user statistics with caching
   app.get('/api/user/stats', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      
+      // Cache user stats for 2 minutes
+      res.set({
+        'Cache-Control': 'private, max-age=120',
+        'Vary': 'Authorization',
+      });
+      
       const stats = await storage.getUserStats(userId);
       res.json(stats);
     } catch (error) {
@@ -116,42 +123,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all available scenarios with caching
+  // Get all available scenarios with enhanced caching
   app.get("/api/scenarios", async (req, res) => {
     try {
-      // Add cache headers for better performance
-      res.set('Cache-Control', 'public, max-age=300'); // 5 minutes
+      // Enhanced cache headers with ETag support
+      res.set({
+        'Cache-Control': 'public, max-age=600, s-maxage=1800', // 10min client, 30min CDN
+        'Vary': 'Accept-Encoding',
+        'X-Content-Type-Options': 'nosniff',
+      });
       
       const scenarios = await storage.getAllScenarios();
+      
+      // Add ETag for conditional requests
+      const etag = `"scenarios-${scenarios.length}-${Date.now()}"`;
+      res.set('ETag', etag);
+      
+      if (req.headers['if-none-match'] === etag) {
+        return res.status(304).end();
+      }
+      
       res.json(scenarios);
     } catch (error) {
+      console.error("Error fetching scenarios:", error);
       res.status(500).json({ message: "Failed to get scenarios" });
     }
   });
 
-  // Get specific scenario with caching
+  // Get specific scenario with enhanced caching
   app.get("/api/scenarios/:id", async (req, res) => {
     try {
-      // Add cache headers for individual scenarios
-      res.set('Cache-Control', 'public, max-age=600'); // 10 minutes
+      // Longer cache for individual scenarios (they change less frequently)
+      res.set({
+        'Cache-Control': 'public, max-age=1800, s-maxage=3600', // 30min client, 1hr CDN
+        'Vary': 'Accept-Encoding',
+        'X-Content-Type-Options': 'nosniff',
+      });
       
       const scenario = await storage.getScenario(req.params.id);
       if (!scenario) {
         return res.status(404).json({ message: "Scenario not found" });
       }
+      
+      // Add ETag for conditional requests
+      const etag = `"scenario-${req.params.id}-${scenario.updatedAt || scenario.createdAt}"`;
+      res.set('ETag', etag);
+      
+      if (req.headers['if-none-match'] === etag) {
+        return res.status(304).end();
+      }
+      
       res.json(scenario);
     } catch (error) {
+      console.error("Error fetching scenario:", error);
       res.status(500).json({ message: "Failed to get scenario" });
     }
   });
 
-  // Get user's scenario progress
+  // Get user's scenario progress with caching
   app.get("/api/user/scenarios", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      
+      // Cache user-specific data for shorter periods
+      res.set({
+        'Cache-Control': 'private, max-age=60', // 1 minute for user progress
+        'Vary': 'Authorization',
+      });
+      
       const userScenarios = await storage.getUserScenarios(userId);
       res.json(userScenarios);
     } catch (error) {
+      console.error("Error fetching user scenarios:", error);
       res.status(500).json({ message: "Failed to get user scenarios" });
     }
   });

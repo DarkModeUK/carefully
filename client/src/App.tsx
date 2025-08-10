@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navigation } from "@/components/navigation";
 import { WelcomeWizard } from "@/components/welcome-wizard";
 import { useAuth } from "@/hooks/useAuth";
+import { usePreloadData } from "@/hooks/usePreloadData";
 import { Suspense, lazy, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -55,6 +56,9 @@ function PageLoader() {
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [showWizard, setShowWizard] = useState(false);
+  
+  // Preload critical data for better performance
+  usePreloadData();
 
   // Show welcome wizard for authenticated users who haven't completed onboarding
   const shouldShowWizard = isAuthenticated && user && !(user as any).onboardingCompleted && !showWizard;

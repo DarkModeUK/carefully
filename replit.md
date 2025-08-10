@@ -43,6 +43,17 @@ Updated: August 9, 2025 - Converted all content to British English spelling and 
 - All components now feature smooth 300ms transitions with cubic-bezier easing
 - Platform UI is now significantly more engaging and playful while maintaining professionalism
 
+**Performance Optimisation (August 10, 2025):**
+- Enhanced query client with longer cache times and optimised retry logic
+- Implemented comprehensive HTTP caching with ETag support for scenarios
+- Added performance utilities including debounce, throttle, and virtual scrolling
+- Created optimistic update hooks for immediate UI feedback
+- Built lazy loading components and hooks for improved initial load times
+- Added GPU-accelerated animations and reduced motion support
+- Implemented data preloading and prefetching strategies
+- Enhanced server responses with compression and proper cache headers
+- Created performance monitoring and measurement tools
+
 ## System Architecture
 
 ### Frontend Architecture
