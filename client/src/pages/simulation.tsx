@@ -70,12 +70,6 @@ export default function SimulationPage() {
       setUserResponse("");
       const newStep = currentStep + 1;
       setCurrentStep(newStep);
-      
-      // Check if this is the final step (3 responses for quicker testing)
-      if (newStep >= 3) {
-        // Call complete scenario endpoint
-        completeScenarioMutation.mutate();
-      }
     },
     onError: (error: any) => {
       console.error('❌ Submit response error:', error);
@@ -839,18 +833,37 @@ export default function SimulationPage() {
                     )}
                   </Button>
                 </div>
-                <Button 
-                  onClick={handleSubmitResponse}
-                  disabled={!userResponse.trim() || submitResponseMutation.isPending}
-                  className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-3 h-auto rounded-xl"
-                  size="lg"
-                >
-                  {submitResponseMutation.isPending ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  ) : (
-                    <i className="fas fa-paper-plane text-lg"></i>
-                  )}
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleSubmitResponse}
+                    disabled={!userResponse.trim() || submitResponseMutation.isPending}
+                    className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-3 h-auto rounded-xl"
+                    size="lg"
+                  >
+                    {submitResponseMutation.isPending ? (
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    ) : (
+                      <i className="fas fa-paper-plane text-lg"></i>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={() => completeScenarioMutation.mutate()}
+                    disabled={completeScenarioMutation.isPending}
+                    variant="outline"
+                    className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 px-4 py-3 h-auto rounded-xl"
+                    size="lg"
+                    title="End simulation early"
+                  >
+                    {completeScenarioMutation.isPending ? (
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
+                    ) : (
+                      <>
+                        <i className="fas fa-stop mr-2"></i>
+                        End Simulation
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
               
               {/* Helper Text */}
