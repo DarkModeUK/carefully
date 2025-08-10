@@ -472,19 +472,7 @@ export default function SimulationPage() {
                 </div>
               )}
               
-              <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
-                <span className="text-sm text-white">Step {currentStep + 1} of 3</span>
-                <div className="flex gap-1 ml-2">
-                  {[0, 1, 2].map((step) => (
-                    <div
-                      key={step}
-                      className={`w-2 h-2 rounded-full ${
-                        step <= currentStep ? 'bg-white' : 'bg-white/40'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
+
               <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="text-sm text-white">Active</span>
