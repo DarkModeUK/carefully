@@ -15,11 +15,23 @@ export const VirtualizedList = memo(<T,>({
   containerHeight = 400,
   className = ''
 }: VirtualizedListProps<T>) => {
+  const [scrollTop, setScrollTop] = useState(0);
+  
   const visibleItems = useMemo(() => {
-    // For now, show all items since we don't have many
-    // In a real app with thousands of items, implement windowing
-    return items.map((item, index) => ({ item, index }));
-  }, [items]);
+    const { startIndex, endIndex } = calculateVisibleRange(
+      scrollTop,
+      containerHeight,
+      itemHeight,
+      items.length,
+      3 // overscan
+    );
+    
+    return items.slice(startIndex, endIndex + 1).map((item, index) => ({
+      item,
+      index: startIndex + index,
+      offset: (startIndex + index) * itemHeight
+    }));
+  }, [items, scrollTop, containerHeight, itemHeight]);
 
   return (
     <div 
