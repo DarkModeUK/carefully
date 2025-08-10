@@ -215,7 +215,7 @@ export async function getPersonalizedScenarioRecommendations(
   try {
     const difficultyRec = await generateDifficultyRecommendation(userId);
     const performancePattern = await analyzePerformancePatterns(userId);
-    const allScenarios = await storage.getScenarios();
+    const allScenarios = await storage.getAllScenarios();
     const userScenarios = await storage.getUserScenarios(userId);
     
     // Get completed scenario IDs
@@ -277,7 +277,7 @@ export async function getPersonalizedScenarioRecommendations(
   } catch (error) {
     console.error('Error getting personalized recommendations:', error);
     // Fallback to basic scenario list
-    const allScenarios = await storage.getScenarios();
+    const allScenarios = await storage.getAllScenarios();
     return allScenarios.filter(s => s.isActive).slice(0, limit);
   }
 }

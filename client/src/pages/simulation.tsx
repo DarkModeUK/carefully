@@ -12,6 +12,7 @@ import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-rea
 import { Progress } from "@/components/ui/progress";
 import { AIThinkingLoader, ScenarioLoadingSpinner, FeedbackLoadingIndicator } from "@/components/smart-loading";
 import { motion } from "framer-motion";
+import { extractPatientName } from "@/utils/extract-patient-name";
 
 export default function SimulationPage() {
   const [, params] = useRoute("/simulation/:scenarioId");
@@ -556,21 +557,34 @@ export default function SimulationPage() {
               {conversation.map((message, index) => (
                 <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex items-start gap-2 sm:gap-3 max-w-[85%] sm:max-w-2xl ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                    {/* Avatar */}
-                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.role === 'user' 
-                        ? 'bg-[#907AD6]' 
-                        : message.role === 'system'
-                        ? 'bg-blue-500'
-                        : 'bg-gray-400'
-                    }`}>
-                      <i className={`text-white text-xs sm:text-sm ${
+                    {/* Avatar with Name */}
+                    <div className="flex flex-col items-center">
+                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                         message.role === 'user' 
-                          ? 'fas fa-user' 
+                          ? 'bg-[#907AD6]' 
                           : message.role === 'system'
-                          ? 'fas fa-info'
-                          : 'fas fa-user-nurse'
-                      }`}></i>
+                          ? 'bg-blue-500'
+                          : 'bg-gray-400'
+                      }`}>
+                        <i className={`text-white text-xs sm:text-sm ${
+                          message.role === 'user' 
+                            ? 'fas fa-user' 
+                            : message.role === 'system'
+                            ? 'fas fa-info'
+                            : 'fas fa-user-nurse'
+                        }`}></i>
+                      </div>
+                      {/* Character Name */}
+                      {message.role === 'character' && scenario?.context && (
+                        <div className="text-xs text-gray-500 mt-1 text-center max-w-16 truncate">
+                          {extractPatientName(scenario.context)}
+                        </div>
+                      )}
+                      {message.role === 'user' && (
+                        <div className="text-xs text-gray-500 mt-1 text-center">
+                          You
+                        </div>
+                      )}
                     </div>
                     
                     {/* Message Content */}
@@ -767,8 +781,16 @@ export default function SimulationPage() {
               {submitResponseMutation.isPending && (
                 <div className="flex justify-start">
                   <div className="flex items-start gap-2 sm:gap-3 max-w-[85%] sm:max-w-2xl">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-user-nurse text-white text-xs sm:text-sm"></i>
+                    <div className="flex flex-col items-center">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i className="fas fa-user-nurse text-white text-xs sm:text-sm"></i>
+                      </div>
+                      {/* Patient name while thinking */}
+                      {scenario?.context && (
+                        <div className="text-xs text-gray-500 mt-1 text-center max-w-16 truncate">
+                          {extractPatientName(scenario.context)}
+                        </div>
+                      )}
                     </div>
                     <div className="bg-white px-3 py-2 sm:px-4 sm:py-3 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
                       <AIThinkingLoader size="sm" className="bg-transparent border-0 p-0" />
