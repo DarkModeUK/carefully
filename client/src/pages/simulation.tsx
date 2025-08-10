@@ -49,10 +49,12 @@ export default function SimulationPage() {
           message: msg.content
         }));
       
-      return await apiRequest('POST', `/api/scenarios/${scenarioId}/conversation`, {
+      const apiResponse = await apiRequest('POST', `/api/scenarios/${scenarioId}/conversation`, {
         message: response,
         conversationHistory
       });
+      
+      return await apiResponse.json();
     },
     onSuccess: (data) => {
       console.log('✅ Conversation API success response:', data);
@@ -80,7 +82,8 @@ export default function SimulationPage() {
       }
     },
     onError: (error: any) => {
-      console.error('Submit response error:', error);
+      console.error('❌ Submit response error:', error);
+      console.error('🔍 Error details:', error?.response?.data || error?.message);
       toast({
         title: "Error",
         description: "Failed to submit response. Please try again.",
@@ -92,7 +95,8 @@ export default function SimulationPage() {
   // Complete scenario mutation
   const completeScenarioMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest('POST', `/api/scenarios/${scenarioId}/complete`);
+      const apiResponse = await apiRequest('POST', `/api/scenarios/${scenarioId}/complete`);
+      return await apiResponse.json();
     },
     onSuccess: () => {
       setIsCompleted(true);
@@ -117,7 +121,8 @@ export default function SimulationPage() {
   // Start scenario mutation
   const startScenarioMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest('POST', `/api/scenarios/${scenarioId}/start`);
+      const apiResponse = await apiRequest('POST', `/api/scenarios/${scenarioId}/start`);
+      return await apiResponse.json();
     },
     onSuccess: (data: any) => {
       // Set up the conversation with the patient's opening message
