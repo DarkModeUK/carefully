@@ -9,12 +9,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StatCard } from "@/components/stat-card";
 import { ScenarioCard } from "@/components/scenario-card";
+import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-reaction-buttons";
+import { useToast } from "@/hooks/use-toast";
 import type { User, Scenario, UserScenario, Achievement } from "@shared/schema";
 
 export default function ProgressPage() {
   const [, setLocation] = useLocation();
   const [timeframe, setTimeframe] = useState('week');
   const [skillFilter, setSkillFilter] = useState('all');
+  const { toast } = useToast();
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ['/api/user']
@@ -472,7 +475,7 @@ export default function ProgressPage() {
                     if (!scenario) return null;
                     
                     return (
-                      <div key={activity.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+                      <div key={activity.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors group">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-full bg-secondary bg-opacity-20 flex items-center justify-center">
                             <i className="fas fa-check text-secondary"></i>
@@ -483,6 +486,22 @@ export default function ProgressPage() {
                               <span>Score: {activity.score}%</span>
                               <span>Time: {activity.totalTime}min</span>
                               <span>{activity.completedAt ? new Date(activity.completedAt).toLocaleDateString() : ''}</span>
+                            </div>
+                            {/* Recent Activity Reactions */}
+                            <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <QuickEmojiReaction
+                                type="content"
+                                contextId={`recent-activity-${activity.id}`}
+                                onReaction={(reaction) => {
+                                  toast({
+                                    title: `${reaction.emoji} ${reaction.label}!`,
+                                    description: `Reflecting on "${scenario.title}" made you feel ${reaction.description.toLowerCase()}`,
+                                    duration: 3000,
+                                  });
+                                }}
+                                size="sm"
+                                className="scale-75"
+                              />
                             </div>
                           </div>
                         </div>
@@ -536,17 +555,49 @@ export default function ProgressPage() {
                 </div>
                 <Progress value={achievementProgress.percentage} className="h-2 mb-2" />
                 <p className="text-sm text-neutral-600">{achievementProgress.percentage}% Complete</p>
+                
+                {/* Achievement Progress Reactions */}
+                {achievementProgress.unlocked > 0 && (
+                  <div className="mt-4">
+                    <EmojiReactionButtons
+                      type="achievement"
+                      contextId="achievement-progress"
+                      onReaction={(reaction) => {
+                        toast({
+                          title: `${reaction.emoji} ${reaction.label}!`,
+                          description: `Your progress feels ${reaction.description.toLowerCase()}! Keep building your care skills.`,
+                          duration: 3500,
+                        });
+                      }}
+                      className="scale-90 opacity-90 hover:opacity-100 transition-all"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3">
                 {achievements.slice(0, 3).map((achievement) => (
-                  <div key={achievement.id} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
+                  <div key={achievement.id} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg relative group">
                     <div className="w-8 h-8 rounded-full bg-accent bg-opacity-20 flex items-center justify-center">
                       <i className="fas fa-medal text-accent text-sm"></i>
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-neutral-800 text-sm">{achievement.title}</h4>
                       <p className="text-xs text-neutral-500">{achievement.description}</p>
+                    </div>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <QuickEmojiReaction
+                        type="achievement"
+                        contextId={`achievement-${achievement.id}`}
+                        onReaction={(reaction) => {
+                          toast({
+                            title: `${reaction.emoji} Achievement unlocked!`,
+                            description: `You earned "${achievement.title}" and felt ${reaction.description.toLowerCase()}`,
+                            duration: 3000,
+                          });
+                        }}
+                        size="sm"
+                      />
                     </div>
                   </div>
                 ))}

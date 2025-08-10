@@ -6,11 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-reaction-buttons";
+import { useToast } from "@/hooks/use-toast";
 import type { Scenario, UserScenario } from "@shared/schema";
 
 export default function SimulationResults() {
   const [, params] = useRoute("/simulation/:scenarioId/results");
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const scenarioId = params?.scenarioId;
 
   const { data: scenario, isLoading: scenarioLoading, error: scenarioError } = useQuery<Scenario>({
@@ -208,6 +211,23 @@ export default function SimulationResults() {
                   </div>
                 </div>
               )}
+              
+              {/* Emoji Reactions for Overall Performance */}
+              <div className="mt-6">
+                <EmojiReactionButtons
+                  type="feedback"
+                  contextId={`${scenarioId}-overall-performance`}
+                  onReaction={(reaction) => {
+                    toast({
+                      title: `${reaction.emoji} ${reaction.label}!`,
+                      description: reaction.description,
+                      duration: 3000,
+                    });
+                  }}
+                  showPersonalized={true}
+                  className="border-none shadow-md hover:shadow-lg transition-all duration-300"
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -305,10 +325,26 @@ export default function SimulationResults() {
                 
                 <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
                   <h4 className="text-lg font-medium text-amber-800 mb-2">Areas for development:</h4>
-                  <p className="text-amber-700 mb-0">
+                  <p className="text-amber-700 mb-3">
                     Continue practising to build confidence in similar scenarios. Focus on applying care principles 
                     consistently and building your communication skills through regular training sessions.
                   </p>
+                  
+                  {/* Emoji Reactions for Development Areas */}
+                  <div className="mt-4">
+                    <QuickEmojiReaction
+                      type="feedback"
+                      contextId={`${scenarioId}-development-feedback`}
+                      onReaction={(reaction) => {
+                        toast({
+                          title: `${reaction.emoji} ${reaction.label}!`,
+                          description: reaction.description,
+                          duration: 2500,
+                        });
+                      }}
+                      className="opacity-80 hover:opacity-100 transition-opacity"
+                    />
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -357,6 +393,31 @@ export default function SimulationResults() {
                 </Button>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Reflection and Final Reactions */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <i className="fas fa-heart text-pink-600"></i>
+              How did this learning experience feel?
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EmojiReactionButtons
+              type="achievement"
+              contextId={`${scenarioId}-learning-experience`}
+              onReaction={(reaction) => {
+                toast({
+                  title: `${reaction.emoji} ${reaction.label}!`,
+                  description: `This helps us understand your learning journey better. ${reaction.description}`,
+                  duration: 4000,
+                });
+              }}
+              showPersonalized={true}
+              className="border-none"
+            />
           </CardContent>
         </Card>
 

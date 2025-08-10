@@ -480,6 +480,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Emoji Reactions API
+  app.post("/api/reactions", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const reactionData = insertReactionSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const reaction = await storage.createReaction(reactionData);
+      res.status(201).json(reaction);
+    } catch (error) {
+      console.error("Error creating reaction:", error);
+      res.status(500).json({ message: "Failed to save reaction" });
+    }
+  });
+
+  app.get("/api/reactions", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { type, contextId } = req.query;
+      
+      const reactions = await storage.getUserReactions(userId, type as string, contextId as string);
+      res.json(reactions);
+    } catch (error) {
+      console.error("Error fetching reactions:", error);
+      res.status(500).json({ message: "Failed to get reactions" });
+    }
+  });
+
+  app.get("/api/reactions/analytics", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const analytics = await storage.getReactionAnalytics(userId);
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching reaction analytics:", error);
+      res.status(500).json({ message: "Failed to get reaction analytics" });
+    }
+  });
+
   // Emoji Reactions routes
   app.post('/api/reactions', isAuthenticated, async (req: any, res) => {
     try {

@@ -63,7 +63,7 @@ export interface IStorage {
   
   // Emoji Reactions
   createReaction(reaction: any): Promise<any>;
-  getUserReactions(userId: string, type: string, contextId: string): Promise<any[]>;
+  getUserReactions(userId: string, type?: string, contextId?: string): Promise<any[]>;
   getReactionAnalytics(userId: string): Promise<any>;
 }
 
