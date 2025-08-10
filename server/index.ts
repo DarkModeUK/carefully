@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import compression from "compression";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -34,6 +35,9 @@ app.use((req, res, next) => {
 
 // Add ETag support for better caching
 app.set('etag', 'strong');
+
+// Add cookie parser (required for signed cookies in authentication)
+app.use(cookieParser(process.env.SESSION_SECRET || 'fallback-secret'));
 
 // Optimize JSON parsing
 app.use(express.json({ 
