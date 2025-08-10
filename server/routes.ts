@@ -305,18 +305,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: h.message 
       }));
       
-      // Generate AI response using OpenAI
+      // Generate AI response and feedback in parallel for speed
       console.log('🤖 Calling OpenAI service...');
-      const aiResponse = await generateConversationResponse(
-        scenario.context,
-        [...historyForAI, { role: 'user', message: userResponse }],
-        "care recipient"
-      );
+      const [aiResponse, feedback] = await Promise.all([
+        generateConversationResponse(
+          scenario.context,
+          [...historyForAI, { role: 'user', message: userResponse }],
+          "care recipient"
+        ),
+        analyzeFeedback(userResponse, scenario.context, historyForAI)
+      ]);
       console.log('🎯 AI response generated:', aiResponse.message.substring(0, 50) + '...');
-      
-      // Generate feedback for the user's response
-      console.log('📊 Generating feedback...');
-      const feedback = await analyzeFeedback(userResponse, scenario.context, historyForAI);
       console.log('✅ Feedback generated');
       
       // Save the conversation turn

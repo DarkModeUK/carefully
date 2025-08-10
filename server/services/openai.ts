@@ -31,25 +31,23 @@ export async function generateConversationResponse(
     console.log('📝 Conversation history length:', conversationHistory.length);
     console.log('🎭 Character type:', characterType);
     
-    const systemPrompt = `You are roleplaying as a ${characterType} in a care training scenario. 
+    const systemPrompt = `You are a ${characterType} in a care scenario. 
 
-Scenario Context: ${scenarioContext}
+Context: ${scenarioContext.substring(0, 200)}...
 
-Instructions:
-- Stay in character throughout the conversation
-- Respond directly to what the user just said, building on their response
-- Show emotional reactions appropriate to how they're treating you
-- If they show empathy and care, become more trusting and calm
-- If they're dismissive or rushed, become more anxious or withdrawn
-- Keep responses conversational and realistic (1-2 sentences max)
-- Always respond with JSON: { "message": "your response", "sentiment": "positive/neutral/negative/distressed", "shouldContinue": true }
+Rules:
+- Stay in character
+- React to their tone and approach
+- Be empathetic if they are, anxious if they're dismissive
+- Keep responses short (1 sentence)
+- JSON format: { "message": "response", "sentiment": "positive/neutral/negative/distressed", "shouldContinue": true }
 
-Current conversation:
-${conversationHistory.map(h => `${h.role === 'user' ? 'Care Worker' : 'Patient'}: ${h.message}`).join('\n')}`;
+Last exchange:
+${conversationHistory.slice(-2).map(h => `${h.role === 'user' ? 'Worker' : 'Patient'}: ${h.message}`).join('\n')}`;
 
     console.log('🤖 Making OpenAI API call...');
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // Faster model for better response time
+      model: "gpt-4o-mini", // Fastest model
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: conversationHistory.length === 0 ? 
@@ -57,8 +55,8 @@ ${conversationHistory.map(h => `${h.role === 'user' ? 'Care Worker' : 'Patient'}
           "Respond to what the care worker just said." }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.7,
-      max_tokens: 150, // Limit tokens for faster response
+      temperature: 0.6,
+      max_tokens: 60, // Very short for speed
     });
 
     console.log('✅ OpenAI response received');
@@ -87,67 +85,38 @@ export async function analyzeFeedback(
   conversationHistory: { role: 'user' | 'character'; message: string }[]
 ): Promise<FeedbackAnalysis> {
   try {
-    const conversationContextText = conversationHistory.slice(-4).map(msg => 
-      `${msg.role === 'user' ? 'Care Worker' : 'Patient'}: ${msg.message}`
+    const recentChat = conversationHistory.slice(-2).map(msg => 
+      `${msg.role === 'user' ? 'Worker' : 'Patient'}: ${msg.message}`
     ).join('\n');
 
-    const systemPrompt = `As an expert care training assessor, provide detailed, constructive feedback on this care worker's response.
+    const systemPrompt = `Assess this care worker response quickly:
 
-SCENARIO CONTEXT:
-${scenarioContext}
+Context: ${scenarioContext.substring(0, 150)}...
+Recent chat: ${recentChat}
+Response: "${userMessage}"
 
-RECENT CONVERSATION:
-${conversationContextText}
-
-CURRENT RESPONSE TO EVALUATE:
-Care Worker: "${userMessage}"
-
-ASSESSMENT CRITERIA:
-Evaluate the response across these key care competencies:
-
-1. EMPATHY & EMOTIONAL INTELLIGENCE (1-5)
-   - Acknowledges patient's feelings and concerns
-   - Uses validating language
-   - Shows genuine understanding
-
-2. COMMUNICATION SKILLS (1-5)
-   - Clear, respectful, age-appropriate language
-   - Active listening demonstrated
-   - Avoids jargon or condescending tone
-
-3. PROFESSIONALISM (1-5)
-   - Maintains appropriate boundaries
-   - Follows care protocols
-   - Demonstrates dignity and respect
-
-4. PROBLEM-SOLVING APPROACH (1-5)
-   - Offers practical solutions
-   - Uses person-centred approach
-   - Considers multiple options
-
-Provide detailed feedback in JSON format:
+Rate 1-5: empathy, communication, professionalism, problemSolving
+Give brief feedback in JSON:
 {
   "empathy": 1-5,
   "communication": 1-5,
   "professionalism": 1-5,
   "problemSolving": 1-5,
-  "summary": "Detailed constructive feedback (2-3 sentences) highlighting specific strengths and areas for improvement with examples",
-  "strengths": ["specific strength with context", "another specific strength"],
-  "improvements": ["specific improvement with actionable suggestion", "another improvement area"],
-  "quickSummary": "One key actionable takeaway for immediate improvement"
-}
-
-Focus on being specific, constructive, and encouraging. Reference their actual words where possible.`;
+  "summary": "Brief constructive feedback (1-2 sentences)",
+  "strengths": ["main strength"],
+  "improvements": ["key improvement"],
+  "quickSummary": "One actionable tip"
+}`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini", // Use faster model for feedback too
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: "Provide detailed feedback analysis." }
+        { role: "user", content: "Provide feedback analysis." }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.4,
-      max_tokens: 500,
+      temperature: 0.3, // Lower for consistency and speed
+      max_tokens: 250, // Reduced for faster generation
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
