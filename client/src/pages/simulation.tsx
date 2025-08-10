@@ -22,12 +22,16 @@ export default function SimulationPage() {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [userResponse, setUserResponse] = useState("");
-  const [conversation, setConversation] = useState<{ role: 'user' | 'character' | 'system'; content: string; feedback?: any }[]>([]);
+  const [conversation, setConversation] = useState<{ role: 'user' | 'character' | 'system'; content: string; feedback?: any; learningHints?: any[]; alternatives?: any[] }[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [viewState, setViewState] = useState<'preparation' | 'simulation' | 'completed'>('preparation');
-  const [isListening, setIsListening] = useState(false); // Quick Win: Voice responses
-  const [timeRemaining, setTimeRemaining] = useState(0); // Countdown timer
+  const [isListening, setIsListening] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(0);
   const [startTime, setStartTime] = useState<Date | null>(null);
+  const [showLearningHints, setShowLearningHints] = useState(true);
+  const [showAlternatives, setShowAlternatives] = useState(false);
+  const [conversationAnalysis, setConversationAnalysis] = useState<any>(null);
+  const [currentHints, setCurrentHints] = useState<any[]>([]);
 
   // Fetch scenario data
   const { data: scenario, isLoading: scenarioLoading } = useQuery({
@@ -62,10 +66,20 @@ export default function SimulationPage() {
     onSuccess: (data) => {
       const newMessages = [
         { role: 'user' as const, content: userResponse },
-        { role: 'character' as const, content: data.aiResponse, feedback: data.feedback }
+        { 
+          role: 'character' as const, 
+          content: data.aiResponse, 
+          feedback: data.feedback,
+          learningHints: data.learningHints || [],
+          alternatives: data.alternatives || []
+        }
       ];
       
       setConversation(prev => [...prev, ...newMessages]);
+      
+      // Update learning data
+      if (data.learningHints) setCurrentHints(data.learningHints);
+      if (data.conversationAnalysis) setConversationAnalysis(data.conversationAnalysis);
       
       setUserResponse("");
       const newStep = currentStep + 1;

@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { generateConversationResponse, analyzeFeedback } from "./services/openai";
+import { generateLearningHints, analyzeConversationFlow, generateAlternativeResponses } from "./services/learning-enhancements";
 import { insertUserScenarioSchema, insertReactionSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -302,18 +303,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: h.message 
       }));
       
-      // Generate AI response and feedback in parallel for speed
-      console.log('🤖 Calling OpenAI service...');
-      const [aiResponse, feedback] = await Promise.all([
+      // Generate AI response, feedback, and learning enhancements in parallel for speed
+      console.log('🤖 Calling AI services...');
+      const [aiResponse, feedback, learningHints, conversationAnalysis, alternatives] = await Promise.all([
         generateConversationResponse(
           scenario.context,
           [...historyForAI, { role: 'user', message: userResponse }],
           "care recipient"
         ),
-        analyzeFeedback(userResponse, scenario.context, historyForAI)
+        analyzeFeedback(userResponse, scenario.context, historyForAI),
+        generateLearningHints(userResponse, scenario.context, historyForAI, 'neutral'),
+        analyzeConversationFlow([...historyForAI, { role: 'user', message: userResponse }], scenario.context),
+        generateAlternativeResponses(userResponse, scenario.context, historyForAI)
       ]);
       console.log('🎯 AI response generated:', aiResponse.message.substring(0, 50) + '...');
-      console.log('✅ Feedback generated');
+      console.log('✅ All learning enhancements generated');
       
       // Save the conversation turn and update time tracking
       const userId = req.user.claims.sub;
@@ -348,7 +352,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         aiResponse: aiResponse.message,
         sentiment: aiResponse.sentiment,
         shouldContinue: aiResponse.shouldContinue,
-        feedback: feedback
+        feedback: feedback,
+        learningHints: learningHints,
+        conversationAnalysis: conversationAnalysis,
+        alternatives: alternatives
       });
     } catch (error: any) {
       console.error('❌ Conversation error:', error);
