@@ -74,8 +74,10 @@ function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
-        {isLoading || !isAuthenticated ? (
-          <Route path="/" component={Landing} />
+        {isLoading ? (
+          <Route path="*" component={() => <PageLoader />} />
+        ) : !isAuthenticated ? (
+          <Route path="*" component={Landing} />
         ) : (
           <>
             <Route path="/" component={Dashboard} />
@@ -100,9 +102,10 @@ function Router() {
             {/* Role-specific dashboards */}
             <Route path="/manager-dashboard" component={ManagerDashboard} />
             <Route path="/recruiter-dashboard" component={RecruiterDashboard} />
+            
+            <Route component={NotFound} />
           </>
         )}
-        <Route component={NotFound} />
       </Switch>
     </Suspense>
   );

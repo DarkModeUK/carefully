@@ -206,12 +206,23 @@ export async function setupAuth(app: Express) {
         console.log('Session ID after login:', req.sessionID);
         console.log('Session passport after login:', (req.session as any).passport ? 'exists' : 'none');
         
-        // Force session save before redirect
+        // Force session save before redirect and set explicit cookie
         req.session.save((err) => {
           if (err) {
             console.error('Session save error:', err);
           }
           console.log('Session saved successfully');
+          console.log('Final session ID for redirect:', req.sessionID);
+          
+          // Explicitly set session cookie to ensure it persists
+          res.cookie('connect.sid', `s:${req.sessionID}`, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            sameSite: 'lax',
+            path: '/'
+          });
+          
           return res.redirect('/dashboard');
         });
       });
