@@ -83,7 +83,7 @@ export default function Landing() {
             
             <Card className="border-l-4 border-l-orange-400">
               <CardHeader>
-                <CardTitle className="text-orange-600 text-lg">Passive</CardTitle>
+                <CardTitle className="text-orange-600 text-lg">Passive Learning</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription>
