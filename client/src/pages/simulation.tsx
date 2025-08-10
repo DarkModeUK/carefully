@@ -57,19 +57,12 @@ export default function SimulationPage() {
       return await apiResponse.json();
     },
     onSuccess: (data) => {
-      console.log('✅ Conversation API success response:', data);
-      console.log('🔍 Current conversation before update:', conversation);
-      
       const newMessages = [
         { role: 'user' as const, content: userResponse },
         { role: 'character' as const, content: data.aiResponse, feedback: data.feedback }
       ];
       
-      setConversation(prev => {
-        const updated = [...prev, ...newMessages];
-        console.log('🔄 Updated conversation:', updated);
-        return updated;
-      });
+      setConversation(prev => [...prev, ...newMessages]);
       
       setUserResponse("");
       const newStep = currentStep + 1;
@@ -126,9 +119,13 @@ export default function SimulationPage() {
     },
     onSuccess: (data: any) => {
       // Set up the conversation with the patient's opening message
+      const initialMessage = typeof data.initialMessage === 'string' 
+        ? data.initialMessage 
+        : data.initialMessage?.message || 'Hello, I need to speak with someone about my care...';
+        
       const initialMessages = [
         { role: 'system' as const, content: 'Training simulation started. The patient will now speak to you.' },
-        { role: 'character' as const, content: data.initialMessage || 'Hello, I need to speak with someone about my care...' }
+        { role: 'character' as const, content: initialMessage }
       ];
       setConversation(initialMessages);
       setViewState('simulation');
@@ -183,7 +180,7 @@ export default function SimulationPage() {
         systemMessage,
         ...userScenario.responses.map((response: any, index: number) => [
           { role: 'user' as const, content: response.userResponse },
-          { role: 'character' as const, content: response.aiResponse, feedback: response.feedback }
+          { role: 'character' as const, content: typeof response.aiResponse === 'string' ? response.aiResponse : response.aiResponse?.message || '', feedback: response.feedback }
         ]).flat().filter(Boolean)
       ];
       setConversation(restoredConversation);
@@ -505,7 +502,6 @@ export default function SimulationPage() {
           {/* Chat Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6">
             <div className="space-y-6">
-              {console.log('🎭 Rendering conversation:', conversation)}
               {conversation.map((message, index) => (
                 <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex items-start gap-3 max-w-2xl ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
