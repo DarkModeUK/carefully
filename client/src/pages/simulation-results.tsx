@@ -13,14 +13,25 @@ export default function SimulationResults() {
   const [, setLocation] = useLocation();
   const scenarioId = params?.scenarioId;
 
-  const { data: scenario, isLoading: scenarioLoading } = useQuery<Scenario>({
+  const { data: scenario, isLoading: scenarioLoading, error: scenarioError } = useQuery<Scenario>({
     queryKey: ['/api/scenarios', scenarioId],
     enabled: !!scenarioId
   });
 
-  const { data: userScenario, isLoading: userScenarioLoading } = useQuery<UserScenario>({
+  const { data: userScenario, isLoading: userScenarioLoading, error: userScenarioError } = useQuery<UserScenario>({
     queryKey: ['/api/user/scenarios', scenarioId],
     enabled: !!scenarioId
+  });
+
+  // Debug logging
+  console.log('🔍 Results page debug:', {
+    scenarioId,
+    scenario: !!scenario,
+    userScenario: !!userScenario,
+    scenarioLoading,
+    userScenarioLoading,
+    scenarioError,
+    userScenarioError
   });
 
   const isLoading = scenarioLoading || userScenarioLoading;
@@ -72,6 +83,12 @@ export default function SimulationResults() {
             <p className="text-gray-600 mb-4">
               We couldn't find the results for this scenario. This may be because the scenario hasn't been completed yet.
             </p>
+            <div className="text-xs text-gray-500 mb-4">
+              Debug: Scenario ID: {scenarioId}<br/>
+              Scenario: {scenario ? 'Found' : 'Not found'}<br/>
+              User Scenario: {userScenario ? 'Found' : 'Not found'}<br/>
+              Errors: {scenarioError?.message || userScenarioError?.message || 'None'}
+            </div>
             <Button onClick={() => setLocation('/dashboard')} className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white">
               Return to Dashboard
             </Button>
@@ -97,7 +114,8 @@ export default function SimulationResults() {
     return category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
-  const overallScore = userScenario.score || 0;
+  // Calculate a score based on completion and progress
+  const overallScore = userScenario.score || Math.min(Math.round((userScenario.progress || 0) * 0.8 + 20), 100);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#907AD6]/5 to-[#7FDEFF]/5">
