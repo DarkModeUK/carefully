@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Scenario } from "@shared/schema";
+import type { Scenario, UserScenario } from "@shared/schema";
 
 export default function ScenariosPage() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
@@ -17,6 +17,10 @@ export default function ScenariosPage() {
 
   const { data: scenarios = [], isLoading } = useQuery<Scenario[]>({
     queryKey: ['/api/scenarios']
+  });
+
+  const { data: userScenarios = [] } = useQuery<UserScenario[]>({
+    queryKey: ['/api/user/scenarios']
   });
 
   const filteredScenarios = scenarios.filter(scenario => {
@@ -121,13 +125,17 @@ export default function ScenariosPage() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredScenarios.map((scenario) => (
-                <div key={scenario.id} className="h-fit">
-                  <ScenarioCard
-                    scenario={scenario}
-                  />
-                </div>
-              ))}
+              {filteredScenarios.map((scenario) => {
+                const userScenario = userScenarios.find(us => us.scenarioId === scenario.id);
+                return (
+                  <div key={scenario.id} className="h-fit">
+                    <ScenarioCard
+                      scenario={scenario}
+                      userScenario={userScenario}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </>

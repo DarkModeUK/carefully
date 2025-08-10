@@ -171,14 +171,18 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   {scenarios.filter(scenario => 
                     user.preferences?.bookmarkedScenarios?.includes(scenario.id)
-                  ).slice(0, 2).map((scenario) => (
-                    <ScenarioCard
-                      key={scenario.id}
-                      scenario={scenario}
-                      isBookmarked={true}
-                      showBookmark={false}
-                    />
-                  ))}
+                  ).slice(0, 2).map((scenario) => {
+                    const userScenario = userScenarios.find(us => us.scenarioId === scenario.id);
+                    return (
+                      <ScenarioCard
+                        key={scenario.id}
+                        scenario={scenario}
+                        userScenario={userScenario}
+                        isBookmarked={true}
+                        showBookmark={false}
+                      />
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -203,13 +207,17 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {scenarios.slice(0, 3).map((scenario) => (
-                    <ScenarioCard
-                      key={scenario.id}
-                      scenario={scenario}
-                      isBookmarked={user?.preferences?.bookmarkedScenarios?.includes(scenario.id)}
-                    />
-                  ))}
+                  {scenarios.slice(0, 3).map((scenario) => {
+                    const userScenario = userScenarios.find(us => us.scenarioId === scenario.id);
+                    return (
+                      <ScenarioCard
+                        key={scenario.id}
+                        scenario={scenario}
+                        userScenario={userScenario}
+                        isBookmarked={user?.preferences?.bookmarkedScenarios?.includes(scenario.id)}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

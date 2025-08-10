@@ -1,11 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { Scenario } from "@shared/schema";
+import type { Scenario, UserScenario } from "@shared/schema";
 import { memo, useState } from "react";
 
 interface ScenarioCardProps {
@@ -13,6 +14,7 @@ interface ScenarioCardProps {
   onClick?: () => void;
   isBookmarked?: boolean; // Quick Win: Scenario bookmarking
   showBookmark?: boolean;
+  userScenario?: UserScenario; // Progress status information
 }
 
 const priorityConfig = {
@@ -59,11 +61,36 @@ const categoryLabels: Record<string, string> = {
   safeguarding: 'Safeguarding'
 };
 
-export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, showBookmark = true }: ScenarioCardProps) => {
+const statusConfig = {
+  not_started: {
+    label: 'Not Started',
+    color: 'bg-neutral-100 text-neutral-600 border-neutral-200',
+    icon: 'fas fa-play-circle',
+    buttonText: 'Start Training'
+  },
+  in_progress: {
+    label: 'In Progress',
+    color: 'bg-blue-100 text-blue-700 border-blue-200',
+    icon: 'fas fa-spinner',
+    buttonText: 'Continue'
+  },
+  completed: {
+    label: 'Completed',
+    color: 'bg-green-100 text-green-700 border-green-200',
+    icon: 'fas fa-check-circle',
+    buttonText: 'Review Results'
+  }
+};
+
+export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, showBookmark = true, userScenario }: ScenarioCardProps) => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [bookmarked, setBookmarked] = useState(isBookmarked);
+  
+  // Determine the progress status
+  const status = userScenario?.status || 'not_started';
+  const progress = userScenario?.progress || 0;
   
   const handleClick = () => {
     if (onClick) {
@@ -124,10 +151,17 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
         )}
         
         <div className="flex items-start justify-between mb-3 pr-8">
-          <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color} transition-all duration-300 hover:scale-105 hover-bounce`}>
-            <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
-            <span className="capitalize font-medium">{scenario.priority}</span>
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className={`flex items-center gap-1 ${priorityConfig[scenario.priority as keyof typeof priorityConfig].color} transition-all duration-300 hover:scale-105 hover-bounce`}>
+              <i className={`${priorityConfig[scenario.priority as keyof typeof priorityConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
+              <span className="capitalize font-medium">{scenario.priority}</span>
+            </Badge>
+            {/* Progress status badge */}
+            <Badge className={`flex items-center gap-1 ${statusConfig[status as keyof typeof statusConfig].color} transition-all duration-300 hover:scale-105 hover-bounce`}>
+              <i className={`${statusConfig[status as keyof typeof statusConfig].icon} text-xs transition-transform duration-300 ${status === 'in_progress' ? 'fa-spin' : 'group-hover:rotate-12'}`}></i>
+              <span className="text-sm font-medium">{statusConfig[status as keyof typeof statusConfig].label}</span>
+            </Badge>
+          </div>
           {/* Quick Win: Enhanced difficulty tags */}
           <Badge className={`flex items-center gap-1 ${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].color} transition-all duration-300 hover:scale-105 hover-bounce float-animation`}>
             <i className={`${difficultyConfig[scenario.difficulty as keyof typeof difficultyConfig].icon} text-xs transition-transform duration-300 group-hover:rotate-12`}></i>
@@ -143,6 +177,17 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
           {scenario.description}
         </p>
         
+        {/* Progress bar for in-progress scenarios */}
+        {status === 'in_progress' && progress > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between text-xs text-neutral-500 mb-1">
+              <span>Progress</span>
+              <span>{progress}%</span>
+            </div>
+            <Progress value={progress} className="h-2" />
+          </div>
+        )}
+        
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 text-sm text-neutral-500 group-hover:text-neutral-700 transition-colors duration-300">
             <div className="flex items-center gap-1 hover-bounce">
@@ -155,11 +200,29 @@ export const ScenarioCard = memo(({ scenario, onClick, isBookmarked = false, sho
             </div>
           </div>
           
-          <Button variant="outline" size="sm" className="transition-all duration-300 hover-glow btn-press btn-ripple group-hover:scale-105" onClick={(e) => {
-            e.stopPropagation();
-            setLocation(`/simulation/${scenario.id}`);
-          }}>
-            Start Training <i className="fas fa-arrow-right ml-1 transition-transform duration-300 group-hover:translate-x-1"></i>
+          <Button 
+            variant={status === 'completed' ? 'default' : 'outline'} 
+            size="sm" 
+            className={`transition-all duration-300 hover-glow btn-press btn-ripple group-hover:scale-105 ${
+              status === 'completed' ? 'bg-green-600 hover:bg-green-700 text-white' :
+              status === 'in_progress' ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600' :
+              ''
+            }`} 
+            onClick={(e) => {
+              e.stopPropagation();
+              if (status === 'completed') {
+                setLocation(`/simulation/${scenario.id}/results`);
+              } else {
+                setLocation(`/simulation/${scenario.id}`);
+              }
+            }}
+          >
+            {statusConfig[status as keyof typeof statusConfig].buttonText} 
+            <i className={`fas ${
+              status === 'completed' ? 'fa-eye' : 
+              status === 'in_progress' ? 'fa-play' : 
+              'fa-arrow-right'
+            } ml-1 transition-transform duration-300 group-hover:translate-x-1`}></i>
           </Button>
         </div>
       </CardContent>

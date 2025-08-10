@@ -13,7 +13,7 @@ import { SkillProgress } from "@/components/skill-progress";
 import { useToast } from "@/hooks/use-toast";
 import { ContentSkeleton, CardSkeleton, VoiceProcessingLoader } from "@/components/smart-loading";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { User, Scenario } from "@shared/schema";
+import type { User, Scenario, UserScenario } from "@shared/schema";
 
 export default function ProfilePage() {
   const [, setLocation] = useLocation();
@@ -27,6 +27,10 @@ export default function ProfilePage() {
 
   const { data: scenarios = [] } = useQuery<Scenario[]>({
     queryKey: ['/api/scenarios']
+  });
+
+  const { data: userScenarios = [] } = useQuery<UserScenario[]>({
+    queryKey: ['/api/user/scenarios']
   });
 
   const updateProfileMutation = useMutation({
@@ -624,14 +628,17 @@ export default function ProfilePage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {recommendedScenarios.map((scenario) => (
-                  <div key={scenario.id} className="relative">
-                    <ScenarioCard scenario={scenario} />
-                    <Badge className="absolute -top-2 -right-2 bg-secondary text-brand-dark">
-                      Recommended
-                    </Badge>
-                  </div>
-                ))}
+                {recommendedScenarios.map((scenario) => {
+                  const userScenario = userScenarios.find(us => us.scenarioId === scenario.id);
+                  return (
+                    <div key={scenario.id} className="relative">
+                      <ScenarioCard scenario={scenario} userScenario={userScenario} />
+                      <Badge className="absolute -top-2 -right-2 bg-secondary text-brand-dark">
+                        Recommended
+                      </Badge>
+                    </div>
+                  );
+                })}
               </div>
 
               {recommendedScenarios.length === 0 && (
