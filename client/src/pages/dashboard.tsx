@@ -227,28 +227,7 @@ export default function Dashboard() {
         {/* Right Column - Progress & Achievements */}
         <div className="space-y-8">
           
-          {/* Skill Progress - Only show if user has completed scenarios */}
-          {userStats && userStats.completedScenarios > 0 && (
-            <Card className="fade-in-right hover-lift transition-all duration-300 hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 hover:text-primary transition-colors duration-300">
-                  <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
-                  Skill Progress
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {user?.skillLevels ? (
-                  <SkillProgress skills={user.skillLevels} />
-                ) : (
-                  <div className="space-y-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <Skeleton key={i} className="h-8" />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
+
 
           {/* Recent Achievements - Only show if user has achievements */}
           {!achievementsLoading && achievements.length > 0 && (
