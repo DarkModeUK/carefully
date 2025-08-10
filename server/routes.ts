@@ -251,10 +251,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Send message in conversation
   const conversationSchema = z.object({
-    userResponse: z.string().min(1), // Changed from 'message' to 'userResponse'
+    message: z.string().min(1), // Frontend sends 'message'
     conversationHistory: z.array(z.object({
       role: z.enum(['user', 'character']),
-      content: z.string() // Changed from 'message' to 'content'
+      message: z.string() // Frontend sends 'message' in history items
     })).default([])
   });
 
@@ -262,7 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('🗣️ Processing conversation request for scenario:', req.params.id);
       const scenarioId = req.params.id;
-      const { userResponse, conversationHistory } = conversationSchema.parse(req.body);
+      const { message: userResponse, conversationHistory } = conversationSchema.parse(req.body);
       console.log('📨 User response:', userResponse);
       console.log('💬 Conversation history length:', conversationHistory?.length || 0);
       
@@ -278,7 +278,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Convert conversation history to match OpenAI service format
       const historyForAI = conversationHistory.map(h => ({ 
         role: h.role, 
-        message: h.content 
+        message: h.message 
       }));
       
       // Generate AI response using OpenAI
@@ -322,14 +322,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         shouldContinue: aiResponse.shouldContinue,
         feedback: feedback
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Conversation error:', error);
       console.error('🔍 Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack?.split('\n').slice(0, 3).join('\n')
+        name: error?.name,
+        message: error?.message,
+        stack: error?.stack?.split('\n').slice(0, 3).join('\n')
       });
-      res.status(500).json({ message: "Failed to process conversation", error: error.message });
+      res.status(500).json({ message: "Failed to process conversation", error: error?.message });
     }
   });
 
