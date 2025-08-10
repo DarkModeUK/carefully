@@ -87,6 +87,7 @@ export async function setupAuth(app: Express) {
     console.log('Session exists:', !!req.session);
     console.log('Session passport:', req.session?.passport ? 'exists' : 'none');
     console.log('req.isAuthenticated():', req.isAuthenticated ? req.isAuthenticated() : 'no method');
+    console.log('Cookies received:', req.headers.cookie || 'none');
     next();
   });
 
@@ -202,7 +203,15 @@ export async function setupAuth(app: Express) {
         console.log('User successfully logged in');
         console.log('Session ID after login:', req.sessionID);
         console.log('Session passport after login:', (req.session as any).passport ? 'exists' : 'none');
-        return res.redirect('/dashboard');
+        
+        // Force session save before redirect
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save error:', err);
+          }
+          console.log('Session saved successfully');
+          return res.redirect('/dashboard');
+        });
       });
     })(req, res, next);
   });
