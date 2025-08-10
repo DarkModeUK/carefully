@@ -28,7 +28,6 @@ export default function Landing() {
           </div>
         </div>
       </header>
-
       {/* Hero Section */}
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-4xl mx-auto text-center">
@@ -61,7 +60,6 @@ export default function Landing() {
           </p>
         </div>
       </section>
-
       {/* Problems Section */}
       <section className="px-4 lg:px-6 py-16 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -118,13 +116,12 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Solution Section */}
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">
-              From tick-box training to real human skill.
+              The human skills care demands — made simple to learn.
             </h2>
             <p className="text-xl text-gray-600 mb-8">
               Carefully's browser-based AI roleplay lets staff:
@@ -176,13 +173,10 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Why It Works Section */}
       <section className="px-4 lg:px-6 py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">
-            Why It Works
-          </h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">How it Works</h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="text-center">
@@ -219,7 +213,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Who It's For Section */}
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-6xl mx-auto">
@@ -272,7 +265,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Outcomes Section */}
       <section className="px-4 lg:px-6 py-16 bg-[#2C2A4A]">
         <div className="max-w-6xl mx-auto text-center">
@@ -307,7 +299,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* CTA Section */}
       <section className="px-4 lg:px-6 py-16 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF]">
         <div className="max-w-4xl mx-auto text-center">
@@ -330,7 +321,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="px-4 lg:px-6 py-8 bg-gray-900">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
