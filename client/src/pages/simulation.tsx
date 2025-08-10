@@ -88,7 +88,12 @@ export default function SimulationPage() {
   // Complete scenario mutation
   const completeScenarioMutation = useMutation({
     mutationFn: async () => {
-      const apiResponse = await apiRequest('POST', `/api/scenarios/${scenarioId}/complete`);
+      // Calculate elapsed time in minutes
+      const elapsedTime = startTime ? Math.round((new Date().getTime() - startTime.getTime()) / (1000 * 60)) : 0;
+      
+      const apiResponse = await apiRequest('POST', `/api/scenarios/${scenarioId}/complete`, {
+        totalTime: elapsedTime
+      });
       return await apiResponse.json();
     },
     onSuccess: () => {

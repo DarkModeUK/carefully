@@ -397,16 +397,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const scenarioId = req.params.id;
       const userId = req.user.claims.sub;
+      const { totalTime } = req.body;
       
       const userScenario = await storage.getUserScenario(userId, scenarioId);
       if (!userScenario) {
         return res.status(404).json({ message: "User scenario not found" });
       }
 
-      // Update scenario as completed
+      // Update scenario as completed with the actual time spent
       const completedScenario = await storage.updateUserScenario(userScenario.id, {
         status: "completed",
         progress: 100,
+        totalTime: totalTime || 0,
         completedAt: new Date(),
       });
 
@@ -415,12 +417,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (currentUser) {
         await storage.updateUser(userId, {
           totalScenarios: (currentUser.totalScenarios || 0) + 1,
-          totalTime: (currentUser.totalTime || 0) + (completedScenario?.totalTime || 0),
+          totalTime: (currentUser.totalTime || 0) + (totalTime || 0),
         });
       }
 
       res.json(completedScenario);
     } catch (error) {
+      console.error("Error completing scenario:", error);
       res.status(500).json({ message: "Failed to complete scenario" });
     }
   });
