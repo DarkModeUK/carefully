@@ -89,7 +89,7 @@ export default function Landing() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  No practice, no feedback, no growth.
+                  Traditional e-learning means clicking through slides or watching videos with little opportunity to practise skills, learn from mistakes, or receive meaningful feedback.
                 </CardDescription>
               </CardContent>
             </Card>
