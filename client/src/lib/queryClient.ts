@@ -54,8 +54,6 @@ export const queryClient = new QueryClient({
       },
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
-      // Enable background refetching
-      refetchInterval: 1000 * 60 * 15, // 15 minutes for important data
       // Optimize network requests
       networkMode: 'online',
       refetchOnMount: false,
