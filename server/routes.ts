@@ -409,12 +409,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Calculate score based on feedback received during the scenario
-      const calculateScenarioScore = (responses: any[] = []) => {
-        if (responses.length === 0) return 75; // Default score if no responses
-        
-        let totalScore = 0;
+      const calculateScenarioScore = (responses: any[] = [], scenario: any) => {
+        // Base score calculation from actual responses and engagement
+        let baseScore = 0;
+        let totalFeedbackScore = 0;
         let feedbackCount = 0;
+        let totalResponses = responses.length;
         
+        // Calculate score from AI feedback metrics
         responses.forEach(response => {
           if (response.feedback) {
             const feedback = response.feedback;
@@ -428,21 +430,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             if (metrics.length > 0) {
               const avgMetricScore = metrics.reduce((sum, score) => sum + score, 0) / metrics.length;
-              totalScore += (avgMetricScore / 5) * 100; // Convert to percentage
+              totalFeedbackScore += (avgMetricScore / 5) * 100; // Convert to percentage
               feedbackCount++;
             }
           }
         });
         
-        if (feedbackCount === 0) {
-          // Generate realistic score based on scenario completion
-          return Math.floor(Math.random() * 25) + 70; // 70-95% range
+        // If we have feedback scores, use them as primary indicator
+        if (feedbackCount > 0) {
+          baseScore = Math.round(totalFeedbackScore / feedbackCount);
+        } else {
+          // Calculate engagement-based score when no AI feedback is available
+          if (totalResponses === 0) {
+            return 30; // Very low score for no engagement
+          } else if (totalResponses === 1) {
+            return 45; // Low score for minimal engagement
+          } else if (totalResponses <= 3) {
+            return 65; // Medium score for moderate engagement
+          } else {
+            return 80; // Good score for active engagement
+          }
         }
         
-        return Math.round(totalScore / feedbackCount);
+        // Apply engagement bonus/penalty based on number of responses
+        let engagementMultiplier = 1.0;
+        if (totalResponses >= 5) {
+          engagementMultiplier = 1.1; // 10% bonus for high engagement
+        } else if (totalResponses <= 2) {
+          engagementMultiplier = 0.9; // 10% penalty for low engagement
+        }
+        
+        // Apply time-based consideration (if completed too quickly, apply penalty)
+        const estimatedTime = scenario?.estimatedTime || 10;
+        const actualTime = totalTime || estimatedTime;
+        if (actualTime < estimatedTime * 0.5) {
+          engagementMultiplier *= 0.95; // 5% penalty for rushing
+        }
+        
+        const finalScore = Math.round(Math.min(baseScore * engagementMultiplier, 100));
+        return Math.max(finalScore, 20); // Minimum score of 20%
       };
 
-      const finalScore = calculateScenarioScore(userScenario.responses || []);
+      // Get the scenario details for more accurate scoring
+      const scenario = await storage.getScenario(scenarioId);
+      const finalScore = calculateScenarioScore(userScenario.responses || [], scenario);
 
       // Update scenario as completed with the actual time spent and calculated score
       const completedScenario = await storage.updateUserScenario(userScenario.id, {

@@ -183,8 +183,8 @@ export default function SimulationResults() {
     return category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
-  // Calculate a score based on completion and progress
-  const overallScore = userScenario.score || Math.min(Math.round((userScenario.progress || 0) * 0.8 + 20), 100);
+  // Use the authentic score calculated during scenario completion
+  const overallScore = userScenario.score || 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#907AD6]/5 to-[#7FDEFF]/5">
@@ -285,6 +285,85 @@ export default function SimulationResults() {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Individual Skills Breakdown */}
+            {userScenario.feedback && Array.isArray(userScenario.feedback) && userScenario.feedback.length > 0 && (() => {
+              // Calculate average skill scores from all feedback
+              const skillTotals = { empathy: 0, communication: 0, professionalism: 0, problemSolving: 0 };
+              const skillCounts = { empathy: 0, communication: 0, professionalism: 0, problemSolving: 0 };
+              
+              userScenario.feedback.forEach(feedback => {
+                if (feedback.empathy) { skillTotals.empathy += feedback.empathy; skillCounts.empathy++; }
+                if (feedback.communication) { skillTotals.communication += feedback.communication; skillCounts.communication++; }
+                if (feedback.professionalism) { skillTotals.professionalism += feedback.professionalism; skillCounts.professionalism++; }
+                if (feedback.problemSolving) { skillTotals.problemSolving += feedback.problemSolving; skillCounts.problemSolving++; }
+              });
+              
+              const skillAverages = {
+                empathy: skillCounts.empathy > 0 ? Math.round((skillTotals.empathy / skillCounts.empathy) * 20) : null,
+                communication: skillCounts.communication > 0 ? Math.round((skillTotals.communication / skillCounts.communication) * 20) : null,
+                professionalism: skillCounts.professionalism > 0 ? Math.round((skillTotals.professionalism / skillCounts.professionalism) * 20) : null,
+                problemSolving: skillCounts.problemSolving > 0 ? Math.round((skillTotals.problemSolving / skillCounts.problemSolving) * 20) : null,
+              };
+              
+              return (
+                <>
+                  <div className="col-span-full mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Individual Skills Assessment</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {skillAverages.empathy && (
+                        <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                          <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i className="fas fa-heart text-blue-600"></i>
+                          </div>
+                          <h4 className="font-medium text-gray-800 mb-1">Empathy</h4>
+                          <div className={`text-lg font-bold ${getScoreTextColor(skillAverages.empathy)}`}>
+                            {skillAverages.empathy}%
+                          </div>
+                          <Progress value={skillAverages.empathy} className="mt-2" />
+                        </div>
+                      )}
+                      {skillAverages.communication && (
+                        <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                          <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-100 flex items-center justify-center">
+                            <i className="fas fa-comments text-green-600"></i>
+                          </div>
+                          <h4 className="font-medium text-gray-800 mb-1">Communication</h4>
+                          <div className={`text-lg font-bold ${getScoreTextColor(skillAverages.communication)}`}>
+                            {skillAverages.communication}%
+                          </div>
+                          <Progress value={skillAverages.communication} className="mt-2" />
+                        </div>
+                      )}
+                      {skillAverages.professionalism && (
+                        <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                          <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-purple-100 flex items-center justify-center">
+                            <i className="fas fa-user-tie text-purple-600"></i>
+                          </div>
+                          <h4 className="font-medium text-gray-800 mb-1">Professionalism</h4>
+                          <div className={`text-lg font-bold ${getScoreTextColor(skillAverages.professionalism)}`}>
+                            {skillAverages.professionalism}%
+                          </div>
+                          <Progress value={skillAverages.professionalism} className="mt-2" />
+                        </div>
+                      )}
+                      {skillAverages.problemSolving && (
+                        <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                          <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-orange-100 flex items-center justify-center">
+                            <i className="fas fa-lightbulb text-orange-600"></i>
+                          </div>
+                          <h4 className="font-medium text-gray-800 mb-1">Problem Solving</h4>
+                          <div className={`text-lg font-bold ${getScoreTextColor(skillAverages.problemSolving)}`}>
+                            {skillAverages.problemSolving}%
+                          </div>
+                          <Progress value={skillAverages.problemSolving} className="mt-2" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Overall Performance */}
               <div className="text-center">
@@ -359,8 +438,8 @@ export default function SimulationResults() {
                   <h4 className="text-lg font-medium text-blue-800 mb-2">What you did well:</h4>
                   <p className="text-blue-700 mb-0">
                     {userScenario.feedback && Array.isArray(userScenario.feedback) && userScenario.feedback.length > 0 
-                      ? userScenario.feedback[0]?.summary || "You showed good care skills in this scenario."
-                      : "You demonstrated thoughtful responses and consideration in this care scenario."
+                      ? userScenario.feedback[userScenario.feedback.length - 1]?.summary || "You completed this care scenario with thoughtful consideration."
+                      : `You engaged with this scenario by providing ${userScenario.responses?.length || 0} thoughtful response${(userScenario.responses?.length || 0) === 1 ? '' : 's'} and completed the training successfully.`
                     }
                   </p>
                 </div>
@@ -370,8 +449,12 @@ export default function SimulationResults() {
                 <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
                   <h4 className="text-lg font-medium text-amber-800 mb-2">Areas for development:</h4>
                   <p className="text-amber-700 mb-3">
-                    Continue practising to build confidence in similar scenarios. Focus on applying care principles 
-                    consistently and building your communication skills through regular training sessions.
+                    {overallScore >= 80 
+                      ? "Keep up the excellent work! Continue practicing diverse scenarios to maintain your high performance level and explore advanced care situations."
+                      : overallScore >= 60 
+                      ? "Focus on increasing engagement and response depth. Try providing more detailed responses and consider multiple perspectives in care situations."
+                      : "Consider spending more time exploring the scenario context and providing more comprehensive responses. Practice active listening and empathy skills."
+                    }
                   </p>
                   
                   {/* Emoji Reactions for Development Areas */}
