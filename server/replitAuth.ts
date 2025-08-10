@@ -42,13 +42,13 @@ export function getSession() {
     store: sessionStore,
     resave: false,
     saveUninitialized: true, // Important: create sessions for OAuth flow
+    rolling: true, // Reset expiry on activity
     cookie: {
       httpOnly: true,
       secure: false, // Disable secure cookies for localhost development
       maxAge: sessionTtl,
       sameSite: 'lax', // Allow cross-site requests for OAuth flow
       path: '/', // Ensure cookie works for all paths
-      domain: undefined, // Let browser set appropriate domain
     },
     name: 'connect.sid' // Explicit session name
   });
