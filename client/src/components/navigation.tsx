@@ -3,6 +3,15 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import type { User } from "@shared/schema";
 import carefullyLogo from "@assets/Carefully_1754777567823.png";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -48,25 +57,52 @@ export function Navigation() {
 
             {/* Right Side - User Profile and Mobile Menu */}
             <div className="flex items-center space-x-4">
-              {/* User Profile */}
-              <Link href="/profile">
-                <div className="flex items-center text-sm cursor-pointer transition-all duration-300 hover-bounce btn-press">
-                  <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2 hover-glow transition-all duration-300">
-                    <span className="font-medium">
+              {/* User Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center text-sm cursor-pointer transition-all duration-300 hover-bounce btn-press p-2">
+                    <div className="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center mr-2 hover-glow transition-all duration-300">
+                      <span className="font-medium">
+                        {user?.firstName && user?.lastName 
+                          ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+                          : user?.email?.[0]?.toUpperCase() || 'U'
+                        }
+                      </span>
+                    </div>
+                    <span className="hidden sm:block font-medium text-neutral-800 transition-colors duration-300 hover:text-primary">
                       {user?.firstName && user?.lastName 
-                        ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
-                        : user?.email?.[0]?.toUpperCase() || 'U'
+                        ? `${user.firstName} ${user.lastName}`
+                        : user?.email?.split('@')[0] || 'User'
                       }
                     </span>
-                  </div>
-                  <span className="hidden sm:block font-medium text-neutral-800 transition-colors duration-300 hover:text-primary">
-                    {user?.firstName && user?.lastName 
-                      ? `${user.firstName} ${user.lastName}`
-                      : user?.email?.split('@')[0] || 'User'
-                    }
-                  </span>
-                </div>
-              </Link>
+                    <i className="fas fa-chevron-down ml-1 text-xs text-neutral-500"></i>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="flex items-center w-full">
+                      <i className="fas fa-user mr-2"></i>
+                      View Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/progress" className="flex items-center w-full">
+                      <i className="fas fa-chart-bar mr-2"></i>
+                      My Progress
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      window.location.href = '/api/logout';
+                    }}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
+                  >
+                    <i className="fas fa-sign-out-alt mr-2"></i>
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               {/* Mobile menu button */}
               <button 
@@ -97,6 +133,20 @@ export function Navigation() {
                   </span>
                 </Link>
               ))}
+              
+              {/* Mobile Sign Out */}
+              <div className="border-t border-neutral-200 mt-3 pt-3">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    window.location.href = '/api/logout';
+                  }}
+                  className="flex items-center w-full px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-300"
+                >
+                  <i className="fas fa-sign-out-alt mr-3"></i>
+                  Sign Out
+                </button>
+              </div>
             </div>
           </div>
         )}
