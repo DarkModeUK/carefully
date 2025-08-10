@@ -236,7 +236,7 @@ export async function setupAuth(app: Express) {
             path: '/'
           });
           
-          return res.redirect(302, '/dashboard');
+          return res.redirect(302, '/');
         });
       });
     })(req, res, next);
