@@ -199,6 +199,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get specific user scenario by scenario ID
+  app.get("/api/user/scenarios/:scenarioId", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const scenarioId = req.params.scenarioId;
+      
+      // Cache user-specific data for shorter periods
+      res.set({
+        'Cache-Control': 'private, max-age=60',
+        'Vary': 'Authorization',
+      });
+      
+      const userScenario = await storage.getUserScenario(userId, scenarioId);
+      if (!userScenario) {
+        return res.status(404).json({ message: "User scenario not found" });
+      }
+      
+      res.json(userScenario);
+    } catch (error) {
+      console.error("Error fetching user scenario:", error);
+      res.status(500).json({ message: "Failed to get user scenario" });
+    }
+  });
+
   // Start a scenario
   app.post("/api/scenarios/:id/start", isAuthenticated, async (req: any, res) => {
     try {

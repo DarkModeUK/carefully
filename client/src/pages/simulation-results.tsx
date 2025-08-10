@@ -23,16 +23,7 @@ export default function SimulationResults() {
     enabled: !!scenarioId
   });
 
-  // Debug logging
-  console.log('🔍 Results page debug:', {
-    scenarioId,
-    scenario: !!scenario,
-    userScenario: !!userScenario,
-    scenarioLoading,
-    userScenarioLoading,
-    scenarioError,
-    userScenarioError
-  });
+
 
   const isLoading = scenarioLoading || userScenarioLoading;
 
@@ -83,12 +74,7 @@ export default function SimulationResults() {
             <p className="text-gray-600 mb-4">
               We couldn't find the results for this scenario. This may be because the scenario hasn't been completed yet.
             </p>
-            <div className="text-xs text-gray-500 mb-4">
-              Debug: Scenario ID: {scenarioId}<br/>
-              Scenario: {scenario ? 'Found' : 'Not found'}<br/>
-              User Scenario: {userScenario ? 'Found' : 'Not found'}<br/>
-              Errors: {scenarioError?.message || userScenarioError?.message || 'None'}
-            </div>
+
             <Button onClick={() => setLocation('/dashboard')} className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white">
               Return to Dashboard
             </Button>
