@@ -1,10 +1,6 @@
 import { users, scenarios, userScenarios, achievements, reactions, type User, type InsertUser, type UpsertUser, type Scenario, type InsertScenario, type UserScenario, type InsertUserScenario, type Achievement, type InsertAchievement, insertReactionSchema } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
-import { neon, Pool } from "@neondatabase/serverless";
-
-// Use connection pooling for better performance
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 export interface IStorage {
   // Users (required for Replit Auth)
@@ -14,22 +10,22 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
-
+  
   // Scenarios
   getAllScenarios(): Promise<Scenario[]>;
   getScenario(id: string): Promise<Scenario | undefined>;
   createScenario(scenario: InsertScenario): Promise<Scenario>;
-
+  
   // User Scenarios
   getUserScenarios(userId: string): Promise<UserScenario[]>;
   getUserScenario(userId: string, scenarioId: string): Promise<UserScenario | undefined>;
   createUserScenario(userScenario: InsertUserScenario): Promise<UserScenario>;
   updateUserScenario(id: string, updates: Partial<UserScenario>): Promise<UserScenario | undefined>;
-
+  
   // Achievements
   getUserAchievements(userId: string): Promise<Achievement[]>;
   createAchievement(achievement: InsertAchievement): Promise<Achievement>;
-
+  
   // User Statistics
   getUserStats(userId: string): Promise<{
     completedScenarios: number;
@@ -64,10 +60,10 @@ export interface IStorage {
   getQuickPracticeProgress(userId: string): Promise<any>;
   startQuickPractice(userId: string, scenarioId: string): Promise<any>;
   completeDailyChallenge(userId: string, challengeId: string): Promise<any>;
-
+  
   // Emoji Reactions
   createReaction(reaction: any): Promise<any>;
-  getUserReactions(userId: string, type: string, contextId: string): Promise<any[]>;
+  getUserReactions(userId: string, type?: string, contextId?: string): Promise<any[]>;
   getReactionAnalytics(userId: string): Promise<any>;
 }
 
@@ -185,19 +181,19 @@ export class DatabaseStorage implements IStorage {
     // Get user base data
     const user = await this.getUser(userId);
     const userScenariosList = await this.getUserScenarios(userId);
-
+    
     // Calculate completed scenarios
     const completedScenarios = userScenariosList.filter(us => us.status === 'completed').length;
-
+    
     // Calculate total time
     const totalTime = userScenariosList.reduce((total, us) => total + (us.totalTime || 0), 0);
-
+    
     // Calculate average score
     const completedWithScores = userScenariosList.filter(us => us.status === 'completed' && (us.score || 0) > 0);
-    const averageScore = completedWithScores.length > 0
+    const averageScore = completedWithScores.length > 0 
       ? Math.round(completedWithScores.reduce((total, us) => total + (us.score || 0), 0) / completedWithScores.length)
       : 0;
-
+    
     return {
       completedScenarios,
       totalTime,
@@ -342,7 +338,7 @@ export class DatabaseStorage implements IStorage {
     }, {} as Record<string, number>);
 
     const totalReactions = userReactions.length;
-    const mostUsedCategory = Object.keys(categoryCount).reduce((a, b) =>
+    const mostUsedCategory = Object.keys(categoryCount).reduce((a, b) => 
       categoryCount[a] > categoryCount[b] ? a : b, 'understanding'
     );
 

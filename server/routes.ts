@@ -11,7 +11,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
   // Auth routes
-
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -443,7 +442,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return Math.round(totalScore / feedbackCount);
       };
 
-      const finalScore = calculateScenarioScore(userScenario.responses || []);
+      const finalScore = calculateScenarioScore(userScenario.responses);
 
       // Update scenario as completed with the actual time spent and calculated score
       const completedScenario = await storage.updateUserScenario(userScenario.id, {

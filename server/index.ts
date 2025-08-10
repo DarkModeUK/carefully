@@ -2,7 +2,6 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import compression from "compression";
-import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -33,33 +32,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Add ETag support for better caching
-app.set('etag', 'strong');
-
-// Add cookie parser (required for signed cookies in authentication)
-app.use(cookieParser(process.env.SESSION_SECRET || 'fallback-secret'));
-
-// Optimize JSON parsing
-app.use(express.json({ 
-  limit: '1mb',
-  type: ['application/json', 'text/plain']
-}));
-app.use(express.urlencoded({ 
-  extended: false, 
-  limit: '1mb',
-  parameterLimit: 20
-}));
-
-// Add response caching for static API responses
-app.use('/api', (req, res, next) => {
-  if (req.method === 'GET') {
-    // Cache scenarios and user stats for 5 minutes
-    if (req.path.includes('/scenarios') || req.path.includes('/stats')) {
-      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
-    }
-  }
-  next();
-});
+app.use(express.json({ limit: '1mb' })); // Reduce limit for better security
+app.use(express.urlencoded({ extended: false, limit: '1mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();

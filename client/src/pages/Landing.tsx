@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import carefullyLogo from "@assets/Carefully-logo-final_1754849685137.png";
+import carefullyLogo from "@assets/Carefully_1754777567823.png";
 
 export default function Landing() {
   return (
@@ -28,6 +28,7 @@ export default function Landing() {
           </div>
         </div>
       </header>
+
       {/* Hero Section */}
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-4xl mx-auto text-center">
@@ -60,43 +61,46 @@ export default function Landing() {
           </p>
         </div>
       </section>
+
       {/* Problems Section */}
       <section className="px-4 lg:px-6 py-16 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">Tick-box training won’t prepare you for real life in care — that’s why we built Carefully</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">
+              Most care training doesn't prepare you for real life.
+            </h2>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="border-l-4 border-l-red-400">
               <CardHeader>
-                <CardTitle className="text-red-600 text-lg">Generic Content</CardTitle>
+                <CardTitle className="text-red-600 text-lg">Generic</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Training is often one-size-fits-all — focused on ticking compliance boxes instead of preparing staff for the high-pressure, emotionally charged moments they face every day.
+                  One-size-fits-all e-learning that skips the hard stuff.
                 </CardDescription>
               </CardContent>
             </Card>
             
             <Card className="border-l-4 border-l-orange-400">
               <CardHeader>
-                <CardTitle className="text-orange-600 text-lg">Passive Learning</CardTitle>
+                <CardTitle className="text-orange-600 text-lg">Passive</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Traditional e-learning means clicking through slides or watching videos with little opportunity to practise skills, learn from mistakes, or receive meaningful feedback.
+                  No practice, no feedback, no growth.
                 </CardDescription>
               </CardContent>
             </Card>
             
             <Card className="border-l-4 border-l-amber-400">
               <CardHeader>
-                <CardTitle className="text-amber-600 text-lg">Incomplete Coverage</CardTitle>
+                <CardTitle className="text-amber-600 text-lg">Incomplete</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Despite dementia making up a significant portion of the workload in adult social care, only 29% of care staff have received any dementia-specific training — leaving many without the knowledge or confidence to handle these complex situations.
+                  Only 29% of care staff get dementia-specific training, despite dementia being a majority of the workload.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -107,19 +111,20 @@ export default function Landing() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  With a large proportion of care workers recruited internationally, many face challenges adapting to local communication styles, idioms, and cultural expectations — leading to misunderstandings, reduced trust from residents and families, and higher turnover.
+                  International recruits face challenges with local language and expectations, risking misunderstandings and higher turnover.
                 </CardDescription>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
+
       {/* Solution Section */}
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">
-              The human skills care demands — made simple to learn.
+              From tick-box training to real human skill.
             </h2>
             <p className="text-xl text-gray-600 mb-8">
               Carefully's browser-based AI roleplay lets staff:
@@ -171,10 +176,13 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
       {/* Why It Works Section */}
       <section className="px-4 lg:px-6 py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">How it Works</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">
+            Why It Works
+          </h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="text-center">
@@ -211,10 +219,13 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
       {/* Who It's For Section */}
       <section className="px-4 lg:px-6 py-16">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">Who is it for?</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] text-center mb-12">
+            Who It's For
+          </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="border-2 border-blue-200 bg-blue-50">
@@ -261,6 +272,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
       {/* Outcomes Section */}
       <section className="px-4 lg:px-6 py-16 bg-[#2C2A4A]">
         <div className="max-w-6xl mx-auto text-center">
@@ -295,6 +307,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
       {/* CTA Section */}
       <section className="px-4 lg:px-6 py-16 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF]">
         <div className="max-w-4xl mx-auto text-center">
@@ -317,6 +330,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
       {/* Footer */}
       <footer className="px-4 lg:px-6 py-8 bg-gray-900">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

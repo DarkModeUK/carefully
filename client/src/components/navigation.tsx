@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import type { User } from "@shared/schema";
-import carefullyLogo from "@assets/Carefully-logo-final_1754849685137.png";
+import carefullyLogo from "@assets/Carefully_1754777567823.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

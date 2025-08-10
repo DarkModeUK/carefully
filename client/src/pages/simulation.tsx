@@ -12,7 +12,6 @@ import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-rea
 import { Progress } from "@/components/ui/progress";
 import { AIThinkingLoader, ScenarioLoadingSpinner, FeedbackLoadingIndicator } from "@/components/smart-loading";
 import { motion } from "framer-motion";
-import type { Scenario, UserScenario } from "@shared/schema";
 
 export default function SimulationPage() {
   const [, params] = useRoute("/simulation/:scenarioId");
@@ -31,13 +30,13 @@ export default function SimulationPage() {
   const [startTime, setStartTime] = useState<Date | null>(null);
 
   // Fetch scenario data
-  const { data: scenario, isLoading: scenarioLoading } = useQuery<Scenario>({
+  const { data: scenario, isLoading: scenarioLoading } = useQuery({
     queryKey: ['/api/scenarios', scenarioId],
     enabled: !!scenarioId,
   });
 
   // Fetch user scenario progress
-  const { data: userScenario } = useQuery<UserScenario>({
+  const { data: userScenario } = useQuery({
     queryKey: ['/api/user/scenarios', scenarioId],
     enabled: !!scenarioId,
   });
@@ -675,7 +674,7 @@ export default function SimulationPage() {
                                     <span className="font-medium text-indigo-800 text-xs">Key Insights:</span>
                                   </div>
                                   <ul className="text-xs text-indigo-700 space-y-1">
-                                    {message.feedback.keyInsights.map((insight: string, i: number) => (
+                                    {message.feedback.keyInsights.map((insight, i) => (
                                       <motion.li 
                                         key={i}
                                         initial={{ opacity: 0, x: -10 }}
@@ -770,7 +769,7 @@ export default function SimulationPage() {
                       <i className="fas fa-user-nurse text-white"></i>
                     </div>
                     <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
-                      <AIThinkingLoader className="bg-transparent border-0 p-0" />
+                      <AIThinkingLoader size="sm" className="bg-transparent border-0 p-0" />
                     </div>
                   </div>
                 </div>

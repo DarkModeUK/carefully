@@ -44,34 +44,36 @@ export const getQueryFn: <T>(options: {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 10, // 10 minutes
-      gcTime: 1000 * 60 * 60, // 1 hour
-      retry: (failureCount, error) => {
-        if (error instanceof Error && error.message.includes('401')) {
-          return false;
-        }
-        return failureCount < 2; // Reduce retries
-      },
+      queryFn: getQueryFn({ on401: "throw" }),
+      refetchInterval: false,
       refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-      // Optimize network requests
+      staleTime: 10 * 60 * 1000, // 10 minutes - longer cache for static data
+      gcTime: 30 * 60 * 1000, // 30 minutes - keep data in memory longer
       networkMode: 'online',
       refetchOnMount: false,
-      refetchInterval: false,
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors except 408 (timeout)
+        if (error?.message?.includes('4') && !error?.message?.includes('408')) {
+          return false;
+        }
+        return failureCount < 2;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      // Enable background refetching for better UX
+      refetchOnReconnect: 'always',
       // Dedupe identical queries
       structuralSharing: true,
     },
     mutations: {
-      // Add optimistic updates for better perceived performance
-      onMutate: async () => {
-        // Cancel outgoing refetches
-        await queryClient.cancelQueries();
-      },
       retry: (failureCount, error: any) => {
         if (error?.message?.includes('5') || error?.name === 'NetworkError') {
           return failureCount < 1;
         }
         return false;
+      },
+      // Optimistic updates by default
+      onMutate: () => {
+        // This will be overridden by specific mutations
       },
     },
   },

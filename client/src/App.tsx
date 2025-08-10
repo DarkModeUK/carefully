@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -71,15 +71,11 @@ function Router() {
     return <WelcomeWizard onComplete={() => setShowWizard(true)} />;
   }
 
-
-
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
-        {isLoading ? (
-          <Route path="*" component={() => <PageLoader />} />
-        ) : !isAuthenticated ? (
-          <Route path="*" component={Landing} />
+        {isLoading || !isAuthenticated ? (
+          <Route path="/" component={Landing} />
         ) : (
           <>
             <Route path="/" component={Dashboard} />
@@ -104,10 +100,9 @@ function Router() {
             {/* Role-specific dashboards */}
             <Route path="/manager-dashboard" component={ManagerDashboard} />
             <Route path="/recruiter-dashboard" component={RecruiterDashboard} />
-            
-            <Route component={NotFound} />
           </>
         )}
+        <Route component={NotFound} />
       </Switch>
     </Suspense>
   );
@@ -128,12 +123,10 @@ function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <WouterRouter>
-      <div className="min-h-screen bg-neutral-50">
-        {isAuthenticated && !isLoading && <Navigation />}
-        <Router />
-      </div>
-    </WouterRouter>
+    <div className="min-h-screen bg-neutral-50">
+      {isAuthenticated && !isLoading && <Navigation />}
+      <Router />
+    </div>
   );
 }
 
