@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -220,28 +221,28 @@ export default function ProgressPage() {
       {/* Overview Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
-          value={completedScenarios.length}
-          title="Completed Scenarios"
+          value={timeframeCompleted.length}
+          title={`Completed ${timeframe === 'all' ? 'Total' : timeframe === 'week' ? 'This Week' : 'This Month'}`}
           icon="fas fa-trophy"
           color="secondary"
         />
         <StatCard
-          value={`${Math.round(totalTime / 60)}h`}
-          title="Training Time"
+          value={totalTime >= 60 ? `${Math.round(totalTime / 60)}h ${totalTime % 60}m` : `${totalTime}min`}
+          title={`Training Time ${timeframe === 'all' ? 'Total' : timeframe === 'week' ? 'This Week' : 'This Month'}`}
           icon="fas fa-clock"
           color="accent"
         />
         <StatCard
-          value={`${averageScore}%`}
-          title="Average Score"
+          value={averageScore > 0 ? `${averageScore}%` : 'N/A'}
+          title={`Average Score ${timeframe === 'all' ? 'Overall' : timeframe === 'week' ? 'This Week' : 'This Month'}`}
           icon="fas fa-chart-line"
           color="primary"
         />
         <StatCard
-          value={`${achievementProgress.percentage}%`}
-          title="Achievements"
-          icon="fas fa-medal"
-          color="neutral"
+          value={currentStreak > 0 ? `${currentStreak} ${currentStreak === 1 ? 'day' : 'days'}` : 'Start today!'}
+          title="Current Streak"
+          icon="fas fa-fire"
+          color="orange"
         />
       </div>
 
@@ -311,19 +312,34 @@ export default function ProgressPage() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600 mb-1">+12%</div>
-                  <div className="text-sm text-green-700">Score Improvement</div>
-                  <div className="text-xs text-green-600 mt-1">vs last month</div>
+                  <div className="text-2xl font-bold text-green-600 mb-1">
+                    {averageScore > 0 ? `${averageScore}%` : 'N/A'}
+                  </div>
+                  <div className="text-sm text-green-700">Avg Score</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {timeframe === 'all' ? 'all time' : timeframe}
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">8.2min</div>
+                  <div className="text-2xl font-bold text-blue-600 mb-1">
+                    {timeframeCompleted.length > 0 
+                      ? `${Math.round(totalTime / timeframeCompleted.length)}min`
+                      : 'N/A'
+                    }
+                  </div>
                   <div className="text-sm text-blue-700">Avg Completion</div>
-                  <div className="text-xs text-blue-600 mt-1">2min faster</div>
+                  <div className="text-xs text-blue-600 mt-1">
+                    {timeframe === 'all' ? 'all time' : timeframe}
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600 mb-1">95%</div>
-                  <div className="text-sm text-purple-700">Consistency Rate</div>
-                  <div className="text-xs text-purple-600 mt-1">excellent</div>
+                  <div className="text-2xl font-bold text-purple-600 mb-1">
+                    {currentStreak > 0 ? `${currentStreak}` : '0'}
+                  </div>
+                  <div className="text-sm text-purple-700">Daily Streak</div>
+                  <div className="text-xs text-purple-600 mt-1">
+                    {currentStreak > 0 ? `${currentStreak === 1 ? 'day' : 'days'} running` : 'start today!'}
+                  </div>
                 </div>
               </div>
             </CardContent>
