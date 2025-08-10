@@ -73,9 +73,9 @@ ${conversationHistory.map(h => `${h.role === 'user' ? 'Care Worker' : 'Patient'}
   } catch (error) {
     console.error('❌ Error generating conversation response:', error);
     console.error('📊 Error details:', {
-      name: error.name,
-      message: error.message,
-      stack: error.stack?.split('\n')[0]
+      name: (error as any)?.name,
+      message: (error as any)?.message,
+      stack: (error as any)?.stack?.split('\n')[0]
     });
     throw new Error('Failed to generate conversation response');
   }
@@ -87,33 +87,67 @@ export async function analyzeFeedback(
   conversationHistory: { role: 'user' | 'character'; message: string }[]
 ): Promise<FeedbackAnalysis> {
   try {
-    const systemPrompt = `Quickly analyze this care worker's response.
+    const conversationContextText = conversationHistory.slice(-4).map(msg => 
+      `${msg.role === 'user' ? 'Care Worker' : 'Patient'}: ${msg.message}`
+    ).join('\n');
 
-Context: ${scenarioContext.substring(0, 200)}...
+    const systemPrompt = `As an expert care training assessor, provide detailed, constructive feedback on this care worker's response.
 
-User said: "${userMessage}"
+SCENARIO CONTEXT:
+${scenarioContext}
 
-Rate 1-5 on: empathy, communication, professionalism, problem-solving.
-Give brief feedback in JSON:
+RECENT CONVERSATION:
+${conversationContextText}
+
+CURRENT RESPONSE TO EVALUATE:
+Care Worker: "${userMessage}"
+
+ASSESSMENT CRITERIA:
+Evaluate the response across these key care competencies:
+
+1. EMPATHY & EMOTIONAL INTELLIGENCE (1-5)
+   - Acknowledges patient's feelings and concerns
+   - Uses validating language
+   - Shows genuine understanding
+
+2. COMMUNICATION SKILLS (1-5)
+   - Clear, respectful, age-appropriate language
+   - Active listening demonstrated
+   - Avoids jargon or condescending tone
+
+3. PROFESSIONALISM (1-5)
+   - Maintains appropriate boundaries
+   - Follows care protocols
+   - Demonstrates dignity and respect
+
+4. PROBLEM-SOLVING APPROACH (1-5)
+   - Offers practical solutions
+   - Uses person-centred approach
+   - Considers multiple options
+
+Provide detailed feedback in JSON format:
 {
   "empathy": 1-5,
-  "communication": 1-5, 
+  "communication": 1-5,
   "professionalism": 1-5,
   "problemSolving": 1-5,
-  "summary": "Quick feedback (1 sentence)",
-  "strengths": ["main strength"],
-  "improvements": ["main improvement"]
-}`;
+  "summary": "Detailed constructive feedback (2-3 sentences) highlighting specific strengths and areas for improvement with examples",
+  "strengths": ["specific strength with context", "another specific strength"],
+  "improvements": ["specific improvement with actionable suggestion", "another improvement area"],
+  "quickSummary": "One key actionable takeaway for immediate improvement"
+}
+
+Focus on being specific, constructive, and encouraging. Reference their actual words where possible.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // Faster model
+      model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: "Provide quick feedback analysis." }
+        { role: "user", content: "Provide detailed feedback analysis." }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.3,
-      max_tokens: 200, // Limit for speed
+      temperature: 0.4,
+      max_tokens: 500,
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -123,21 +157,23 @@ Give brief feedback in JSON:
       communication: result.communication || 3,
       professionalism: result.professionalism || 3,
       problemSolving: result.problemSolving || 3,
-      summary: result.summary || "Good response, keep practicing!",
-      strengths: result.strengths || ["Engaged with conversation"],
-      improvements: result.improvements || ["Continue practicing"]
+      summary: result.summary || "Your response shows professional awareness. Consider acknowledging the person's emotional state more explicitly and exploring their specific concerns before offering solutions.",
+      strengths: result.strengths || ["Maintained professional approach", "Engaged with the situation"],
+      improvements: result.improvements || ["Show more emotional validation", "Ask open-ended questions to understand their perspective"],
+      quickSummary: result.quickSummary || "Start by acknowledging their feelings before moving to problem-solving"
     };
   } catch (error) {
     console.error('Error analyzing feedback:', error);
-    // Return default feedback instead of throwing
+    // Return improved default feedback
     return {
       empathy: 3,
       communication: 3,
       professionalism: 3,
       problemSolving: 3,
-      summary: "Response noted. Continue practicing your care skills.",
-      strengths: ["Engaged with the conversation"],
-      improvements: ["Keep focusing on empathy and clear communication"]
+      summary: "Your response demonstrates professional engagement. To enhance your approach, focus on acknowledging the person's emotional state more explicitly and explore their specific concerns through open-ended questions before offering solutions.",
+      strengths: ["Professional tone maintained", "Engaged with the conversation appropriately"],
+      improvements: ["Validate feelings with phrases like 'I can see this is concerning for you'", "Ask questions to understand their perspective better"],
+      quickSummary: "Lead with empathy by acknowledging their emotional experience first"
     };
   }
 }

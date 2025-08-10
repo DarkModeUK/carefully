@@ -550,11 +550,37 @@ export default function SimulationPage() {
                         <div className="mt-4 pt-4 border-t border-gray-200/30">
                           <div className="flex items-start gap-2 mb-3">
                             <i className="fas fa-lightbulb text-yellow-500 mt-1"></i>
-                            <div>
-                              <p className="text-sm font-medium opacity-90 mb-2">Feedback:</p>
-                              <p className="text-sm opacity-75 leading-relaxed">
+                            <div className="flex-1">
+                              <p className="text-sm font-medium opacity-90 mb-2">Training Feedback:</p>
+                              <p className="text-sm opacity-75 leading-relaxed mb-3">
                                 {message.feedback.summary}
                               </p>
+                              
+                              {/* Skills breakdown */}
+                              {(message.feedback.empathy || message.feedback.communication) && (
+                                <div className="grid grid-cols-2 gap-3 mb-3 text-xs">
+                                  {message.feedback.empathy && (
+                                    <div className="bg-blue-50/50 p-2 rounded">
+                                      <span className="font-medium text-blue-800">Empathy: </span>
+                                      <span className="text-blue-700">{message.feedback.empathy}/5</span>
+                                    </div>
+                                  )}
+                                  {message.feedback.communication && (
+                                    <div className="bg-green-50/50 p-2 rounded">
+                                      <span className="font-medium text-green-800">Communication: </span>
+                                      <span className="text-green-700">{message.feedback.communication}/5</span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              
+                              {/* Quick summary */}
+                              {message.feedback.quickSummary && (
+                                <div className="bg-yellow-50/50 p-2 rounded text-xs">
+                                  <span className="font-medium text-yellow-800">💡 Key Takeaway: </span>
+                                  <span className="text-yellow-700">{message.feedback.quickSummary}</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                           
