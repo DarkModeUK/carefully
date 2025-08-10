@@ -76,7 +76,7 @@ export class DatabaseStorage implements IStorage {
   async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values([userData])
+      .values(userData)
       .onConflictDoUpdate({
         target: users.id,
         set: {
@@ -125,7 +125,7 @@ export class DatabaseStorage implements IStorage {
   async createScenario(insertScenario: InsertScenario): Promise<Scenario> {
     const [scenario] = await db
       .insert(scenarios)
-      .values([insertScenario])
+      .values(insertScenario)
       .returning();
     return scenario;
   }

@@ -142,8 +142,6 @@ export const insertScenarioSchema = createInsertSchema(scenarios).omit({
 
 export const insertUserScenarioSchema = createInsertSchema(userScenarios).omit({
   id: true,
-  createdAt: true,
-  updatedAt: true,
   startedAt: true,
   completedAt: true,
 });
@@ -238,7 +236,7 @@ export const forumReplies = pgTable("forum_replies", {
   topicId: varchar("topic_id").notNull().references(() => forumTopics.id),
   authorId: varchar("author_id").notNull().references(() => users.id),
   content: text("content").notNull(),
-  parentReplyId: varchar("parent_reply_id").references(() => forumReplies.id),
+  parentReplyId: varchar("parent_reply_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
