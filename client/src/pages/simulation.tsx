@@ -537,20 +537,20 @@ export default function SimulationPage() {
         {/* Chat Container */}
         <div className="flex-1 max-w-4xl mx-auto w-full flex flex-col">
           {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto px-6 py-6">
-            <div className="space-y-6">
+          <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6">
+            <div className="space-y-4 sm:space-y-6">
               {conversation.map((message, index) => (
                 <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`flex items-start gap-3 max-w-2xl ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex items-start gap-2 sm:gap-3 max-w-[85%] sm:max-w-2xl ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
                     {/* Avatar */}
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       message.role === 'user' 
                         ? 'bg-[#907AD6]' 
                         : message.role === 'system'
                         ? 'bg-blue-500'
                         : 'bg-gray-400'
                     }`}>
-                      <i className={`text-white ${
+                      <i className={`text-white text-xs sm:text-sm ${
                         message.role === 'user' 
                           ? 'fas fa-user' 
                           : message.role === 'system'
@@ -560,18 +560,18 @@ export default function SimulationPage() {
                     </div>
                     
                     {/* Message Content */}
-                    <div className="flex flex-col gap-2">
-                      <div className={`px-6 py-4 rounded-2xl ${
+                    <div className="flex flex-col gap-2 min-w-0">
+                      <div className={`px-3 py-3 sm:px-6 sm:py-4 rounded-2xl ${
                         message.role === 'user' 
                           ? 'bg-[#907AD6] text-white rounded-br-md' 
                           : message.role === 'system'
                           ? 'bg-blue-100 text-blue-800 border border-blue-200 rounded-bl-md'
                           : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm'
                       }`}>
-                      <p className="leading-relaxed">{message.content}</p>
+                      <p className="leading-relaxed text-sm sm:text-base break-words">{message.content}</p>
                       
                       {/* Timestamp */}
-                      <div className={`text-xs mt-3 opacity-70 ${
+                      <div className={`text-xs mt-2 sm:mt-3 opacity-70 ${
                         message.role === 'user' ? 'text-white' : 'text-gray-500'
                       }`}>
                         {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -580,21 +580,21 @@ export default function SimulationPage() {
                       {/* Enhanced Feedback Display */}
                       {message.feedback && (
                         <motion.div 
-                          className="mt-4 pt-4 border-t border-gray-200/30"
+                          className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200/30"
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4 }}
                         >
-                          <div className="flex items-start gap-2 mb-3">
+                          <div className="flex items-start gap-2 mb-2 sm:mb-3">
                             <motion.i 
-                              className="fas fa-lightbulb text-yellow-500 mt-1"
+                              className="fas fa-lightbulb text-yellow-500 mt-1 text-sm"
                               animate={{ rotate: [0, 10, -10, 0] }}
                               transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                             />
                             <div className="flex-1">
-                              <p className="text-sm font-medium opacity-90 mb-2">Key Insights & Feedback:</p>
+                              <p className="text-xs sm:text-sm font-medium opacity-90 mb-1 sm:mb-2">Key Insights & Feedback:</p>
                               <motion.p 
-                                className="text-sm opacity-75 leading-relaxed mb-3"
+                                className="text-xs sm:text-sm opacity-75 leading-relaxed mb-2 sm:mb-3"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.2 }}
@@ -605,7 +605,7 @@ export default function SimulationPage() {
                               {/* Skills breakdown with animations */}
                               {(message.feedback.empathy || message.feedback.communication || message.feedback.professionalism || message.feedback.problemSolving) && (
                                 <motion.div 
-                                  className="grid grid-cols-2 gap-3 mb-3 text-xs"
+                                  className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2 sm:mb-3 text-xs"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                   transition={{ delay: 0.3 }}
@@ -652,13 +652,13 @@ export default function SimulationPage() {
                               {/* Key Insights */}
                               {message.feedback.keyInsights && message.feedback.keyInsights.length > 0 && (
                                 <motion.div 
-                                  className="bg-indigo-50/50 p-3 rounded border border-indigo-100 mb-3"
+                                  className="bg-indigo-50/50 p-2 sm:p-3 rounded border border-indigo-100 mb-2 sm:mb-3"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                   transition={{ delay: 0.4 }}
                                 >
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <i className="fas fa-brain text-indigo-600 text-sm"></i>
+                                  <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                                    <i className="fas fa-brain text-indigo-600 text-xs sm:text-sm"></i>
                                     <span className="font-medium text-indigo-800 text-xs">Key Insights:</span>
                                   </div>
                                   <ul className="text-xs text-indigo-700 space-y-1">
@@ -681,23 +681,23 @@ export default function SimulationPage() {
                               {/* Quick summary with enhanced styling */}
                               {message.feedback.quickSummary && (
                                 <motion.div 
-                                  className="bg-gradient-to-r from-yellow-50 to-orange-50 p-3 rounded border border-yellow-200 text-xs"
+                                  className="bg-gradient-to-r from-yellow-50 to-orange-50 p-2 sm:p-3 rounded border border-yellow-200 text-xs"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                   transition={{ delay: 0.5 }}
                                   whileHover={{ scale: 1.01 }}
                                 >
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex items-center gap-1 sm:gap-2">
                                     <motion.span 
-                                      className="text-lg"
+                                      className="text-base sm:text-lg"
                                       animate={{ rotate: [0, 10, -10, 0] }}
                                       transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
                                     >
                                       💡
                                     </motion.span>
-                                    <span className="font-medium text-yellow-800">Key Takeaway: </span>
+                                    <span className="font-medium text-yellow-800 text-xs">Key Takeaway: </span>
                                   </div>
-                                  <p className="text-yellow-700 mt-1 font-medium">{message.feedback.quickSummary}</p>
+                                  <p className="text-yellow-700 mt-1 font-medium text-xs">{message.feedback.quickSummary}</p>
                                 </motion.div>
                               )}
                             </div>
@@ -752,11 +752,11 @@ export default function SimulationPage() {
               {/* Smart AI Thinking Indicator */}
               {submitResponseMutation.isPending && (
                 <div className="flex justify-start">
-                  <div className="flex items-start gap-3 max-w-2xl">
-                    <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-user-nurse text-white"></i>
+                  <div className="flex items-start gap-2 sm:gap-3 max-w-[85%] sm:max-w-2xl">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fas fa-user-nurse text-white text-xs sm:text-sm"></i>
                     </div>
-                    <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
+                    <div className="bg-white px-3 py-2 sm:px-4 sm:py-3 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
                       <AIThinkingLoader size="sm" className="bg-transparent border-0 p-0" />
                     </div>
                   </div>
@@ -767,28 +767,28 @@ export default function SimulationPage() {
 
           {/* Chat Input */}
           {!isCompleted && (
-            <div className="bg-white border-t border-gray-200 px-6 py-4">
+            <div className="bg-white border-t border-gray-200 px-3 sm:px-6 py-3 sm:py-4">
               {/* Quick Tips Bar */}
-              <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <i className="fas fa-lightbulb text-blue-600"></i>
-                  <span className="text-sm font-medium text-blue-800">Remember to:</span>
+              <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                  <i className="fas fa-lightbulb text-blue-600 text-sm"></i>
+                  <span className="text-xs sm:text-sm font-medium text-blue-800">Remember to:</span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-blue-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-2 text-xs text-blue-700">
                   <span>• Show empathy and understanding</span>
                   <span>• Listen actively to their concerns</span>
                   <span>• Maintain professional boundaries</span>
                 </div>
               </div>
 
-              <div className="flex items-end gap-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 sm:gap-4">
                 <div className="flex-1 relative">
                   <Textarea
                     placeholder="Type your response here... Focus on empathy, clarity, and appropriate care approaches."
                     value={userResponse}
                     onChange={(e) => setUserResponse(e.target.value)}
                     rows={3}
-                    className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-xl pr-12"
+                    className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-xl pr-10 sm:pr-12 text-sm sm:text-base"
                     disabled={isListening}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
@@ -804,7 +804,7 @@ export default function SimulationPage() {
                     type="button"
                     onClick={startVoiceRecognition}
                     disabled={submitResponseMutation.isPending || isListening}
-                    className={`absolute right-2 top-2 p-2 h-8 w-8 ${
+                    className={`absolute right-1 sm:right-2 top-2 p-1 sm:p-2 h-6 w-6 sm:h-8 sm:w-8 ${
                       isListening 
                         ? 'bg-red-500 hover:bg-red-600' 
                         : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
@@ -814,42 +814,46 @@ export default function SimulationPage() {
                   >
                     {isListening ? (
                       <motion.i 
-                        className="fas fa-microphone text-sm text-white"
+                        className="fas fa-microphone text-xs sm:text-sm text-white"
                         animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 0.8, repeat: Infinity }}
                       />
                     ) : (
-                      <i className="fas fa-microphone text-sm"></i>
+                      <i className="fas fa-microphone text-xs sm:text-sm"></i>
                     )}
                   </Button>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <Button 
                     onClick={handleSubmitResponse}
                     disabled={!userResponse.trim() || submitResponseMutation.isPending}
-                    className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-3 h-auto rounded-xl"
+                    className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-4 py-2 sm:px-6 sm:py-3 h-auto rounded-xl text-sm sm:text-base"
                     size="lg"
                   >
                     {submitResponseMutation.isPending ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white"></div>
                     ) : (
-                      <i className="fas fa-paper-plane text-lg"></i>
+                      <>
+                        <i className="fas fa-paper-plane text-sm sm:text-lg"></i>
+                        <span className="ml-2 sm:hidden">Send</span>
+                      </>
                     )}
                   </Button>
                   <Button 
                     onClick={() => completeScenarioMutation.mutate()}
                     disabled={completeScenarioMutation.isPending}
                     variant="outline"
-                    className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 px-4 py-3 h-auto rounded-xl"
+                    className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 px-3 py-2 sm:px-4 sm:py-3 h-auto rounded-xl text-xs sm:text-sm"
                     size="lg"
                     title="End simulation early"
                   >
                     {completeScenarioMutation.isPending ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-red-600"></div>
                     ) : (
                       <>
-                        <i className="fas fa-stop mr-2"></i>
-                        End Simulation
+                        <i className="fas fa-stop mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+                        <span className="hidden sm:inline">End Simulation</span>
+                        <span className="sm:hidden">End</span>
                       </>
                     )}
                   </Button>
@@ -857,13 +861,14 @@ export default function SimulationPage() {
               </div>
               
               {/* Helper Text */}
-              <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+              <div className="mt-2 sm:mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm text-gray-500">
                 <div className="flex items-center gap-2">
-                  <i className="fas fa-info-circle"></i>
+                  <i className="fas fa-info-circle text-xs"></i>
                   <span>{isListening ? "Listening... Speak clearly" : "Press Enter to send, Shift+Enter for new line"}</span>
                 </div>
-                <div className="text-right">
-                  <span>Focus on empathy, clarity, and care approaches</span>
+                <div className="text-left sm:text-right">
+                  <span className="hidden sm:inline">Focus on empathy, clarity, and care approaches</span>
+                  <span className="sm:hidden">Focus on empathy and clarity</span>
                 </div>
               </div>
             </div>
