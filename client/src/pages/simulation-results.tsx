@@ -96,6 +96,42 @@ export default function SimulationResults() {
     return "Needs Improvement";
   };
 
+  const getScoreBorderColor = (score: number) => {
+    if (score >= 80) return "border-green-200";
+    if (score >= 60) return "border-amber-200";
+    return "border-red-200";
+  };
+
+  const getScoreTextColor = (score: number) => {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-amber-600";
+    return "text-red-600";
+  };
+
+  const getScoreLabelColor = (score: number) => {
+    if (score >= 80) return "text-green-700";
+    if (score >= 60) return "text-amber-700";
+    return "text-red-700";
+  };
+
+  const getCardTheme = (score: number) => {
+    if (score >= 80) return "border-2 border-green-200 bg-green-50";
+    if (score >= 60) return "border-2 border-amber-200 bg-amber-50";
+    return "border-2 border-red-200 bg-red-50";
+  };
+
+  const getHeaderTextColor = (score: number) => {
+    if (score >= 80) return "text-green-800";
+    if (score >= 60) return "text-amber-800";
+    return "text-red-800";
+  };
+
+  const getDescriptionTextColor = (score: number) => {
+    if (score >= 80) return "text-green-700";
+    if (score >= 60) return "text-amber-700";
+    return "text-red-700";
+  };
+
   const formatCategory = (category: string) => {
     return category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
@@ -136,29 +172,33 @@ export default function SimulationResults() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Overall Score */}
-        <Card className="mb-8 border-2 border-green-200 bg-green-50">
+        <Card className={`mb-8 ${getCardTheme(overallScore)}`}>
           <CardHeader>
-            <CardTitle className="text-center text-2xl text-green-800">
+            <CardTitle className={`text-center text-2xl ${getHeaderTextColor(overallScore)}`}>
               <i className="fas fa-chart-line mr-2"></i>
               Overall Performance Score
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-white border-4 border-green-200 mb-4">
+              <div className={`inline-flex items-center justify-center w-32 h-32 rounded-full bg-white border-4 ${getScoreBorderColor(overallScore)} mb-4`}>
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-green-600">{overallScore}%</div>
-                  <div className="text-sm text-green-700 font-medium">{getScoreLabel(overallScore)}</div>
+                  <div className={`text-4xl font-bold ${getScoreTextColor(overallScore)}`}>{overallScore}%</div>
+                  <div className={`text-sm ${getScoreLabelColor(overallScore)} font-medium`}>{getScoreLabel(overallScore)}</div>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-green-800 mb-2">{scenario.title}</h3>
-              <p className="text-green-700 max-w-2xl mx-auto">
-                You've successfully completed this care scenario. Your responses showed thoughtful consideration 
-                of the care situation and demonstrated your developing skills in this area.
+              <h3 className={`text-xl font-semibold ${getHeaderTextColor(overallScore)} mb-2`}>{scenario.title}</h3>
+              <p className={`${getDescriptionTextColor(overallScore)} max-w-2xl mx-auto`}>
+                {overallScore >= 80 
+                  ? "Excellent work! You've successfully completed this care scenario with outstanding performance."
+                  : overallScore >= 60 
+                  ? "Well done! You've completed this care scenario with good understanding and consideration."
+                  : "You've completed this care scenario. There are opportunities to improve your approach in future attempts."
+                }
               </p>
               {/* Quick Win: Quick feedback summary */}
               {userScenario?.feedback?.[0]?.quickSummary && (
-                <div className="bg-white rounded-lg p-4 mt-6 border border-green-200">
+                <div className={`bg-white rounded-lg p-4 mt-6 border ${getScoreBorderColor(overallScore)}`}>
                   <div className="flex items-start gap-3">
                     <i className="fas fa-lightbulb text-yellow-500 mt-1"></i>
                     <div>
