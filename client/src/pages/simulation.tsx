@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-reaction-buttons";
 import { Progress } from "@/components/ui/progress";
+import { AIThinkingLoader, ScenarioLoadingSpinner, FeedbackLoadingIndicator } from "@/components/smart-loading";
+import { motion } from "framer-motion";
 
 export default function SimulationPage() {
   const [, params] = useRoute("/simulation/:scenarioId");
@@ -258,7 +260,11 @@ export default function SimulationPage() {
     recognition.start();
   };
 
-  if (!scenario) return <div>Loading...</div>;
+  if (!scenario) return (
+    <div className="container mx-auto px-4 py-8">
+      <ScenarioLoadingSpinner />
+    </div>
+  );
 
   const progress = userScenario?.responses ? (userScenario.responses.length * 33.33) : 0;
 
@@ -416,7 +422,7 @@ export default function SimulationPage() {
               {startScenarioMutation.isPending ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                  Starting Simulation...
+                  Preparing scenario...
                 </>
               ) : (
                 <>
@@ -545,47 +551,139 @@ export default function SimulationPage() {
                         {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
                       
-                      {/* Feedback */}
+                      {/* Enhanced Feedback Display */}
                       {message.feedback && (
-                        <div className="mt-4 pt-4 border-t border-gray-200/30">
+                        <motion.div 
+                          className="mt-4 pt-4 border-t border-gray-200/30"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4 }}
+                        >
                           <div className="flex items-start gap-2 mb-3">
-                            <i className="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                            <motion.i 
+                              className="fas fa-lightbulb text-yellow-500 mt-1"
+                              animate={{ rotate: [0, 10, -10, 0] }}
+                              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                            />
                             <div className="flex-1">
-                              <p className="text-sm font-medium opacity-90 mb-2">Training Feedback:</p>
-                              <p className="text-sm opacity-75 leading-relaxed mb-3">
+                              <p className="text-sm font-medium opacity-90 mb-2">Key Insights & Feedback:</p>
+                              <motion.p 
+                                className="text-sm opacity-75 leading-relaxed mb-3"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                              >
                                 {message.feedback.summary}
-                              </p>
+                              </motion.p>
                               
-                              {/* Skills breakdown */}
-                              {(message.feedback.empathy || message.feedback.communication) && (
-                                <div className="grid grid-cols-2 gap-3 mb-3 text-xs">
+                              {/* Skills breakdown with animations */}
+                              {(message.feedback.empathy || message.feedback.communication || message.feedback.professionalism || message.feedback.problemSolving) && (
+                                <motion.div 
+                                  className="grid grid-cols-2 gap-3 mb-3 text-xs"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.3 }}
+                                >
                                   {message.feedback.empathy && (
-                                    <div className="bg-blue-50/50 p-2 rounded">
+                                    <motion.div 
+                                      className="bg-blue-50/50 p-2 rounded border border-blue-100"
+                                      whileHover={{ scale: 1.02 }}
+                                    >
                                       <span className="font-medium text-blue-800">Empathy: </span>
-                                      <span className="text-blue-700">{message.feedback.empathy}/5</span>
-                                    </div>
+                                      <span className="text-blue-700 font-bold">{message.feedback.empathy}/5</span>
+                                    </motion.div>
                                   )}
                                   {message.feedback.communication && (
-                                    <div className="bg-green-50/50 p-2 rounded">
+                                    <motion.div 
+                                      className="bg-green-50/50 p-2 rounded border border-green-100"
+                                      whileHover={{ scale: 1.02 }}
+                                    >
                                       <span className="font-medium text-green-800">Communication: </span>
-                                      <span className="text-green-700">{message.feedback.communication}/5</span>
-                                    </div>
+                                      <span className="text-green-700 font-bold">{message.feedback.communication}/5</span>
+                                    </motion.div>
                                   )}
-                                </div>
+                                  {message.feedback.professionalism && (
+                                    <motion.div 
+                                      className="bg-purple-50/50 p-2 rounded border border-purple-100"
+                                      whileHover={{ scale: 1.02 }}
+                                    >
+                                      <span className="font-medium text-purple-800">Professionalism: </span>
+                                      <span className="text-purple-700 font-bold">{message.feedback.professionalism}/5</span>
+                                    </motion.div>
+                                  )}
+                                  {message.feedback.problemSolving && (
+                                    <motion.div 
+                                      className="bg-orange-50/50 p-2 rounded border border-orange-100"
+                                      whileHover={{ scale: 1.02 }}
+                                    >
+                                      <span className="font-medium text-orange-800">Problem Solving: </span>
+                                      <span className="text-orange-700 font-bold">{message.feedback.problemSolving}/5</span>
+                                    </motion.div>
+                                  )}
+                                </motion.div>
+                              )}
+
+                              {/* Key Insights */}
+                              {message.feedback.keyInsights && message.feedback.keyInsights.length > 0 && (
+                                <motion.div 
+                                  className="bg-indigo-50/50 p-3 rounded border border-indigo-100 mb-3"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.4 }}
+                                >
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <i className="fas fa-brain text-indigo-600 text-sm"></i>
+                                    <span className="font-medium text-indigo-800 text-xs">Key Insights:</span>
+                                  </div>
+                                  <ul className="text-xs text-indigo-700 space-y-1">
+                                    {message.feedback.keyInsights.map((insight, i) => (
+                                      <motion.li 
+                                        key={i}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.5 + i * 0.1 }}
+                                        className="flex items-start gap-2"
+                                      >
+                                        <span className="text-indigo-400 mt-0.5">•</span>
+                                        <span>{insight}</span>
+                                      </motion.li>
+                                    ))}
+                                  </ul>
+                                </motion.div>
                               )}
                               
-                              {/* Quick summary */}
+                              {/* Quick summary with enhanced styling */}
                               {message.feedback.quickSummary && (
-                                <div className="bg-yellow-50/50 p-2 rounded text-xs">
-                                  <span className="font-medium text-yellow-800">💡 Key Takeaway: </span>
-                                  <span className="text-yellow-700">{message.feedback.quickSummary}</span>
-                                </div>
+                                <motion.div 
+                                  className="bg-gradient-to-r from-yellow-50 to-orange-50 p-3 rounded border border-yellow-200 text-xs"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.5 }}
+                                  whileHover={{ scale: 1.01 }}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <motion.span 
+                                      className="text-lg"
+                                      animate={{ rotate: [0, 10, -10, 0] }}
+                                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
+                                    >
+                                      💡
+                                    </motion.span>
+                                    <span className="font-medium text-yellow-800">Key Takeaway: </span>
+                                  </div>
+                                  <p className="text-yellow-700 mt-1 font-medium">{message.feedback.quickSummary}</p>
+                                </motion.div>
                               )}
                             </div>
                           </div>
                           
                           {/* Emoji Reaction Buttons for Feedback */}
-                          <div className="mt-3">
+                          <motion.div 
+                            className="mt-3"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.6 }}
+                          >
                             <QuickEmojiReaction
                               type="feedback"
                               contextId={`${scenarioId}-step-${index}`}
@@ -598,8 +696,8 @@ export default function SimulationPage() {
                               }}
                               className="opacity-80 hover:opacity-100 transition-opacity"
                             />
-                          </div>
-                        </div>
+                          </motion.div>
+                        </motion.div>
                       )}
                       </div>
                       
@@ -625,22 +723,15 @@ export default function SimulationPage() {
                 </div>
               ))}
               
-              {/* Typing Indicator */}
+              {/* Smart AI Thinking Indicator */}
               {submitResponseMutation.isPending && (
                 <div className="flex justify-start">
                   <div className="flex items-start gap-3 max-w-2xl">
                     <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
                       <i className="fas fa-user-nurse text-white"></i>
                     </div>
-                    <div className="bg-white px-6 py-4 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
-                      <div className="flex items-center gap-3">
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                        </div>
-                        <span className="text-gray-500">Patient is thinking...</span>
-                      </div>
+                    <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm">
+                      <AIThinkingLoader size="sm" className="bg-transparent border-0 p-0" />
                     </div>
                   </div>
                 </div>
@@ -689,13 +780,21 @@ export default function SimulationPage() {
                     disabled={submitResponseMutation.isPending || isListening}
                     className={`absolute right-2 top-2 p-2 h-8 w-8 ${
                       isListening 
-                        ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                        ? 'bg-red-500 hover:bg-red-600' 
                         : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
                     }`}
                     variant="ghost"
                     title={isListening ? "Listening... Speak now" : "Click to speak your response"}
                   >
-                    <i className={`fas ${isListening ? 'fa-stop' : 'fa-microphone'} text-sm`}></i>
+                    {isListening ? (
+                      <motion.i 
+                        className="fas fa-microphone text-sm text-white"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 0.8, repeat: Infinity }}
+                      />
+                    ) : (
+                      <i className="fas fa-microphone text-sm"></i>
+                    )}
                   </Button>
                 </div>
                 <Button 

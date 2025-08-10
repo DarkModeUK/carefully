@@ -89,23 +89,49 @@ export async function analyzeFeedback(
       `${msg.role === 'user' ? 'Worker' : 'Patient'}: ${msg.message}`
     ).join('\n');
 
-    const systemPrompt = `Assess this care worker response quickly:
+    const systemPrompt = `As an expert care training assessor, provide detailed analysis of this care worker's response.
 
-Context: ${scenarioContext.substring(0, 150)}...
-Recent chat: ${recentChat}
-Response: "${userMessage}"
+SCENARIO CONTEXT: ${scenarioContext}
 
-Rate 1-5: empathy, communication, professionalism, problemSolving
-Give brief feedback in JSON:
+CONVERSATION HISTORY:
+${recentChat}
+
+RESPONSE TO EVALUATE: "${userMessage}"
+
+Assess using evidence-based care standards across these competencies:
+
+1. EMPATHY & EMOTIONAL INTELLIGENCE (1-5)
+   - Validates patient's feelings and demonstrates understanding
+   - Uses person-centred language that acknowledges dignity
+   - Shows genuine care and emotional attunement
+
+2. COMMUNICATION SKILLS (1-5)
+   - Clear, respectful, age-appropriate language
+   - Active listening demonstrated through responses
+   - Avoids medical jargon, uses accessible explanations
+
+3. PROFESSIONALISM (1-5)
+   - Maintains appropriate boundaries and ethics
+   - Follows care protocols and best practices
+   - Demonstrates respect for patient autonomy
+
+4. PROBLEM-SOLVING APPROACH (1-5)
+   - Offers practical, person-centred solutions
+   - Considers patient's individual needs and preferences
+   - Demonstrates critical thinking about care options
+
+Provide detailed feedback in JSON format:
 {
   "empathy": 1-5,
   "communication": 1-5,
   "professionalism": 1-5,
   "problemSolving": 1-5,
-  "summary": "Brief constructive feedback (1-2 sentences)",
-  "strengths": ["main strength"],
-  "improvements": ["key improvement"],
-  "quickSummary": "One actionable tip"
+  "summary": "Detailed constructive feedback highlighting specific examples from their response",
+  "strengths": ["specific strength with evidence", "another strength with context"],
+  "improvements": ["specific improvement with actionable suggestion", "another improvement with clear guidance"],
+  "quickSummary": "One key actionable takeaway for immediate improvement",
+  "keyInsights": ["Important insight about care approach", "Learning opportunity identified"],
+  "nextSteps": ["Specific action to practise", "Skill to develop further"]
 }`;
 
     const response = await openai.chat.completions.create({
@@ -116,7 +142,7 @@ Give brief feedback in JSON:
       ],
       response_format: { type: "json_object" },
       temperature: 0.3, // Lower for consistency and speed
-      max_tokens: 250, // Reduced for faster generation
+      max_tokens: 400, // Increased for detailed feedback
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -126,23 +152,27 @@ Give brief feedback in JSON:
       communication: result.communication || 3,
       professionalism: result.professionalism || 3,
       problemSolving: result.problemSolving || 3,
-      summary: result.summary || "Your response shows professional awareness. Consider acknowledging the person's emotional state more explicitly and exploring their specific concerns before offering solutions.",
-      strengths: result.strengths || ["Maintained professional approach", "Engaged with the situation"],
-      improvements: result.improvements || ["Show more emotional validation", "Ask open-ended questions to understand their perspective"],
-      quickSummary: result.quickSummary || "Start by acknowledging their feelings before moving to problem-solving"
+      summary: result.summary || "Your response demonstrates professional awareness and engagement. To enhance your care approach, focus on acknowledging the person's emotional state more explicitly and explore their specific concerns through thoughtful questioning before moving to solutions.",
+      strengths: result.strengths || ["Maintained professional boundaries and appropriate tone", "Engaged meaningfully with the conversation"],
+      improvements: result.improvements || ["Validate emotions with specific phrases like 'I can understand this must be difficult for you'", "Use open-ended questions to gather more information about their unique perspective and needs"],
+      quickSummary: result.quickSummary || "Lead with empathy by acknowledging their emotional experience before problem-solving",
+      keyInsights: result.keyInsights || ["Person-centred care requires balancing emotional support with practical assistance", "Active listening involves both hearing words and understanding underlying feelings"],
+      nextSteps: result.nextSteps || ["Practice reflecting feelings back to show understanding", "Develop skills in asking questions that encourage sharing"]
     };
   } catch (error) {
     console.error('Error analyzing feedback:', error);
-    // Return improved default feedback
+    // Return enhanced default feedback
     return {
       empathy: 3,
       communication: 3,
       professionalism: 3,
       problemSolving: 3,
-      summary: "Your response demonstrates professional engagement. To enhance your approach, focus on acknowledging the person's emotional state more explicitly and explore their specific concerns through open-ended questions before offering solutions.",
-      strengths: ["Professional tone maintained", "Engaged with the conversation appropriately"],
-      improvements: ["Validate feelings with phrases like 'I can see this is concerning for you'", "Ask questions to understand their perspective better"],
-      quickSummary: "Lead with empathy by acknowledging their emotional experience first"
+      summary: "Your response demonstrates professional engagement and care awareness. To strengthen your approach, focus on explicitly acknowledging the person's emotional state and use thoughtful questioning to understand their unique perspective before moving to practical solutions.",
+      strengths: ["Maintained professional boundaries and respectful tone", "Demonstrated engagement with the care situation"],
+      improvements: ["Use empathetic validation phrases such as 'I can understand this must be challenging for you'", "Ask open-ended questions that invite the person to share more about their specific needs and feelings"],
+      quickSummary: "Begin conversations by acknowledging emotions before moving to problem-solving",
+      keyInsights: ["Effective care communication balances emotional support with practical problem-solving", "Understanding the person's perspective is essential before offering solutions"],
+      nextSteps: ["Practice using reflective listening techniques to validate feelings", "Develop a repertoire of open-ended questions that encourage deeper sharing"]
     };
   }
 }

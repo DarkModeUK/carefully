@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScenarioCard } from "@/components/scenario-card";
 import { SkillProgress } from "@/components/skill-progress";
 import { useToast } from "@/hooks/use-toast";
+import { ContentSkeleton, CardSkeleton, VoiceProcessingLoader } from "@/components/smart-loading";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { User, Scenario } from "@shared/schema";
 
@@ -104,13 +105,13 @@ export default function ProfilePage() {
   if (userLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-neutral-200 rounded w-1/3"></div>
-          <div className="h-32 bg-neutral-200 rounded"></div>
+        <div className="space-y-6">
+          <ContentSkeleton lines={1} className="w-1/3 h-8" />
+          <CardSkeleton className="h-32" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="h-64 bg-neutral-200 rounded"></div>
-            <div className="h-64 bg-neutral-200 rounded"></div>
-            <div className="h-64 bg-neutral-200 rounded"></div>
+            <CardSkeleton className="h-64" />
+            <CardSkeleton className="h-64" />
+            <CardSkeleton className="h-64" />
           </div>
         </div>
       </div>
