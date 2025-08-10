@@ -87,7 +87,7 @@ export async function setupAuth(app: Express) {
 
   // Set up strategies for both localhost and production domains
   const domains = process.env.REPLIT_DOMAINS!.split(",");
-  const allDomains = [...domains, "localhost:5000", "localhost"];
+  const allDomains = [...domains, "localhost:5000"];
   
   for (const domain of allDomains) {
     const isLocalhost = domain.includes("localhost");
@@ -110,14 +110,18 @@ export async function setupAuth(app: Express) {
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
   app.get("/api/login", (req, res, next) => {
-    passport.authenticate(`replitauth:${req.hostname}`, {
+    // Use localhost:5000 for local development, actual hostname for production
+    const strategyName = req.hostname === 'localhost' ? 'localhost:5000' : req.hostname;
+    passport.authenticate(`replitauth:${strategyName}`, {
       prompt: "login consent",
       scope: ["openid", "email", "profile", "offline_access"],
     })(req, res, next);
   });
 
   app.get("/api/callback", (req, res, next) => {
-    passport.authenticate(`replitauth:${req.hostname}`, {
+    // Use localhost:5000 for local development, actual hostname for production
+    const strategyName = req.hostname === 'localhost' ? 'localhost:5000' : req.hostname;
+    passport.authenticate(`replitauth:${strategyName}`, {
       successReturnToOrRedirect: "/dashboard",
       failureRedirect: "/api/login",
     })(req, res, next);
