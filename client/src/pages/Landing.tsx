@@ -100,7 +100,7 @@ export default function Landing() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Only 29% of care staff get dementia-specific training, despite dementia being a majority of the workload.
+                  Despite dementia making up a significant portion of the workload in adult social care, only 29% of care staff have received any dementia-specific training — leaving many without the knowledge or confidence to handle these complex situations.
                 </CardDescription>
               </CardContent>
             </Card>
