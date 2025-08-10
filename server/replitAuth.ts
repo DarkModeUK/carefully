@@ -47,6 +47,8 @@ export function getSession() {
       secure: false, // Disable secure cookies for localhost development
       maxAge: sessionTtl,
       sameSite: 'lax', // Allow cross-site requests for OAuth flow
+      path: '/', // Ensure cookie works for all paths
+      domain: undefined, // Let browser set appropriate domain
     },
     name: 'connect.sid' // Explicit session name
   });

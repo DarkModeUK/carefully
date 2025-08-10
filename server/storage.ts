@@ -5,11 +5,6 @@ import { neon, Pool } from "@neondatabase/serverless";
 
 // Use connection pooling for better performance
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const sql = neon(process.env.DATABASE_URL!, {
-  // Enable caching and connection reuse
-  fullResults: true,
-  arrayMode: false,
-});
 
 export interface IStorage {
   // Users (required for Replit Auth)
