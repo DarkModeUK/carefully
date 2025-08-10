@@ -78,7 +78,7 @@ export default function Landing() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  One-size-fits-all e-learning that skips the hard stuff.
+                  Training is often one-size-fits-all — focused on ticking compliance boxes instead of preparing staff for the high-pressure, emotionally charged moments they face every day.
                 </CardDescription>
               </CardContent>
             </Card>
