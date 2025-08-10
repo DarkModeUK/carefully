@@ -3,7 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Navigation } from "@/components/navigation";
+import RoleBasedNavigation from "@/components/role-based-navigation";
 import { WelcomeWizard } from "@/components/welcome-wizard";
 import { useAuth } from "@/hooks/useAuth";
 import { usePreloadData } from "@/hooks/usePreloadData";
@@ -27,13 +27,14 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 const Forums = lazy(() => import("@/pages/forums"));
 const EmotionalTracker = lazy(() => import("@/pages/emotional-tracker"));
 const ManagerDashboard = lazy(() => import("@/pages/manager-dashboard"));
-const RecruiterDashboard = lazy(() => import("@/pages/recruiter-dashboard"));
 const CulturalSensitivity = lazy(() => import("@/pages/cultural-sensitivity"));
 const BadgesAwards = lazy(() => import("@/pages/badges-awards"));
 const VisualAids = lazy(() => import("@/pages/visual-aids"));
 const NonVerbalCommunication = lazy(() => import("@/pages/non-verbal-communication"));
 const QuickPractice = lazy(() => import("@/pages/quick-practice"));
 const ReflectionDashboard = lazy(() => import("@/pages/reflection-dashboard-simple"));
+const RecruiterDashboard = lazy(() => import("@/pages/recruiter-dashboard"));
+const LDManagerDashboard = lazy(() => import("@/pages/ld-manager-dashboard"));
 
 // Loading component for lazy routes
 function PageLoader() {
@@ -101,7 +102,8 @@ function Router() {
             
             {/* Role-specific dashboards */}
             <Route path="/manager-dashboard" component={ManagerDashboard} />
-            <Route path="/recruiter-dashboard" component={RecruiterDashboard} />
+            <Route path="/recruiter" component={RecruiterDashboard} />
+            <Route path="/ld-manager" component={LDManagerDashboard} />
           </>
         )}
         <Route component={NotFound} />
@@ -126,7 +128,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      {isAuthenticated && !isLoading && <Navigation />}
+      {isAuthenticated && !isLoading && <RoleBasedNavigation />}
       <Router />
     </div>
   );

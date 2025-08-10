@@ -21,7 +21,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
-  role: text("role").notNull().default("care_worker"),
+  role: text("role", { enum: ["care_worker", "recruiter", "ld_manager"] }).notNull().default("care_worker"),
   skillLevels: jsonb("skill_levels").$type<Record<string, number>>().default({}),
   totalScenarios: integer("total_scenarios").default(0),
   weeklyStreak: integer("weekly_streak").default(0),

@@ -817,7 +817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const userScenarios = await storage.getUserScenarios(userId);
-      const scenarios = await storage.getScenarios();
+      const scenarios = await storage.getAllScenarios();
       
       // Calculate insights by category
       const insights = calculateReflectionInsights(scenarios, userScenarios);
@@ -825,6 +825,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching reflection insights:', error);
       res.status(500).json({ error: 'Failed to fetch reflection insights' });
+    }
+  });
+
+  // Recruiter API endpoints
+  app.get('/api/recruiter/candidates', isAuthenticated, async (req: any, res) => {
+    try {
+      const { role, skill } = req.query;
+      const candidates = await storage.getRecruiterCandidates(role, skill);
+      res.json(candidates);
+    } catch (error) {
+      console.error('Error fetching candidates:', error);
+      res.status(500).json({ error: 'Failed to fetch candidates' });
+    }
+  });
+
+  app.get('/api/recruiter/analytics', isAuthenticated, async (req: any, res) => {
+    try {
+      const analytics = await storage.getRecruiterAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error('Error fetching recruiter analytics:', error);
+      res.status(500).json({ error: 'Failed to fetch analytics' });
+    }
+  });
+
+  // L&D Manager API endpoints
+  app.get('/api/ld-manager/team/:timeframe', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeframe } = req.params;
+      const teamData = await storage.getManagerTeamData(userId, timeframe);
+      res.json(teamData);
+    } catch (error) {
+      console.error('Error fetching team data:', error);
+      res.status(500).json({ error: 'Failed to fetch team data' });
+    }
+  });
+
+  app.get('/api/ld-manager/analytics/:timeframe', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeframe } = req.params;
+      const analytics = await storage.getManagerAnalytics(userId, timeframe);
+      res.json(analytics);
+    } catch (error) {
+      console.error('Error fetching L&D analytics:', error);
+      res.status(500).json({ error: 'Failed to fetch analytics' });
+    }
+  });
+
+  app.get('/api/ld-manager/wellbeing/:timeframe', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeframe } = req.params;
+      const wellbeingData = await storage.getTeamWellbeingData(userId, timeframe);
+      res.json(wellbeingData);
+    } catch (error) {
+      console.error('Error fetching wellbeing data:', error);
+      res.status(500).json({ error: 'Failed to fetch wellbeing data' });
     }
   });
 
