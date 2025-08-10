@@ -11,6 +11,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
   // Auth routes
+  // Dashboard route that handles OAuth redirect
+  app.get('/dashboard', (req, res) => {
+    console.log('=== Dashboard Route Hit ===');
+    console.log('Session ID:', req.sessionID);
+    console.log('Authenticated:', req.isAuthenticated());
+    console.log('User:', req.user);
+    
+    if (!req.isAuthenticated() || !req.user) {
+      console.log('Not authenticated, redirecting to login');
+      return res.redirect('/api/login');
+    }
+    
+    // Redirect to hash route to let React handle the routing
+    console.log('User authenticated, redirecting to React app dashboard');
+    return res.redirect('/#/dashboard');
+  });
+
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

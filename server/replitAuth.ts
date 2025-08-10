@@ -209,18 +209,34 @@ export async function setupAuth(app: Express) {
         console.log('Session ID after login:', req.sessionID);
         console.log('Session passport after login:', (req.session as any).passport ? 'exists' : 'none');
         
-        // Force session save before redirect and set explicit cookie
+        // Force session save and regenerate to ensure clean state
         req.session.save((err) => {
           if (err) {
             console.error('Session save error:', err);
+            return res.redirect('/?error=session_save_failed');
           }
+          
           console.log('Session saved successfully');
           console.log('Final session ID for redirect:', req.sessionID);
           
-          // Log the session for debugging
-          console.log('Redirect with session ID:', req.sessionID);
+          // Set explicit headers to prevent caching
+          res.set({
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          });
           
-          return res.redirect('/dashboard');
+          // Use 302 redirect with explicit session cookie
+          res.cookie('connect.sid', req.sessionID, {
+            signed: true,
+            httpOnly: true,
+            secure: false,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            sameSite: 'lax',
+            path: '/'
+          });
+          
+          return res.redirect(302, '/dashboard');
         });
       });
     })(req, res, next);

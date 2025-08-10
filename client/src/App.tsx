@@ -71,6 +71,8 @@ function Router() {
     return <WelcomeWizard onComplete={() => setShowWizard(true)} />;
   }
 
+
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
