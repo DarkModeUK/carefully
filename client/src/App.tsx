@@ -79,6 +79,7 @@ function Router() {
         ) : (
           <>
             <Route path="/" component={Dashboard} />
+            <Route path="/dashboard" component={Dashboard} />
             <Route path="/scenarios" component={ScenariosPage} />
             <Route path="/scenarios/:id" component={ScenarioDetailPage} />
             <Route path="/simulation/:scenarioId" component={SimulationPage} />
