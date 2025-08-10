@@ -111,7 +111,7 @@ export default function Landing() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  International recruits face challenges with local language and expectations, risking misunderstandings and higher turnover.
+                  With a large proportion of care workers recruited internationally, many face challenges adapting to local communication styles, idioms, and cultural expectations — leading to misunderstandings, reduced trust from residents and families, and higher turnover.
                 </CardDescription>
               </CardContent>
             </Card>
