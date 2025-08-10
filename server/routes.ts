@@ -312,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await storage.updateUserScenario(userScenario.id, {
           responses: updatedResponses,
-          progress: Math.min((updatedResponses.length / 3) * 100, 100)
+          progress: Math.min(Math.round((updatedResponses.length / 3) * 100), 100)
         });
       }
       
