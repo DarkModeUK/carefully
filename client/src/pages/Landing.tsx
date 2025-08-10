@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import carefullyLogo from "@assets/Carefully-logo-final_1754850526009.png";
+import carefullyLogo from "@assets/Carefully-logo-final_1754861727999.png";
 
 export default function Landing() {
   return (
