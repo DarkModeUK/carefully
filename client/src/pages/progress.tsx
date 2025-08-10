@@ -257,6 +257,118 @@ export default function ProgressPage() {
             </CardContent>
           </Card>
 
+          {/* In Progress Scenarios */}
+          {inProgressScenarios.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <i className="fas fa-play-circle text-primary"></i>
+                  Continue Training
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {inProgressScenarios.map((userScenario) => {
+                    const scenario = scenarios.find(s => s.id === userScenario.scenarioId);
+                    if (!scenario) return null;
+                    
+                    return (
+                      <div key={userScenario.id} className="flex items-center justify-between p-4 border border-primary/20 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-primary bg-opacity-20 flex items-center justify-center">
+                            <i className="fas fa-clock text-primary"></i>
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-neutral-800">{scenario.title}</h4>
+                            <div className="flex items-center gap-4 text-sm text-neutral-500">
+                              <span>Progress: {userScenario.progress || 0}%</span>
+                              <span>Time: {userScenario.totalTime || 0}min</span>
+                              <Badge variant="outline" className="border-primary/30 text-primary">In Progress</Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <Button 
+                          onClick={() => setLocation(`/simulation/${scenario.id}`)}
+                          size="sm"
+                          className="bg-primary hover:bg-primary/90"
+                        >
+                          <i className="fas fa-play mr-2"></i>
+                          Continue
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Completed Scenarios */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <i className="fas fa-check-circle text-green-600"></i>
+                Completed Training
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {completedScenarios.length > 0 ? (
+                  completedScenarios.map((userScenario) => {
+                    const scenario = scenarios.find(s => s.id === userScenario.scenarioId);
+                    if (!scenario) return null;
+                    
+                    return (
+                      <div key={userScenario.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                            <i className="fas fa-check text-green-600"></i>
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-neutral-800">{scenario.title}</h4>
+                            <div className="flex items-center gap-4 text-sm text-neutral-500">
+                              <span className="text-green-600 font-medium">Score: {userScenario.score}%</span>
+                              <span>Time: {userScenario.totalTime}min</span>
+                              <span>{userScenario.completedAt ? new Date(userScenario.completedAt).toLocaleDateString() : ''}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setLocation(`/simulation/${scenario.id}`)}
+                            title="Retry scenario"
+                          >
+                            <i className="fas fa-redo mr-2"></i>
+                            Retry
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => setLocation(`/scenarios/${scenario.id}`)}
+                            title="View scenario details"
+                          >
+                            <i className="fas fa-info-circle"></i>
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-8">
+                    <i className="fas fa-graduation-cap text-neutral-400 text-4xl mb-4"></i>
+                    <h3 className="text-lg font-semibold text-neutral-700 mb-2">No Completed Training</h3>
+                    <p className="text-neutral-500 mb-4">Complete your first scenario to see your achievements here</p>
+                    <Button onClick={() => setLocation('/scenarios')}>
+                      Browse Scenarios
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Recent Activity */}
           <Card>
             <CardHeader>
@@ -290,9 +402,11 @@ export default function ProgressPage() {
                         <Button 
                           variant="ghost" 
                           size="sm"
-                          onClick={() => setLocation(`/scenarios/${scenario.id}`)}
+                          onClick={() => setLocation(`/simulation/${scenario.id}`)}
+                          title="Practice again"
                         >
-                          <i className="fas fa-external-link-alt"></i>
+                          <i className="fas fa-redo mr-1"></i>
+                          Retry
                         </Button>
                       </div>
                     );
