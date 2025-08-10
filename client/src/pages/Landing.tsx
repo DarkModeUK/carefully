@@ -13,6 +13,12 @@ export default function Landing() {
             <img src={carefullyLogo} alt="Carefully" className="h-16" />
           </div>
           <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => window.location.href = '/api/login'} 
+              className="text-[#2C2A4A] hover:text-[#907AD6] font-medium transition-colors duration-300"
+            >
+              Sign In
+            </button>
             <Button 
               onClick={() => window.location.href = '/api/login'} 
               className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white"
@@ -42,7 +48,12 @@ export default function Landing() {
             >
               Try Carefully
             </Button>
-
+            <button 
+              onClick={() => window.location.href = '/api/login'} 
+              className="text-[#2C2A4A] hover:text-[#907AD6] font-medium transition-colors duration-300 underline underline-offset-4"
+            >
+              Already have an account? Sign in
+            </button>
           </div>
           
           <p className="text-sm text-gray-500 mt-4">
