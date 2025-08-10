@@ -91,6 +91,8 @@ export const scenarios = pgTable("scenarios", {
   }>().default({}),
   isOfflineAvailable: boolean("is_offline_available").default(false),
   isQuickPractice: boolean("is_quick_practice").default(false), // 5-10 minute scenarios
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
 });
 
 export const userScenarios = pgTable("user_scenarios", {
@@ -128,6 +130,8 @@ export const insertScenarioSchema = createInsertSchema(scenarios).omit({
 
 export const insertUserScenarioSchema = createInsertSchema(userScenarios).omit({
   id: true,
+  createdAt: true,
+  updatedAt: true,
   startedAt: true,
   completedAt: true,
 });
