@@ -64,9 +64,7 @@ export default function Landing() {
       <section className="px-4 lg:px-6 py-16 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">
-              Most care training doesn't prepare you for real life.
-            </h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C2A4A] mb-6">Tick-box training won’t prepare you for real life in care — that’s why we built Carefully</h2>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -94,7 +92,7 @@ export default function Landing() {
             
             <Card className="border-l-4 border-l-amber-400">
               <CardHeader>
-                <CardTitle className="text-amber-600 text-lg">Incomplete</CardTitle>
+                <CardTitle className="text-amber-600 text-lg">Incomplete Coverage</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription>
