@@ -305,17 +305,24 @@ export default function SimulationPage() {
             </CardContent>
           </Card>
 
-          {/* Context & Setup */}
+          {/* Patient Background */}
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <i className="fas fa-scenario text-blue-500"></i>
-                Scenario Context
+                <i className="fas fa-user-injured text-blue-500"></i>
+                Patient Background
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-1">Take time to read and understand the patient's history and current situation</p>
             </CardHeader>
             <CardContent>
-              <div className="prose max-w-none">
-                <p className="text-gray-700 leading-relaxed">{scenario.context}</p>
+              <div className="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-400">
+                <div className="prose prose-sm max-w-none">
+                  {scenario.context.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="text-gray-700 leading-relaxed mb-4 last:mb-0">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -328,18 +335,21 @@ export default function SimulationPage() {
                   <i className="fas fa-target text-green-500"></i>
                   Learning Objectives
                 </CardTitle>
+                <p className="text-sm text-gray-600 mt-1">Skills you'll practice and develop during this simulation</p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3">
-                  {scenario.learningObjectives.map((objective, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-green-600 text-xs font-medium">{index + 1}</span>
-                      </div>
-                      <span className="text-gray-700">{objective}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="bg-green-50 p-5 rounded-lg border-l-4 border-green-400">
+                  <ul className="space-y-4">
+                    {scenario.learningObjectives.map((objective, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <div className="w-7 h-7 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 border-2 border-green-200">
+                          <span className="text-green-700 text-sm font-bold">{index + 1}</span>
+                        </div>
+                        <span className="text-gray-700 leading-relaxed font-medium">{objective}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </CardContent>
             </Card>
           )}
