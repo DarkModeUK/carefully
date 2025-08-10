@@ -175,8 +175,14 @@ export default function SimulationPage() {
 
   // Initialize scenario state
   useEffect(() => {
-    if (userScenario?.responses?.length) {
-      // Restore conversation from saved responses
+    if (userScenario?.status === 'completed') {
+      // Handle completed scenarios - redirect to results
+      setIsCompleted(true);
+      setViewState('completed');
+      setLocation(`/simulation/${scenarioId}/results`);
+      return;
+    } else if (userScenario?.responses?.length) {
+      // Restore conversation from saved responses for in-progress scenarios
       const systemMessage = { role: 'system' as const, content: 'Training simulation in progress.' };
       const restoredConversation = [
         systemMessage,
@@ -187,22 +193,18 @@ export default function SimulationPage() {
       ];
       setConversation(restoredConversation);
       setCurrentStep(userScenario.responses.length);
-      if (userScenario.status === 'completed') {
-        setIsCompleted(true);
-        setViewState('completed');
-      } else {
-        setViewState('simulation');
-      }
-    } else if (userScenario?.status === 'in_progress') {
       setViewState('simulation');
-    } else if (userScenario === null) {
+    } else if (userScenario?.status === 'in_progress' && (!userScenario.responses || userScenario.responses.length === 0)) {
+      // Started but no responses yet
+      setViewState('simulation');
+    } else if (!userScenario) {
       // Scenario hasn't been started yet - show preparation screen
       setViewState('preparation');
       setConversation([]);
       setCurrentStep(0);
       setIsCompleted(false);
     }
-  }, [scenario, userScenario]);
+  }, [scenario, userScenario, scenarioId, setLocation]);
 
   const handleStartSimulation = () => {
     // Clear any existing conversation state
