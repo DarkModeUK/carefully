@@ -369,3 +369,38 @@ body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, select {
     }
   }
 }
+
+/* Welcome wizard specific animations */
+.celebration-animation {
+  animation: celebrationBounce 1s ease-in-out infinite;
+}
+
+@keyframes celebrationBounce {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+  }
+  25% { 
+    transform: scale(1.1) rotate(-5deg);
+  }
+  50% { 
+    transform: scale(1.15) rotate(0deg);
+  }
+  75% { 
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+/* Wizard step indicator animation */
+.step-indicator {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-indicator.active {
+  animation: stepPulse 0.6s ease-in-out;
+}
+
+@keyframes stepPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}

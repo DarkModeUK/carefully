@@ -54,6 +54,9 @@ export const users = pgTable("users", {
     sensitivityScore?: number;
   }>().default({}),
   profileCompletion: integer("profile_completion").default(0),
+  onboardingCompleted: boolean("onboarding_completed").default(false),
+  experienceLevel: text("experience_level"),
+  learningGoals: jsonb("learning_goals").$type<string[]>().default([]),
   lastAssessment: timestamp("last_assessment"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

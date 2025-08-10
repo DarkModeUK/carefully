@@ -73,9 +73,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
+
       res.json(updatedUser);
     } catch (error) {
+      console.error("Error updating user:", error);
       res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  // Update user profile (wizard completion)
+  app.put("/api/user/profile", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { role, experienceLevel, learningGoals, preferences, onboardingCompleted } = req.body;
+      
+      const updates: any = {
+        role,
+        experienceLevel,
+        learningGoals,
+        onboardingCompleted,
+        profileCompletion: 100 // Complete profile after wizard
+      };
+
+      // Merge preferences with existing ones
+      if (preferences) {
+        const currentUser = await storage.getUser(userId);
+        updates.preferences = {
+          ...currentUser?.preferences,
+          ...preferences
+        };
+      }
+
+      const updatedUser = await storage.updateUser(userId, updates);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
     }
   });
 

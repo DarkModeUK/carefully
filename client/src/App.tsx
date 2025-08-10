@@ -4,8 +4,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navigation } from "@/components/navigation";
+import { WelcomeWizard } from "@/components/welcome-wizard";
 import { useAuth } from "@/hooks/useAuth";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load pages for better performance
@@ -52,7 +53,15 @@ function PageLoader() {
 }
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const [showWizard, setShowWizard] = useState(false);
+
+  // Show welcome wizard for authenticated users who haven't completed onboarding
+  const shouldShowWizard = isAuthenticated && user && !(user as any).onboardingCompleted && !showWizard;
+
+  if (shouldShowWizard) {
+    return <WelcomeWizard onComplete={() => setShowWizard(true)} />;
+  }
 
   return (
     <Suspense fallback={<PageLoader />}>
