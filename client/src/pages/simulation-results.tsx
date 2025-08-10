@@ -439,7 +439,9 @@ export default function SimulationResults() {
                   <p className="text-blue-700 mb-0">
                     {userScenario.feedback && Array.isArray(userScenario.feedback) && userScenario.feedback.length > 0 
                       ? userScenario.feedback[userScenario.feedback.length - 1]?.summary || "You completed this care scenario with thoughtful consideration."
-                      : `You engaged with this scenario by providing ${userScenario.responses?.length || 0} thoughtful response${(userScenario.responses?.length || 0) === 1 ? '' : 's'} and completed the training successfully.`
+                      : (userScenario.responses?.length || 0) > 0 
+                        ? `You engaged with this scenario by providing ${userScenario.responses?.length || 0} thoughtful response${(userScenario.responses?.length || 0) === 1 ? '' : 's'} and completed the training successfully.`
+                        : "You reviewed this care scenario and completed the training. Consider engaging more actively with future scenarios to maximize your learning experience."
                     }
                   </p>
                 </div>
