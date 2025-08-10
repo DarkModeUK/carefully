@@ -163,11 +163,36 @@ export default function ProfilePage() {
           {profileCompletion < 100 && (
             <div className="mt-4 p-4 bg-[#DABFFF] bg-opacity-20 rounded-lg">
               <h4 className="font-medium text-[#2C2A4A] mb-2">Complete these steps to improve your experience:</h4>
-              <ul className="text-sm text-[#4F518C] space-y-1">
-                {!(user?.firstName || user?.lastName) && <li>• Add your full name</li>}
+              <ul className="text-sm text-[#4F518C] space-y-2">
+                {!(user?.firstName || user?.lastName) && (
+                  <li className="flex items-center justify-between">
+                    <span>• Add your full name</span>
+                    <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                      Add Name
+                    </Button>
+                  </li>
+                )}
                 {!user?.email && <li>• Verify your email address</li>}
-                {!user?.role && <li>• Select your care role</li>}
-                {(!user?.skillLevels || Object.keys(user.skillLevels).length === 0) && <li>• Complete skill assessment</li>}
+                {!user?.role && (
+                  <li className="flex items-center justify-between">
+                    <span>• Select your care role</span>
+                    <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                      Set Role
+                    </Button>
+                  </li>
+                )}
+                {(!user?.skillLevels || Object.keys(user.skillLevels).length === 0) && (
+                  <li className="flex items-center justify-between">
+                    <span>• Complete skill assessment</span>
+                    <Button 
+                      size="sm" 
+                      className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white"
+                      onClick={() => setCurrentStep('assessment')}
+                    >
+                      Start Assessment
+                    </Button>
+                  </li>
+                )}
               </ul>
             </div>
           )}
