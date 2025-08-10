@@ -21,6 +21,7 @@ export function Navigation() {
   const navItems = [
     { href: "/", label: "Dashboard", icon: "fas fa-home" },
     { href: "/scenarios", label: "Simulation Library", icon: "fas fa-play" },
+    { href: "/reflection", label: "Reflection", icon: "fas fa-brain" },
     { href: "/profile", label: "Profile", icon: "fas fa-user" },
     { href: "/progress", label: "Progress", icon: "fas fa-chart-bar" },
   ];

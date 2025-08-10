@@ -33,6 +33,7 @@ const BadgesAwards = lazy(() => import("@/pages/badges-awards"));
 const VisualAids = lazy(() => import("@/pages/visual-aids"));
 const NonVerbalCommunication = lazy(() => import("@/pages/non-verbal-communication"));
 const QuickPractice = lazy(() => import("@/pages/quick-practice"));
+const ReflectionDashboard = lazy(() => import("@/pages/reflection-dashboard-simple"));
 
 // Loading component for lazy routes
 function PageLoader() {
@@ -96,6 +97,7 @@ function Router() {
             <Route path="/visual-aids" component={VisualAids} />
             <Route path="/non-verbal-communication" component={NonVerbalCommunication} />
             <Route path="/quick-practice" component={QuickPractice} />
+            <Route path="/reflection" component={ReflectionDashboard} />
             
             {/* Role-specific dashboards */}
             <Route path="/manager-dashboard" component={ManagerDashboard} />
