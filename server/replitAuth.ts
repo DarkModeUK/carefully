@@ -39,8 +39,9 @@ export function getSession() {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Only secure in production
+      secure: false, // Disable secure cookies for localhost development
       maxAge: sessionTtl,
+      sameSite: 'lax', // Allow cross-site requests for OAuth flow
     },
   });
 }
@@ -69,9 +70,19 @@ async function upsertUser(
 
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
-  app.use(getSession());
+  const sessionMiddleware = getSession();
+  app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
+  
+  // Debug middleware to check session
+  app.use('/api/auth', (req: any, res, next) => {
+    console.log('Session ID:', req.sessionID);
+    console.log('Session exists:', !!req.session);
+    console.log('Session passport:', req.session?.passport ? 'exists' : 'none');
+    console.log('req.isAuthenticated():', req.isAuthenticated ? req.isAuthenticated() : 'no method');
+    next();
+  });
 
   const config = await getOidcConfig();
 
@@ -119,8 +130,14 @@ export async function setupAuth(app: Express) {
   });
 
   app.get("/api/callback", (req, res, next) => {
+    console.log('OAuth callback received');
+    console.log('Query params:', req.query);
+    console.log('Hostname:', req.hostname);
+    
     // Use localhost:5000 for local development, actual hostname for production
     const strategyName = req.hostname === 'localhost' ? 'localhost:5000' : req.hostname;
+    console.log('Using strategy:', strategyName);
+    
     passport.authenticate(`replitauth:${strategyName}`, {
       successReturnToOrRedirect: "/dashboard",
       failureRedirect: "/api/login",
@@ -141,8 +158,14 @@ export async function setupAuth(app: Express) {
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
+  
+  // Debug logging
+  console.log('🔍 Auth check - isAuthenticated:', req.isAuthenticated());
+  console.log('🔍 Auth check - user:', user ? 'exists' : 'null');
+  console.log('🔍 Auth check - user.expires_at:', user?.expires_at);
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated() || !user?.expires_at) {
+    console.log('❌ Auth failed - not authenticated or no expires_at');
     return res.status(401).json({ message: "Unauthorized" });
   }
 
