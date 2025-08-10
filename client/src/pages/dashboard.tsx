@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StatCard } from "@/components/stat-card";
 import { ScenarioCard } from "@/components/scenario-card";
 import { SkillProgress } from "@/components/skill-progress";
+import { AdaptiveDifficultyPanel } from "@/components/adaptive-difficulty-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -74,6 +75,11 @@ export default function Dashboard() {
           <span className="inline-block ml-2 hover-wobble">👋</span>
         </h2>
         <p className="text-neutral-500 fade-in-left">Continue building your care skills with personalised training scenarios.</p>
+      </div>
+
+      {/* AI Adaptive Difficulty Section */}
+      <div className="mb-8">
+        <AdaptiveDifficultyPanel />
       </div>
 
       {/* Stats Overview */}

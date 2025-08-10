@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { generateConversationResponse, analyzeFeedback } from "./services/openai";
 import { generateLearningHints, analyzeConversationFlow, generateAlternativeResponses } from "./services/learning-enhancements";
+import { generateDifficultyRecommendation, getPersonalizedScenarioRecommendations, updateAdaptiveDifficulty } from "./services/adaptive-difficulty";
 import { insertUserScenarioSchema, insertReactionSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -148,6 +149,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching scenarios:", error);
       res.status(500).json({ message: "Failed to get scenarios" });
+    }
+  });
+
+  // Get personalized scenario recommendations
+  app.get("/api/scenarios/recommendations", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const limit = parseInt(req.query.limit as string) || 5;
+      
+      const recommendedScenarios = await getPersonalizedScenarioRecommendations(userId, limit);
+      const difficultyRecommendation = await generateDifficultyRecommendation(userId);
+      
+      res.json({
+        scenarios: recommendedScenarios,
+        difficultyRecommendation,
+        isPersonalized: true,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error fetching personalized recommendations:", error);
+      res.status(500).json({ message: "Failed to get recommendations" });
+    }
+  });
+
+  // Get difficulty recommendation for user
+  app.get("/api/user/difficulty-recommendation", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const recommendation = await generateDifficultyRecommendation(userId);
+      
+      res.json(recommendation);
+    } catch (error) {
+      console.error("Error generating difficulty recommendation:", error);
+      res.status(500).json({ message: "Failed to get difficulty recommendation" });
+    }
+  });
+
+  // Update adaptive difficulty settings
+  app.post("/api/user/adaptive-difficulty", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      await updateAdaptiveDifficulty(userId);
+      
+      res.json({ success: true, message: "Adaptive difficulty updated" });
+    } catch (error) {
+      console.error("Error updating adaptive difficulty:", error);
+      res.status(500).json({ message: "Failed to update adaptive difficulty" });
     }
   });
 
