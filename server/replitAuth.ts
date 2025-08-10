@@ -41,13 +41,14 @@ export function getSession() {
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Important: create sessions for OAuth flow
     cookie: {
       httpOnly: true,
       secure: false, // Disable secure cookies for localhost development
       maxAge: sessionTtl,
       sameSite: 'lax', // Allow cross-site requests for OAuth flow
     },
+    name: 'connect.sid' // Explicit session name
   });
 }
 
