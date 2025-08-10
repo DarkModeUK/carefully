@@ -212,11 +212,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const userScenario = await storage.getUserScenario(userId, scenarioId);
-      if (!userScenario) {
-        return res.status(404).json({ message: "User scenario not found" });
-      }
-      
-      res.json(userScenario);
+      // Return null if no user scenario exists (scenario hasn't been started)
+      res.json(userScenario || null);
     } catch (error) {
       console.error("Error fetching user scenario:", error);
       res.status(500).json({ message: "Failed to get user scenario" });

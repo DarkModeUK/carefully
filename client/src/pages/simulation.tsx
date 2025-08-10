@@ -200,6 +200,12 @@ export default function SimulationPage() {
       }
     } else if (userScenario?.status === 'in_progress') {
       setViewState('simulation');
+    } else if (userScenario === null) {
+      // Scenario hasn't been started yet - show preparation screen
+      setViewState('preparation');
+      setConversation([]);
+      setCurrentStep(0);
+      setIsCompleted(false);
     }
   }, [scenario, userScenario]);
 
