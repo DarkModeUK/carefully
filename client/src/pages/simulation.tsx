@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { EmojiReactionButtons, QuickEmojiReaction } from "@/components/emoji-reaction-buttons";
@@ -496,20 +497,55 @@ export default function SimulationPage() {
           </div>
         </div>
 
-        {/* Patient Context Reminder */}
+        {/* Patient Context Modal */}
         <div className="bg-amber-50 border-l-4 border-amber-400 px-6 py-3">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-start gap-3">
-              <i className="fas fa-user-injured text-amber-600 mt-1"></i>
-              <div>
-                <h4 className="font-medium text-amber-800 mb-1">Patient Context</h4>
-                <p className="text-sm text-amber-700 leading-relaxed">
-                  {scenario.context.length > 200 
-                    ? `${scenario.context.substring(0, 200)}...` 
-                    : scenario.context
-                  }
-                </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <i className="fas fa-user-injured text-amber-600"></i>
+                <div>
+                  <h4 className="font-medium text-amber-800">Patient Context Available</h4>
+                  <p className="text-xs text-amber-600">Click to view full patient background and context</p>
+                </div>
               </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-amber-300 text-amber-700 hover:bg-amber-100 hover:border-amber-400"
+                  >
+                    <i className="fas fa-info-circle mr-2"></i>
+                    View Context
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-amber-800">
+                      <i className="fas fa-user-injured"></i>
+                      Patient Context
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                      <p className="text-sm text-amber-900 leading-relaxed whitespace-pre-wrap">
+                        {scenario.context}
+                      </p>
+                    </div>
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                      <div className="flex items-start gap-2">
+                        <i className="fas fa-lightbulb text-blue-600 mt-1"></i>
+                        <div>
+                          <p className="text-xs font-medium text-blue-800 mb-1">Remember:</p>
+                          <p className="text-xs text-blue-700">
+                            Keep this context in mind during your conversation. Focus on empathy, understanding, and appropriate care approaches.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
