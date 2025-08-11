@@ -93,15 +93,15 @@ export function AdaptiveDifficultyPanel() {
                         {scenario.description}
                       </p>
                       <div className="flex items-center gap-3 text-xs text-gray-500">
-                        <span>
+                        <span className="flex items-center">
                           <i className="fas fa-clock mr-1"></i>
                           {scenario.estimatedTime}
                         </span>
-                        <span>
-                          <i className="fas fa-tag mr-1"></i>
-                          {scenario.category}
-                        </span>
-                        <span className="text-[#907AD6] font-medium">
+                        <Badge variant="outline" className="text-xs px-2 py-0.5 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                          <i className="fas fa-tag mr-1.5"></i>
+                          {scenario.category.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                        </Badge>
+                        <span className="text-[#907AD6] font-medium flex items-center">
                           <i className="fas fa-chart-line mr-1"></i>
                           {Math.round(scenario.recommendationScore || 0)}% match
                         </span>

@@ -3,6 +3,11 @@
 ## Overview
 Carefully is an AI-powered training platform that uses interactive role-play simulations to train care workers for real-world scenarios. It provides personalised feedback to enhance confidence, empathy, and decision-making skills. The platform includes scenarios for dementia care, safeguarding, family conflict resolution, and end-of-life conversations. It is a full-stack web application with a React frontend and Express backend, featuring AI-driven conversations, progress tracking, and skills assessment.
 
+## Recent Changes (January 2025)
+- **UI Simplification**: Removed complex AI difficulty recommendation card from dashboard based on user feedback - replaced with cleaner, more actionable scenario recommendations
+- **Enhanced Chat Interface**: Added intelligent patient name extraction and display in chat avatars for more personalized role-play experience  
+- **Improved Badge Design**: Updated category badges with proper formatting, styling, and better visual hierarchy using shadcn/ui Badge components
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
