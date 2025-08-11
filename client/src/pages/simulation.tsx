@@ -531,6 +531,16 @@ export default function SimulationPage() {
         <div className="bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] px-6 py-4 shadow-sm">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation('/scenarios')}
+                className="text-white hover:bg-white/20 border-white/20"
+              >
+                <i className="fas fa-arrow-left mr-2"></i>
+                Back
+              </Button>
+              <div className="h-6 w-px bg-white/30"></div>
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <i className="fas fa-user-nurse text-white text-lg"></i>
               </div>
