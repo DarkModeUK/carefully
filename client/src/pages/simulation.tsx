@@ -290,23 +290,50 @@ export default function SimulationPage() {
   if (viewState === 'preparation') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#907AD6]/5 to-[#7FDEFF]/5">
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLocation('/scenarios')}
-                className="text-gray-600 hover:text-gray-800"
-              >
-                <i className="fas fa-arrow-left mr-2"></i>
-                Back to Scenarios
-              </Button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Before You Begin</h1>
-                <p className="text-gray-600">Review the scenario details before starting your simulation</p>
+        {/* Enhanced Header */}
+        <div className="bg-gradient-to-r from-white via-[#907AD6]/5 to-white border-b border-gray-200 shadow-sm">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLocation('/scenarios')}
+                  className="text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-gray-300 transition-all duration-200"
+                >
+                  <i className="fas fa-arrow-left mr-2"></i>
+                  Back to Scenarios
+                </Button>
+                <div className="h-8 w-px bg-gray-300"></div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-1">Before You Begin</h1>
+                  <p className="text-gray-600 text-lg">Review the scenario details before starting your simulation</p>
+                </div>
+              </div>
+              
+              {/* Header Status Badge */}
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-50 px-4 py-2 rounded-full border border-blue-200">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium text-blue-700">Preparation Phase</span>
+                  </div>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 text-gray-500">
+                  <i className="fas fa-clock text-sm"></i>
+                  <span className="text-sm">{scenario?.estimatedTime} min estimated</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Progress Indicator */}
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">Preparation Progress</span>
+                <span className="text-sm text-gray-500">Step 1 of 2</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] h-2 rounded-full transition-all duration-300" style={{width: '50%'}}></div>
               </div>
             </div>
           </div>
@@ -429,29 +456,60 @@ export default function SimulationPage() {
             </CardContent>
           </Card>
 
-          {/* Start Button */}
+          {/* Enhanced Start Button Section */}
           <div className="text-center">
-            <Button 
-              onClick={handleStartSimulation}
-              disabled={startScenarioMutation.isPending}
-              className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-8 py-3 text-lg"
-              size="lg"
-            >
-              {startScenarioMutation.isPending ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                  Preparing scenario...
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-play mr-3"></i>
-                  Start Simulation
-                </>
-              )}
-            </Button>
-            <p className="text-sm text-gray-500 mt-3">
-              Ready to begin? This simulation will take approximately {scenario.estimatedTime} minutes.
-            </p>
+            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#907AD6] to-[#7FDEFF] rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
+                  <i className="fas fa-play text-white text-2xl ml-1"></i>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Start?</h3>
+                <p className="text-gray-600">
+                  This simulation will take approximately <span className="font-semibold text-[#907AD6]">{scenario?.estimatedTime} minutes</span>
+                </p>
+              </div>
+              
+              <Button 
+                onClick={handleStartSimulation}
+                disabled={startScenarioMutation.isPending}
+                className="bg-gradient-to-r from-[#907AD6] to-[#7B6BC7] hover:from-[#7B6BC7] hover:to-[#6B5BB7] text-white px-8 py-4 text-lg font-semibold w-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                size="lg"
+              >
+                {startScenarioMutation.isPending ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                    Preparing Scenario...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-play mr-3"></i>
+                    Begin Simulation
+                  </>
+                )}
+              </Button>
+              
+              <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
+                <i className="fas fa-shield-alt text-green-500"></i>
+                <span>Safe learning environment</span>
+              </div>
+            </div>
+            
+            {/* Additional Tips */}
+            <div className="mt-8 max-w-2xl mx-auto">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <i className="fas fa-lightbulb text-amber-600 mt-1"></i>
+                  <div className="text-left">
+                    <h4 className="font-medium text-amber-800 mb-1">💡 Quick Tips</h4>
+                    <ul className="text-sm text-amber-700 space-y-1">
+                      <li>• Take your time to read each message carefully</li>
+                      <li>• Focus on empathy and professional communication</li>
+                      <li>• Use the patient context if you need a reminder</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
