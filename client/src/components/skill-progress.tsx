@@ -44,10 +44,6 @@ export function SkillProgress({ skills }: SkillProgressProps) {
           </div>
           <div className="relative">
             <Progress value={level} className="h-3" />
-            <div 
-              className={`absolute top-0 left-0 h-3 rounded-full transition-all ${skillColors[skill as keyof typeof skillColors] || 'bg-neutral-400'}`}
-              style={{ width: `${level}%` }}
-            />
           </div>
         </div>
       ))}
