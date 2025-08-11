@@ -61,8 +61,8 @@ export default function ProgressPage() {
   
   const timeframeScenarios = userScenarios.filter(us => {
     if (timeframe === 'all') return true;
-    const updatedAt = us.updatedAt ? new Date(us.updatedAt) : new Date(us.createdAt || 0);
-    return updatedAt >= startDate;
+    const dateToCheck = us.completedAt ? new Date(us.completedAt) : new Date(us.startedAt || Date.now());
+    return dateToCheck >= startDate;
   });
   
   const timeframeCompleted = timeframeScenarios.filter(us => us.status === 'completed');
@@ -99,11 +99,11 @@ export default function ProgressPage() {
       uniqueDays.add(date.getTime());
     });
     
-    const sortedDays = Array.from(uniqueDays).sort((a, b) => b - a);
+    const sortedDays = Array.from(uniqueDays).sort((a, b) => (b as number) - (a as number));
     streak = 1; // At least 1 day if we get here
     
     for (let i = 1; i < sortedDays.length; i++) {
-      const dayDiff = (sortedDays[i-1] - sortedDays[i]) / (1000 * 60 * 60 * 24);
+      const dayDiff = ((sortedDays[i-1] as number) - (sortedDays[i] as number)) / (1000 * 60 * 60 * 24);
       if (dayDiff === 1) {
         streak++;
       } else {
@@ -244,7 +244,7 @@ export default function ProgressPage() {
           value={currentStreak > 0 ? `${currentStreak} ${currentStreak === 1 ? 'day' : 'days'}` : 'Start today!'}
           title="Current Streak"
           icon="fas fa-fire"
-          color="orange"
+          color="accent"
         />
       </div>
 
@@ -499,7 +499,6 @@ export default function ProgressPage() {
                                     duration: 3000,
                                   });
                                 }}
-                                size="sm"
                                 className="scale-75"
                               />
                             </div>
@@ -596,7 +595,6 @@ export default function ProgressPage() {
                             duration: 3000,
                           });
                         }}
-                        size="sm"
                       />
                     </div>
                   </div>
