@@ -138,7 +138,7 @@ export default function SimulationPage() {
       // Set up the conversation with the patient's opening message
       const initialMessage = typeof data.initialMessage === 'string' 
         ? data.initialMessage 
-        : data.initialMessage?.message || 'Hello, I need to speak with someone about my care...';
+        : data.initialMessage?.message || data.message || 'Hello, I need to speak with someone about my care...';
         
       const initialMessages = [
         { role: 'system' as const, content: 'Training simulation started. The patient will now speak to you.' },
@@ -210,20 +210,25 @@ export default function SimulationPage() {
       setCurrentStep(userScenario.responses.length);
       setViewState('simulation');
     } else if (userScenario?.status === 'in_progress' && (!userScenario.responses || userScenario.responses.length === 0)) {
-      // Started but no responses yet - need to get the initial message
-      const initialMessage = userScenario.initialMessage || 'Hello, I need to speak with someone about my care...';
-      const initialMessages = [
-        { role: 'system' as const, content: 'Training simulation started. The patient will now speak to you.' },
-        { role: 'character' as const, content: initialMessage }
-      ];
-      setConversation(initialMessages);
-      setViewState('simulation');
-      
-      // Initialize timer if not already set
-      if (scenario && timeRemaining === 0) {
-        const estimatedTime = scenario.estimatedTime || 15;
-        setTimeRemaining(estimatedTime * 60);
-        setStartTime(new Date());
+      // Started but no responses yet - need to get the proper initial message
+      // If we have a saved initial message, use it, otherwise restart the scenario to get a new one
+      if (userScenario.initialMessage) {
+        const initialMessages = [
+          { role: 'system' as const, content: 'Training simulation started. The patient will now speak to you.' },
+          { role: 'character' as const, content: userScenario.initialMessage }
+        ];
+        setConversation(initialMessages);
+        setViewState('simulation');
+        
+        // Initialize timer if not already set
+        if (scenario && timeRemaining === 0) {
+          const estimatedTime = scenario.estimatedTime || 15;
+          setTimeRemaining(estimatedTime * 60);
+          setStartTime(new Date());
+        }
+      } else {
+        // No proper initial message - restart the scenario to get one
+        startScenarioMutation.mutate();
       }
     } else if (!userScenario) {
       // Scenario hasn't been started yet - show preparation screen
