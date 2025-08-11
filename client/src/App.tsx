@@ -36,6 +36,8 @@ const RecruiterDashboard = lazy(() => import("@/pages/recruiter-dashboard"));
 const LDManagerDashboard = lazy(() => import("@/pages/ld-manager-dashboard"));
 const SuperAdminPanel = lazy(() => import("@/pages/super-admin"));
 const CareWorkerOnboarding = lazy(() => import("@/pages/onboarding/care-worker"));
+const RecruiterOnboarding = lazy(() => import("@/pages/onboarding/recruiter"));
+const LDManagerOnboarding = lazy(() => import("@/pages/onboarding/ld-manager"));
 const CandidatesPage = lazy(() => import("@/pages/candidates"));
 const AssessmentsPage = lazy(() => import("@/pages/assessments"));
 const RecruiterProfile = lazy(() => import("@/pages/recruiter-profile"));
@@ -119,6 +121,8 @@ function Router() {
             
             {/* Onboarding flows */}
             <Route path="/onboarding/care-worker" component={CareWorkerOnboarding} />
+            <Route path="/onboarding/recruiter" component={RecruiterOnboarding} />
+            <Route path="/onboarding/ld-manager" component={LDManagerOnboarding} />
           </>
         )}
         <Route component={NotFound} />

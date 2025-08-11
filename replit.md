@@ -10,7 +10,10 @@ Carefully is an AI-powered training platform that uses interactive role-play sim
   - Assessment monitoring with progress tracking and results viewing
   - Recruiter-specific profile with personal and company information
   - Enhanced recruiter dashboard with candidate pipeline analytics
-- **Care Worker Onboarding**: Created multi-step onboarding flow with experience level assessment, learning goals selection, and training preferences customization
+- **Multi-Role Onboarding System**: Created comprehensive onboarding flows for all user roles:
+  - Care Worker: Experience assessment, learning goals, and training preferences
+  - Recruiter: Company details, recruitment preferences, and hiring goals
+  - L&D Manager: Organization setup, training responsibilities, and success metrics
 - **Database Schema Updates**: Added super admin role support, candidate management tables, and profile enhancement fields
 - **Enhanced Navigation**: Implemented role-specific navigation with separate profile pages for different user types
 

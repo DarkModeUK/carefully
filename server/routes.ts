@@ -315,6 +315,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Additional onboarding routes
+  app.post('/api/onboarding/recruiter', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const onboardingData = req.body;
+      
+      // Update user profile with recruiter onboarding data
+      const updatedUser = await storage.updateUser(userId, {
+        firstName: onboardingData.firstName,
+        lastName: onboardingData.lastName,
+        role: 'recruiter',
+        preferences: {
+          recruiterProfile: {
+            personal: {
+              jobTitle: onboardingData.jobTitle,
+              yearsExperience: onboardingData.yearsExperience
+            },
+            company: {
+              companyName: onboardingData.companyName,
+              companySize: onboardingData.companySize,
+              industry: onboardingData.industry,
+              location: onboardingData.location
+            },
+            recruitmentPreferences: {
+              primaryRoles: onboardingData.primaryRoles,
+              recruitmentVolume: onboardingData.recruitmentVolume,
+              assessmentApproach: onboardingData.assessmentApproach
+            },
+            goals: {
+              primaryGoals: onboardingData.primaryGoals,
+              challengeAreas: onboardingData.challengeAreas
+            }
+          },
+          communicationPreferences: onboardingData.communicationPreferences
+        },
+        onboardingCompleted: true,
+        profileCompletion: 100
+      });
+
+      res.json({ message: "Recruiter onboarding completed successfully", user: updatedUser });
+    } catch (error) {
+      console.error("Error completing recruiter onboarding:", error);
+      res.status(500).json({ message: "Failed to complete recruiter onboarding" });
+    }
+  });
+
+  app.post('/api/onboarding/ld-manager', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const onboardingData = req.body;
+      
+      // Update user profile with L&D manager onboarding data
+      const updatedUser = await storage.updateUser(userId, {
+        firstName: onboardingData.firstName,
+        lastName: onboardingData.lastName,
+        role: 'ld_manager',
+        preferences: {
+          ldManagerProfile: {
+            personal: {
+              jobTitle: onboardingData.jobTitle,
+              yearsExperience: onboardingData.yearsExperience
+            },
+            organization: {
+              organizationName: onboardingData.organizationName,
+              organizationType: onboardingData.organizationType,
+              teamSize: onboardingData.teamSize,
+              department: onboardingData.department
+            },
+            ldFocus: {
+              ldResponsibilities: onboardingData.ldResponsibilities,
+              trainingAreas: onboardingData.trainingAreas,
+              learningApproach: onboardingData.learningApproach
+            },
+            goals: {
+              primaryObjectives: onboardingData.primaryObjectives,
+              successMetrics: onboardingData.successMetrics,
+              currentChallenges: onboardingData.currentChallenges
+            },
+            platformUsage: onboardingData.platformUsage
+          },
+          communicationPreferences: onboardingData.communicationPreferences
+        },
+        onboardingCompleted: true,
+        profileCompletion: 100
+      });
+
+      res.json({ message: "L&D Manager onboarding completed successfully", user: updatedUser });
+    } catch (error) {
+      console.error("Error completing L&D manager onboarding:", error);
+      res.status(500).json({ message: "Failed to complete L&D manager onboarding" });
+    }
+  });
+
   // Update user profile
   app.patch("/api/user", isAuthenticated, async (req: any, res) => {
     try {
