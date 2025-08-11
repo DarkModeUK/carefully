@@ -878,15 +878,15 @@ export default function SimulationPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="space-y-3">
                   {/* Text Input Area */}
-                  <div className="flex-1 relative">
+                  <div className="relative">
                     <Textarea
                       placeholder="Type your caring response here..."
                       value={userResponse}
                       onChange={(e) => setUserResponse(e.target.value)}
                       rows={2}
-                      className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-lg pr-12 text-base"
+                      className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-lg pr-12 text-base w-full"
                       disabled={isListening}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -922,12 +922,12 @@ export default function SimulationPage() {
                     </Button>
                   </div>
                   
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
+                  {/* Action Buttons - Stacked */}
+                  <div className="flex flex-col gap-2">
                     <Button 
                       onClick={handleSubmitResponse}
                       disabled={!userResponse.trim() || submitResponseMutation.isPending}
-                      className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-2 rounded-lg"
+                      className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white py-3 rounded-lg w-full"
                       size="lg"
                     >
                       {submitResponseMutation.isPending ? (
@@ -935,7 +935,7 @@ export default function SimulationPage() {
                       ) : (
                         <>
                           <i className="fas fa-paper-plane mr-2"></i>
-                          Send
+                          Send Response
                         </>
                       )}
                     </Button>
@@ -943,8 +943,7 @@ export default function SimulationPage() {
                       onClick={() => completeScenarioMutation.mutate()}
                       disabled={completeScenarioMutation.isPending}
                       variant="outline"
-                      className="border-red-300 text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg"
-                      size="lg"
+                      className="border-red-300 text-red-700 hover:bg-red-50 py-2 rounded-lg w-full"
                       title="End simulation early"
                     >
                       {completeScenarioMutation.isPending ? (
@@ -952,7 +951,7 @@ export default function SimulationPage() {
                       ) : (
                         <>
                           <i className="fas fa-stop mr-2"></i>
-                          End
+                          End Simulation
                         </>
                       )}
                     </Button>
