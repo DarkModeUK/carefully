@@ -210,8 +210,21 @@ export default function SimulationPage() {
       setCurrentStep(userScenario.responses.length);
       setViewState('simulation');
     } else if (userScenario?.status === 'in_progress' && (!userScenario.responses || userScenario.responses.length === 0)) {
-      // Started but no responses yet
+      // Started but no responses yet - need to get the initial message
+      const initialMessage = userScenario.initialMessage || 'Hello, I need to speak with someone about my care...';
+      const initialMessages = [
+        { role: 'system' as const, content: 'Training simulation started. The patient will now speak to you.' },
+        { role: 'character' as const, content: initialMessage }
+      ];
+      setConversation(initialMessages);
       setViewState('simulation');
+      
+      // Initialize timer if not already set
+      if (scenario && timeRemaining === 0) {
+        const estimatedTime = scenario.estimatedTime || 15;
+        setTimeRemaining(estimatedTime * 60);
+        setStartTime(new Date());
+      }
     } else if (!userScenario) {
       // Scenario hasn't been started yet - show preparation screen
       setViewState('preparation');
