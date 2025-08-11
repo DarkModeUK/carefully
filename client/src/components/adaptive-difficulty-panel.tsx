@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { useLocation } from "wouter";
 
 interface RecommendedScenario {
   id: string;
@@ -16,6 +17,7 @@ interface RecommendedScenario {
 
 export function AdaptiveDifficultyPanel() {
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   // Get personalized scenarios
   const { data: scenarios, isLoading: loadingScenarios } = useQuery<{
@@ -108,7 +110,11 @@ export function AdaptiveDifficultyPanel() {
                       </div>
                     </div>
                     <div className="ml-4">
-                      <Button size="sm" className="bg-[#907AD6] hover:bg-[#7B6BC7]">
+                      <Button 
+                        size="sm" 
+                        className="bg-[#907AD6] hover:bg-[#7B6BC7]"
+                        onClick={() => setLocation(`/simulation/${scenario.id}`)}
+                      >
                         <i className="fas fa-play mr-1"></i>
                         Start
                       </Button>
