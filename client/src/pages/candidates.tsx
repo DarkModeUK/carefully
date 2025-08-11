@@ -132,8 +132,8 @@ export default function CandidatesPage() {
       candidate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       candidate.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = statusFilter === "" || candidate.status === statusFilter;
-    const matchesRole = roleFilter === "" || candidate.role === roleFilter;
+    const matchesStatus = statusFilter === "" || statusFilter === "all" || candidate.status === statusFilter;
+    const matchesRole = roleFilter === "" || roleFilter === "all" || candidate.role === roleFilter;
     
     return matchesSearch && matchesStatus && matchesRole;
   });
@@ -349,7 +349,7 @@ export default function CandidatesPage() {
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="in_progress">In Progress</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
@@ -362,7 +362,7 @@ export default function CandidatesPage() {
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Roles</SelectItem>
+                <SelectItem value="all">All Roles</SelectItem>
                 {careRoles.map((role) => (
                   <SelectItem key={role} value={role}>{role}</SelectItem>
                 ))}
@@ -394,12 +394,12 @@ export default function CandidatesPage() {
               <i className="fas fa-users text-gray-400 text-4xl mb-4"></i>
               <h3 className="text-xl font-medium text-gray-600 mb-2">No candidates found</h3>
               <p className="text-gray-500 mb-6">
-                {searchTerm || statusFilter || roleFilter 
+                {searchTerm || (statusFilter && statusFilter !== "all") || (roleFilter && roleFilter !== "all")
                   ? "Try adjusting your search filters"
                   : "Add your first candidate to get started"
                 }
               </p>
-              {!searchTerm && !statusFilter && !roleFilter && (
+              {!searchTerm && (!statusFilter || statusFilter === "all") && (!roleFilter || roleFilter === "all") && (
                 <Button onClick={() => setDialogOpen(true)}>
                   <i className="fas fa-plus mr-2"></i>
                   Add First Candidate
