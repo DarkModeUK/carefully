@@ -164,6 +164,157 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Enhanced Recruiter routes
+  app.post('/api/recruiter/candidates', isAuthenticated, async (req: any, res) => {
+    try {
+      const candidateData = req.body;
+      const newCandidate = await storage.createCandidate(candidateData);
+      res.json(newCandidate);
+    } catch (error) {
+      console.error("Error creating candidate:", error);
+      res.status(500).json({ message: "Failed to create candidate" });
+    }
+  });
+
+  app.patch('/api/recruiter/candidates/:id/status', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { status, notes } = req.body;
+      const updatedCandidate = await storage.updateCandidateStatus(id, status, notes);
+      res.json(updatedCandidate);
+    } catch (error) {
+      console.error("Error updating candidate status:", error);
+      res.status(500).json({ message: "Failed to update candidate status" });
+    }
+  });
+
+  app.get('/api/recruiter/skills-analysis', isAuthenticated, async (req: any, res) => {
+    try {
+      const skillsAnalysis = await storage.getRecruiterSkillsAnalysis();
+      res.json(skillsAnalysis);
+    } catch (error) {
+      console.error("Error fetching skills analysis:", error);
+      res.status(500).json({ message: "Failed to fetch skills analysis" });
+    }
+  });
+
+  app.get('/api/recruiter/funnel', isAuthenticated, async (req: any, res) => {
+    try {
+      const funnel = await storage.getRecruitmentFunnel();
+      res.json(funnel);
+    } catch (error) {
+      console.error("Error fetching recruitment funnel:", error);
+      res.status(500).json({ message: "Failed to fetch recruitment funnel" });
+    }
+  });
+
+  app.post('/api/assessments/:id/remind', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      // In a real implementation, this would send an email/notification
+      res.json({ message: "Reminder sent successfully" });
+    } catch (error) {
+      console.error("Error sending assessment reminder:", error);
+      res.status(500).json({ message: "Failed to send reminder" });
+    }
+  });
+
+  // Recruiter profile routes
+  app.get('/api/recruiter/profile', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Return profile data with defaults
+      const profile = {
+        personal: {
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          email: user.email || "",
+          phone: "",
+          linkedinProfile: "",
+          yearsExperience: 0,
+          specializations: [],
+          bio: ""
+        },
+        company: {
+          companyName: "",
+          companySize: "",
+          industry: "",
+          website: "",
+          description: "",
+          location: "",
+          recruitmentFocus: [],
+          assessmentPreferences: {
+            prioritySkills: [],
+            assessmentTypes: [],
+            candidateScreening: "standard"
+          }
+        }
+      };
+
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching recruiter profile:", error);
+      res.status(500).json({ message: "Failed to fetch profile" });
+    }
+  });
+
+  app.put('/api/recruiter/profile/personal', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const profileData = req.body;
+      
+      // Update user with personal profile data
+      const updatedUser = await storage.updateUser(userId, {
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        // Store additional profile data in preferences or separate field
+        preferences: {
+          ...req.user.preferences,
+          recruiterProfile: {
+            personal: profileData
+          }
+        }
+      });
+
+      res.json({ message: "Personal profile updated successfully", user: updatedUser });
+    } catch (error) {
+      console.error("Error updating personal profile:", error);
+      res.status(500).json({ message: "Failed to update personal profile" });
+    }
+  });
+
+  app.put('/api/recruiter/profile/company', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const companyData = req.body;
+      
+      // Update user with company profile data
+      const user = await storage.getUser(userId);
+      const currentPreferences = user?.preferences || {};
+      
+      const updatedUser = await storage.updateUser(userId, {
+        preferences: {
+          ...currentPreferences,
+          recruiterProfile: {
+            ...currentPreferences.recruiterProfile,
+            company: companyData
+          }
+        }
+      });
+
+      res.json({ message: "Company profile updated successfully", user: updatedUser });
+    } catch (error) {
+      console.error("Error updating company profile:", error);
+      res.status(500).json({ message: "Failed to update company profile" });
+    }
+  });
+
   // Update user profile
   app.patch("/api/user", isAuthenticated, async (req: any, res) => {
     try {

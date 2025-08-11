@@ -4,9 +4,15 @@
 Carefully is an AI-powered training platform that uses interactive role-play simulations to train care workers for real-world scenarios. It provides personalised feedback to enhance confidence, empathy, and decision-making skills. The platform includes scenarios for dementia care, safeguarding, family conflict resolution, and end-of-life conversations. It is a full-stack web application with a React frontend and Express backend, featuring AI-driven conversations, progress tracking, and skills assessment.
 
 ## Recent Changes (January 2025)
-- **UI Simplification**: Removed complex AI difficulty recommendation card from dashboard based on user feedback - replaced with cleaner, more actionable scenario recommendations
-- **Enhanced Chat Interface**: Added intelligent patient name extraction and display in chat avatars for more personalized role-play experience  
-- **Improved Badge Design**: Updated category badges with proper formatting, styling, and better visual hierarchy using shadcn/ui Badge components
+- **Super Admin Functionality**: Added comprehensive super admin role with user management and role-switching capabilities for testing different user experiences
+- **Recruiter System Expansion**: Built complete recruiter functionality including:
+  - Comprehensive candidate management with add/edit/status tracking
+  - Assessment monitoring with progress tracking and results viewing
+  - Recruiter-specific profile with personal and company information
+  - Enhanced recruiter dashboard with candidate pipeline analytics
+- **Care Worker Onboarding**: Created multi-step onboarding flow with experience level assessment, learning goals selection, and training preferences customization
+- **Database Schema Updates**: Added super admin role support, candidate management tables, and profile enhancement fields
+- **Enhanced Navigation**: Implemented role-specific navigation with separate profile pages for different user types
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

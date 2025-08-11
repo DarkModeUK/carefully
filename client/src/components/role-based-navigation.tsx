@@ -20,10 +20,9 @@ const allNavItems: NavItem[] = [
   { href: "/progress", label: "Progress", icon: "fas fa-chart-bar", roles: ["care_worker"] },
   
   // Recruiter Navigation
-  { href: "/recruiter", label: "Recruiter Dashboard", icon: "fas fa-search", roles: ["recruiter"] },
+  { href: "/recruiter", label: "Dashboard", icon: "fas fa-chart-line", roles: ["recruiter"] },
   { href: "/candidates", label: "Candidates", icon: "fas fa-users", roles: ["recruiter"] },
   { href: "/assessments", label: "Assessments", icon: "fas fa-clipboard-check", roles: ["recruiter"] },
-  { href: "/reports", label: "Reports", icon: "fas fa-chart-pie", roles: ["recruiter"] },
   
   // L&D Manager Navigation
   { href: "/ld-manager", label: "L&D Dashboard", icon: "fas fa-chart-line", roles: ["ld_manager"] },
@@ -35,7 +34,9 @@ const allNavItems: NavItem[] = [
   { href: "/super-admin", label: "Super Admin", icon: "fas fa-crown", roles: ["super_admin"] },
   
   // Shared Navigation
-  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["recruiter", "ld_manager", "super_admin"] },
+  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["care_worker"] },
+  { href: "/recruiter-profile", label: "Profile", icon: "fas fa-user", roles: ["recruiter"] },
+  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["ld_manager", "super_admin"] },
   { href: "/settings", label: "Settings", icon: "fas fa-cog", roles: ["recruiter", "ld_manager", "super_admin"] },
 ];
 

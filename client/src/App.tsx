@@ -36,6 +36,9 @@ const RecruiterDashboard = lazy(() => import("@/pages/recruiter-dashboard"));
 const LDManagerDashboard = lazy(() => import("@/pages/ld-manager-dashboard"));
 const SuperAdminPanel = lazy(() => import("@/pages/super-admin"));
 const CareWorkerOnboarding = lazy(() => import("@/pages/onboarding/care-worker"));
+const CandidatesPage = lazy(() => import("@/pages/candidates"));
+const AssessmentsPage = lazy(() => import("@/pages/assessments"));
+const RecruiterProfile = lazy(() => import("@/pages/recruiter-profile"));
 
 // Loading component for lazy routes
 function PageLoader() {
@@ -108,6 +111,11 @@ function Router() {
             
             {/* Super Admin */}
             <Route path="/super-admin" component={SuperAdminPanel} />
+            
+            {/* Recruiter specific routes */}
+            <Route path="/candidates" component={CandidatesPage} />
+            <Route path="/assessments" component={AssessmentsPage} />
+            <Route path="/recruiter-profile" component={RecruiterProfile} />
             
             {/* Onboarding flows */}
             <Route path="/onboarding/care-worker" component={CareWorkerOnboarding} />

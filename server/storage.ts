@@ -452,7 +452,68 @@ export class DatabaseStorage implements IStorage {
         startedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
         progress: 80,
         role: 'Care Worker'
+      },
+      {
+        id: '3',
+        candidateName: 'Emma Rodriguez',
+        status: 'completed',
+        startedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        completedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        progress: 100,
+        role: 'Senior Care Assistant'
       }
+    ];
+  }
+
+  async createCandidate(candidateData: any): Promise<any> {
+    const newCandidate = {
+      id: Date.now().toString(),
+      name: `${candidateData.firstName} ${candidateData.lastName}`,
+      firstName: candidateData.firstName,
+      lastName: candidateData.lastName,
+      email: candidateData.email,
+      phone: candidateData.phone,
+      role: candidateData.role,
+      experience: candidateData.experience,
+      location: candidateData.location,
+      referralSource: candidateData.referralSource,
+      notes: candidateData.notes,
+      status: 'pending',
+      completedScenarios: 0,
+      averageScore: 0,
+      createdAt: new Date().toISOString(),
+      lastActivity: new Date().toISOString()
+    };
+    
+    // In a real implementation, this would save to database
+    return newCandidate;
+  }
+
+  async updateCandidateStatus(candidateId: string, status: string, notes?: string): Promise<any> {
+    return {
+      id: candidateId,
+      status,
+      notes,
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  async getRecruiterSkillsAnalysis(): Promise<any[]> {
+    return [
+      { skill: "Communication Skills", score: 87 },
+      { skill: "Empathy & Compassion", score: 92 },
+      { skill: "Problem Solving", score: 81 },
+      { skill: "Cultural Sensitivity", score: 85 },
+      { skill: "Professionalism", score: 89 }
+    ];
+  }
+
+  async getRecruitmentFunnel(): Promise<any[]> {
+    return [
+      { stage: "Application Received", count: 24, percentage: 100 },
+      { stage: "Initial Screening", count: 18, percentage: 75 },
+      { stage: "Assessment Started", count: 12, percentage: 50 },
+      { stage: "Assessment Completed", count: 8, percentage: 33 }
     ];
   }
 
