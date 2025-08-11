@@ -31,9 +31,12 @@ const allNavItems: NavItem[] = [
   { href: "/learning-paths", label: "Learning Paths", icon: "fas fa-route", roles: ["ld_manager"] },
   { href: "/analytics", label: "Analytics", icon: "fas fa-analytics", roles: ["ld_manager"] },
   
+  // Super Admin Navigation
+  { href: "/super-admin", label: "Super Admin", icon: "fas fa-crown", roles: ["super_admin"] },
+  
   // Shared Navigation
-  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["recruiter", "ld_manager"] },
-  { href: "/settings", label: "Settings", icon: "fas fa-cog", roles: ["recruiter", "ld_manager"] },
+  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["recruiter", "ld_manager", "super_admin"] },
+  { href: "/settings", label: "Settings", icon: "fas fa-cog", roles: ["recruiter", "ld_manager", "super_admin"] },
 ];
 
 export default function RoleBasedNavigation() {

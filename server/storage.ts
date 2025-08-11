@@ -11,6 +11,11 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
   
+  // Super Admin methods
+  switchUserRole(userId: string, newRole: string): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
+  makeUserSuperAdmin(userId: string): Promise<User | undefined>;
+  
   // Scenarios
   getAllScenarios(): Promise<Scenario[]>;
   getScenario(id: string): Promise<Scenario | undefined>;
@@ -493,6 +498,40 @@ export class DatabaseStorage implements IStorage {
       { stage: 'Interview Stage', count: 45, percentage: 30 },
       { stage: 'Offers Made', count: 12, percentage: 8 }
     ];
+  }
+
+  // Super Admin methods implementation
+  async switchUserRole(userId: string, newRole: string): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        role: newRole as any,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+
+  async makeUserSuperAdmin(userId: string): Promise<User | undefined> {
+    const user = await this.getUser(userId);
+    if (!user) return undefined;
+    
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        role: 'super_admin',
+        originalRole: user.originalRole || user.role,
+        canSwitchRoles: true,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser;
   }
 }
 

@@ -21,7 +21,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
-  role: text("role", { enum: ["care_worker", "recruiter", "ld_manager"] }).notNull().default("care_worker"),
+  role: text("role", { enum: ["care_worker", "recruiter", "ld_manager", "super_admin"] }).notNull().default("care_worker"),
   skillLevels: jsonb("skill_levels").$type<Record<string, number>>().default({}),
   totalScenarios: integer("total_scenarios").default(0),
   weeklyStreak: integer("weekly_streak").default(0),
@@ -55,6 +55,8 @@ export const users = pgTable("users", {
   }>().default({}),
   profileCompletion: integer("profile_completion").default(0),
   onboardingCompleted: boolean("onboarding_completed").default(false),
+  originalRole: text("original_role", { enum: ["care_worker", "recruiter", "ld_manager", "super_admin"] }),
+  canSwitchRoles: boolean("can_switch_roles").default(false),
   experienceLevel: text("experience_level"),
   learningGoals: jsonb("learning_goals").$type<string[]>().default([]),
   lastAssessment: timestamp("last_assessment"),
@@ -316,6 +318,57 @@ export type UserReflection = typeof userReflections.$inferSelect;
 export type Organization = typeof organizations.$inferSelect;
 export type UserRole = typeof userRoles.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;
+
+// Role-specific onboarding schemas
+export const careWorkerOnboardingSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  experienceLevel: z.enum(["entry", "intermediate", "experienced", "expert"]),
+  workSetting: z.enum(["residential", "home_care", "day_center", "hospital", "community"]),
+  specializations: z.array(z.string()).optional(),
+  learningGoals: z.array(z.string()).min(1, "Please select at least one learning goal"),
+  previousTraining: z.boolean().default(false),
+  trainingPreferences: z.object({
+    preferredDifficulty: z.enum(["beginner", "intermediate", "advanced", "adaptive"]).default("adaptive"),
+    focusAreas: z.array(z.string()).default([]),
+    sessionDuration: z.number().min(5).max(60).default(15)
+  }).default({})
+});
+
+export const recruiterOnboardingSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  companyName: z.string().min(1, "Company name is required"),
+  companySize: z.enum(["1-10", "11-50", "51-200", "201-1000", "1000+"]),
+  recruitmentFocus: z.array(z.enum(["care_workers", "nurses", "support_staff", "management", "specialists"])).min(1),
+  yearsExperience: z.number().min(0).max(50),
+  currentChallenges: z.array(z.string()).optional(),
+  assessmentPreferences: z.object({
+    skillPriority: z.array(z.string()).default([]),
+    assessmentTypes: z.array(z.enum(["scenario_based", "skills_test", "behavioral", "cultural_fit"])).default([]),
+    timeConstraints: z.enum(["flexible", "standard", "quick"]).default("standard")
+  }).default({})
+});
+
+export const ldManagerOnboardingSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  organizationName: z.string().min(1, "Organization name is required"),
+  organizationType: z.enum(["care_home", "home_care_agency", "nhs_trust", "private_healthcare", "training_provider"]),
+  teamSize: z.number().min(1, "Team size is required"),
+  managementLevel: z.enum(["team_leader", "department_head", "director", "c_level"]),
+  primaryResponsibilities: z.array(z.enum(["training_delivery", "curriculum_design", "performance_management", "compliance", "strategic_planning"])).min(1),
+  currentPriorities: z.array(z.string()).optional(),
+  analyticsPreferences: z.object({
+    reportingFrequency: z.enum(["daily", "weekly", "monthly", "quarterly"]).default("weekly"),
+    keyMetrics: z.array(z.string()).default([]),
+    benchmarkingInterest: z.boolean().default(true)
+  }).default({})
+});
+
+export type CareWorkerOnboarding = z.infer<typeof careWorkerOnboardingSchema>;
+export type RecruiterOnboarding = z.infer<typeof recruiterOnboardingSchema>;
+export type LDManagerOnboarding = z.infer<typeof ldManagerOnboardingSchema>;
 export type InsertScenario = z.infer<typeof insertScenarioSchema>;
 export type Scenario = typeof scenarios.$inferSelect;
 export type InsertUserScenario = z.infer<typeof insertUserScenarioSchema>;

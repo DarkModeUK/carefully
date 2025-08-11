@@ -34,6 +34,8 @@ const NonVerbalCommunication = lazy(() => import("@/pages/non-verbal-communicati
 const QuickPractice = lazy(() => import("@/pages/quick-practice"));
 const RecruiterDashboard = lazy(() => import("@/pages/recruiter-dashboard"));
 const LDManagerDashboard = lazy(() => import("@/pages/ld-manager-dashboard"));
+const SuperAdminPanel = lazy(() => import("@/pages/super-admin"));
+const CareWorkerOnboarding = lazy(() => import("@/pages/onboarding/care-worker"));
 
 // Loading component for lazy routes
 function PageLoader() {
@@ -103,6 +105,12 @@ function Router() {
             <Route path="/manager-dashboard" component={ManagerDashboard} />
             <Route path="/recruiter" component={RecruiterDashboard} />
             <Route path="/ld-manager" component={LDManagerDashboard} />
+            
+            {/* Super Admin */}
+            <Route path="/super-admin" component={SuperAdminPanel} />
+            
+            {/* Onboarding flows */}
+            <Route path="/onboarding/care-worker" component={CareWorkerOnboarding} />
           </>
         )}
         <Route component={NotFound} />

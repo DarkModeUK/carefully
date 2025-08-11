@@ -58,6 +58,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Super Admin routes
+  app.post('/api/admin/switch-role', isAuthenticated, async (req: any, res) => {
+    try {
+      const adminId = req.user.claims.sub;
+      const admin = await storage.getUser(adminId);
+      
+      if (!admin || admin.role !== 'super_admin') {
+        return res.status(403).json({ message: "Access denied. Super admin role required." });
+      }
+
+      const { userId, newRole } = req.body;
+      
+      if (!userId || !newRole) {
+        return res.status(400).json({ message: "userId and newRole are required" });
+      }
+
+      const updatedUser = await storage.switchUserRole(userId, newRole);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "Role switched successfully", user: updatedUser });
+    } catch (error) {
+      console.error("Error switching user role:", error);
+      res.status(500).json({ message: "Failed to switch user role" });
+    }
+  });
+
+  app.get('/api/admin/users', isAuthenticated, async (req: any, res) => {
+    try {
+      const adminId = req.user.claims.sub;
+      const admin = await storage.getUser(adminId);
+      
+      if (!admin || admin.role !== 'super_admin') {
+        return res.status(403).json({ message: "Access denied. Super admin role required." });
+      }
+
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.post('/api/admin/make-super-admin', isAuthenticated, async (req: any, res) => {
+    try {
+      const adminId = req.user.claims.sub;
+      const admin = await storage.getUser(adminId);
+      
+      if (!admin || admin.role !== 'super_admin') {
+        return res.status(403).json({ message: "Access denied. Super admin role required." });
+      }
+
+      const { userId } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ message: "userId is required" });
+      }
+
+      const updatedUser = await storage.makeUserSuperAdmin(userId);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "User granted super admin privileges", user: updatedUser });
+    } catch (error) {
+      console.error("Error making user super admin:", error);
+      res.status(500).json({ message: "Failed to grant super admin privileges" });
+    }
+  });
+
+  // Onboarding routes
+  app.post('/api/onboarding/care-worker', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const onboardingData = req.body;
+      
+      // Update user profile with onboarding data
+      const updatedUser = await storage.updateUser(userId, {
+        firstName: onboardingData.firstName,
+        lastName: onboardingData.lastName,
+        experienceLevel: onboardingData.experienceLevel,
+        preferences: {
+          trainingDuration: onboardingData.trainingPreferences.sessionDuration,
+          difficultyPreference: onboardingData.trainingPreferences.preferredDifficulty,
+          focusAreas: onboardingData.trainingPreferences.focusAreas,
+          notifications: {
+            dailyReminders: true,
+            weeklyProgress: true,
+            newScenarios: true,
+            achievements: true
+          },
+          learningGoals: onboardingData.learningGoals
+        },
+        onboardingCompleted: true,
+        profileCompletion: 100
+      });
+
+      res.json({ message: "Onboarding completed successfully", user: updatedUser });
+    } catch (error) {
+      console.error("Error completing care worker onboarding:", error);
+      res.status(500).json({ message: "Failed to complete onboarding" });
+    }
+  });
+
   // Update user profile
   app.patch("/api/user", isAuthenticated, async (req: any, res) => {
     try {
