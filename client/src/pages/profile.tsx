@@ -124,13 +124,12 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 overflow-hidden">
-      
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-neutral-800">Your Profile</h1>
-            <p className="text-neutral-600 mt-1">Personalize your Carefully training experience</p>
+            <p className="text-neutral-600 mt-1">Personalise your Carefully training experience</p>
           </div>
           <Button 
             variant={isEditing ? "outline" : "default"}
@@ -148,7 +147,6 @@ export default function ProfilePage() {
           </Button>
         </div>
       </div>
-
       {/* Profile Completion */}
       <Card className="mb-8">
         <CardContent className="p-6">
@@ -202,7 +200,6 @@ export default function ProfilePage() {
           )}
         </CardContent>
       </Card>
-
       {/* Navigation Tabs */}
       <div className="flex space-x-1 mb-8 bg-neutral-200 p-1 rounded-lg overflow-x-auto">
         {[
@@ -225,7 +222,6 @@ export default function ProfilePage() {
           </button>
         ))}
       </div>
-
       {/* Tab Content */}
       <div className="min-h-0 flex-1">
         {currentStep === 'overview' && (
