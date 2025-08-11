@@ -338,7 +338,38 @@ export default function SimulationPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 mb-4">{scenario.description}</p>
+              <p className="text-gray-700 mb-6">{scenario.description}</p>
+              
+              {/* Skills Practice Section */}
+              <div className="bg-[#907AD6]/5 border border-[#907AD6]/20 rounded-lg p-4 mb-4">
+                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <i className="fas fa-dumbbell text-[#907AD6]"></i>
+                  Skills You'll Practice
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="bg-white border border-blue-200 rounded-lg p-3 text-center">
+                    <i className="fas fa-heart text-blue-500 text-lg mb-2"></i>
+                    <div className="text-sm font-medium text-gray-800">Empathy</div>
+                    <div className="text-xs text-gray-500">Understanding patient needs</div>
+                  </div>
+                  <div className="bg-white border border-green-200 rounded-lg p-3 text-center">
+                    <i className="fas fa-comments text-green-500 text-lg mb-2"></i>
+                    <div className="text-sm font-medium text-gray-800">Communication</div>
+                    <div className="text-xs text-gray-500">Clear, caring dialogue</div>
+                  </div>
+                  <div className="bg-white border border-purple-200 rounded-lg p-3 text-center">
+                    <i className="fas fa-user-tie text-purple-500 text-lg mb-2"></i>
+                    <div className="text-sm font-medium text-gray-800">Professionalism</div>
+                    <div className="text-xs text-gray-500">Appropriate boundaries</div>
+                  </div>
+                  <div className="bg-white border border-orange-200 rounded-lg p-3 text-center">
+                    <i className="fas fa-puzzle-piece text-orange-500 text-lg mb-2"></i>
+                    <div className="text-sm font-medium text-gray-800">Problem Solving</div>
+                    <div className="text-xs text-gray-500">Finding solutions</div>
+                  </div>
+                </div>
+              </div>
+              
               <div className="flex items-center gap-2 text-sm">
                 <i className="fas fa-tag text-gray-400"></i>
                 <span className="text-gray-600">
