@@ -233,7 +233,43 @@ export default function Dashboard() {
         {/* Right Column - Progress & Achievements */}
         <div className="space-y-8">
           
-
+          {/* Current Skills Progress */}
+          <Card className="fade-in-right hover-lift transition-all duration-300 hover:shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+                <i className="fas fa-chart-bar text-accent"></i>
+                Current Skills
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {userStats?.skillLevels && Object.keys(userStats.skillLevels).length > 0 ? (
+                <SkillProgress skills={userStats.skillLevels} />
+              ) : (
+                <div className="text-center py-6">
+                  <i className="fas fa-chart-line text-gray-400 text-2xl mb-3"></i>
+                  <p className="text-sm text-gray-500 mb-4">Complete scenarios to build your skill profile</p>
+                  <div className="space-y-2 text-xs text-gray-400">
+                    <div className="flex justify-between">
+                      <span>Empathy & Communication</span>
+                      <span>Not assessed</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Problem Solving</span>
+                      <span>Not assessed</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Professionalism</span>
+                      <span>Not assessed</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Decision Making</span>
+                      <span>Not assessed</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Recent Achievements - Only show if user has achievements */}
           {!achievementsLoading && achievements.length > 0 && (
