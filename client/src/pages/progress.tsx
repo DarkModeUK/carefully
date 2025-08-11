@@ -366,7 +366,7 @@ export default function ProgressPage() {
                       <div key={userScenario.id} className="flex items-center justify-between p-4 border border-primary/20 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-full bg-primary bg-opacity-20 flex items-center justify-center">
-                            <i className="fas fa-clock text-primary"></i>
+                            <i className="fas fa-play-circle text-primary"></i>
                           </div>
                           <div>
                             <h4 className="font-medium text-neutral-800">{scenario.title}</h4>
