@@ -290,50 +290,26 @@ export default function SimulationPage() {
   if (viewState === 'preparation') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#907AD6]/5 to-[#7FDEFF]/5">
-        {/* Enhanced Header */}
-        <div className="bg-gradient-to-r from-white via-[#907AD6]/5 to-white border-b border-gray-200 shadow-sm">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        {/* Clean Simple Header */}
+        <div className="bg-white border-b">
+          <div className="max-w-4xl mx-auto px-4 py-6">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={() => setLocation('/scenarios')}
-                  className="text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-gray-300 transition-all duration-200"
+                  className="text-gray-600 hover:text-gray-900"
                 >
                   <i className="fas fa-arrow-left mr-2"></i>
-                  Back to Scenarios
+                  Back
                 </Button>
-                <div className="h-8 w-px bg-gray-300"></div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-1">Before You Begin</h1>
-                  <p className="text-gray-600 text-lg">Review the scenario details before starting your simulation</p>
-                </div>
+                <div className="h-5 w-px bg-gray-300"></div>
+                <h1 className="text-2xl font-semibold text-gray-900">Scenario Overview</h1>
               </div>
-              
-              {/* Header Status Badge */}
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-50 px-4 py-2 rounded-full border border-blue-200">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-blue-700">Preparation Phase</span>
-                  </div>
-                </div>
-                <div className="hidden sm:flex items-center gap-2 text-gray-500">
-                  <i className="fas fa-clock text-sm"></i>
-                  <span className="text-sm">{scenario?.estimatedTime} min estimated</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Progress Indicator */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Preparation Progress</span>
-                <span className="text-sm text-gray-500">Step 1 of 2</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] h-2 rounded-full transition-all duration-300" style={{width: '50%'}}></div>
+              <div className="text-sm text-gray-500">
+                <i className="fas fa-clock mr-1"></i>
+                {scenario?.estimatedTime} min
               </div>
             </div>
           </div>
