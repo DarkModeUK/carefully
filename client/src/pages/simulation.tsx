@@ -868,108 +868,102 @@ export default function SimulationPage() {
 
           {/* Chat Input */}
           {!isCompleted && (
-            <div className="bg-white border-t border-gray-200 px-3 sm:px-6 py-3 sm:py-4">
-              {/* Quick Tips Bar */}
-              <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-blue-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                  <i className="fas fa-lightbulb text-blue-600 text-sm"></i>
-                  <span className="text-xs sm:text-sm font-medium text-blue-800">Remember to:</span>
+            <div className="bg-white border-t border-gray-200 p-4">
+              <div className="max-w-4xl mx-auto">
+                {/* Quick Tips - Simplified */}
+                <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-center gap-2 text-blue-800">
+                    <i className="fas fa-lightbulb text-sm"></i>
+                    <span className="text-sm font-medium">Focus on empathy, active listening, and professional care</span>
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-2 text-xs text-blue-700">
-                  <span>• Show empathy and understanding</span>
-                  <span>• Listen actively to their concerns</span>
-                  <span>• Maintain professional boundaries</span>
-                </div>
-              </div>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 sm:gap-4">
-                <div className="flex-1 relative">
-                  <Textarea
-                    placeholder="Type your response here... Focus on empathy, clarity, and appropriate care approaches."
-                    value={userResponse}
-                    onChange={(e) => setUserResponse(e.target.value)}
-                    rows={3}
-                    className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-xl pr-10 sm:pr-12 text-sm sm:text-base"
-                    disabled={isListening}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        if (userResponse.trim() && !submitResponseMutation.isPending) {
-                          handleSubmitResponse();
+                <div className="flex gap-3">
+                  {/* Text Input Area */}
+                  <div className="flex-1 relative">
+                    <Textarea
+                      placeholder="Type your caring response here..."
+                      value={userResponse}
+                      onChange={(e) => setUserResponse(e.target.value)}
+                      rows={2}
+                      className="resize-none border-gray-300 focus:border-[#907AD6] focus:ring-[#907AD6] rounded-lg pr-12 text-base"
+                      disabled={isListening}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          if (userResponse.trim() && !submitResponseMutation.isPending) {
+                            handleSubmitResponse();
+                          }
                         }
-                      }
-                    }}
-                  />
-                  {/* Quick Win: Voice input button */}
-                  <Button
-                    type="button"
-                    onClick={startVoiceRecognition}
-                    disabled={submitResponseMutation.isPending || isListening}
-                    className={`absolute right-1 sm:right-2 top-2 p-1 sm:p-2 h-6 w-6 sm:h-8 sm:w-8 ${
-                      isListening 
-                        ? 'bg-red-500 hover:bg-red-600' 
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-                    }`}
-                    variant="ghost"
-                    title={isListening ? "Listening... Speak now" : "Click to speak your response"}
-                  >
-                    {isListening ? (
-                      <motion.i 
-                        className="fas fa-microphone text-xs sm:text-sm text-white"
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 0.8, repeat: Infinity }}
-                      />
-                    ) : (
-                      <i className="fas fa-microphone text-xs sm:text-sm"></i>
-                    )}
-                  </Button>
+                      }}
+                    />
+                    {/* Voice Input Button */}
+                    <Button
+                      type="button"
+                      onClick={startVoiceRecognition}
+                      disabled={submitResponseMutation.isPending || isListening}
+                      className={`absolute right-2 bottom-2 h-8 w-8 ${
+                        isListening 
+                          ? 'bg-red-500 hover:bg-red-600 text-white' 
+                          : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                      }`}
+                      variant="ghost"
+                      title={isListening ? "Listening..." : "Voice input"}
+                    >
+                      {isListening ? (
+                        <motion.i 
+                          className="fas fa-microphone text-sm"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.8, repeat: Infinity }}
+                        />
+                      ) : (
+                        <i className="fas fa-microphone text-sm"></i>
+                      )}
+                    </Button>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={handleSubmitResponse}
+                      disabled={!userResponse.trim() || submitResponseMutation.isPending}
+                      className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-6 py-2 rounded-lg"
+                      size="lg"
+                    >
+                      {submitResponseMutation.isPending ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      ) : (
+                        <>
+                          <i className="fas fa-paper-plane mr-2"></i>
+                          Send
+                        </>
+                      )}
+                    </Button>
+                    <Button 
+                      onClick={() => completeScenarioMutation.mutate()}
+                      disabled={completeScenarioMutation.isPending}
+                      variant="outline"
+                      className="border-red-300 text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg"
+                      size="lg"
+                      title="End simulation early"
+                    >
+                      {completeScenarioMutation.isPending ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                      ) : (
+                        <>
+                          <i className="fas fa-stop mr-2"></i>
+                          End
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                  <Button 
-                    onClick={handleSubmitResponse}
-                    disabled={!userResponse.trim() || submitResponseMutation.isPending}
-                    className="bg-[#907AD6] hover:bg-[#7B6BC7] text-white px-4 py-2 sm:px-6 sm:py-3 h-auto rounded-xl text-sm sm:text-base"
-                    size="lg"
-                  >
-                    {submitResponseMutation.isPending ? (
-                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white"></div>
-                    ) : (
-                      <>
-                        <i className="fas fa-paper-plane text-sm sm:text-lg"></i>
-                        <span className="ml-2 sm:hidden">Send</span>
-                      </>
-                    )}
-                  </Button>
-                  <Button 
-                    onClick={() => completeScenarioMutation.mutate()}
-                    disabled={completeScenarioMutation.isPending}
-                    variant="outline"
-                    className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 px-3 py-2 sm:px-4 sm:py-3 h-auto rounded-xl text-xs sm:text-sm"
-                    size="lg"
-                    title="End simulation early"
-                  >
-                    {completeScenarioMutation.isPending ? (
-                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-red-600"></div>
-                    ) : (
-                      <>
-                        <i className="fas fa-stop mr-1 sm:mr-2 text-xs sm:text-sm"></i>
-                        <span className="hidden sm:inline">End Simulation</span>
-                        <span className="sm:hidden">End</span>
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Helper Text */}
-              <div className="mt-2 sm:mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm text-gray-500">
-                <div className="flex items-center gap-2">
-                  <i className="fas fa-info-circle text-xs"></i>
-                  <span>{isListening ? "Listening... Speak clearly" : "Press Enter to send, Shift+Enter for new line"}</span>
-                </div>
-                <div className="text-left sm:text-right">
-                  <span className="hidden sm:inline">Focus on empathy, clarity, and care approaches</span>
-                  <span className="sm:hidden">Focus on empathy and clarity</span>
+                
+                {/* Helper Text - Simplified */}
+                <div className="mt-2 text-center">
+                  <span className="text-xs text-gray-500">
+                    {isListening ? "🎤 Listening... speak clearly" : "Press Enter to send • Shift+Enter for new line"}
+                  </span>
                 </div>
               </div>
             </div>
