@@ -3,6 +3,14 @@ import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { RoleSwitcher } from "./role-switcher";
 import carefullyLogo from "@assets/Carefully-logo-final_1754861727999.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavItem {
   href: string;
@@ -15,8 +23,6 @@ const allNavItems: NavItem[] = [
   // Care Worker Navigation
   { href: "/", label: "Dashboard", icon: "fas fa-home", roles: ["care_worker"] },
   { href: "/scenarios", label: "Simulation Library", icon: "fas fa-play", roles: ["care_worker"] },
-
-  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["care_worker"] },
   { href: "/progress", label: "Progress", icon: "fas fa-chart-bar", roles: ["care_worker"] },
   
   // Recruiter Navigation
@@ -32,12 +38,6 @@ const allNavItems: NavItem[] = [
   
   // Super Admin Navigation
   { href: "/super-admin", label: "Super Admin", icon: "fas fa-crown", roles: ["super_admin"] },
-  
-  // Shared Navigation
-  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["care_worker"] },
-  { href: "/recruiter-profile", label: "Profile", icon: "fas fa-user", roles: ["recruiter"] },
-  { href: "/profile", label: "Profile", icon: "fas fa-user", roles: ["ld_manager", "super_admin"] },
-  { href: "/settings", label: "Settings", icon: "fas fa-cog", roles: ["recruiter", "ld_manager", "super_admin"] },
 ];
 
 export default function RoleBasedNavigation() {
@@ -80,21 +80,72 @@ export default function RoleBasedNavigation() {
           {/* User Info & Role Switcher */}
           <div className="hidden md:flex items-center space-x-4">
             <RoleSwitcher />
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-full flex items-center justify-center">
-                <span className="text-white font-semibold text-xs">
-                  {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
-                </span>
-              </div>
-              <div className="text-sm">
-                <div className="font-medium text-[#2C2A4A]">
-                  {user.firstName || user.email?.split('@')[0]}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-lg transition-colors duration-200 cursor-pointer">
+                <div className="w-8 h-8 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-full flex items-center justify-center">
+                  <span className="text-white font-semibold text-xs">
+                    {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
+                  </span>
                 </div>
-                <div className="text-xs text-gray-500 capitalize">
-                  {userRole.replace('_', ' ')}
+                <div className="text-sm">
+                  <div className="font-medium text-[#2C2A4A]">
+                    {user.firstName || user.email?.split('@')[0]}
+                  </div>
+                  <div className="text-xs text-gray-500 capitalize">
+                    {userRole.replace('_', ' ')}
+                  </div>
                 </div>
-              </div>
-            </div>
+                <i className="fas fa-chevron-down text-xs text-gray-400"></i>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-[#907AD6] to-[#7FDEFF] rounded-full flex items-center justify-center">
+                      <span className="text-white font-semibold">
+                        {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-[#2C2A4A]">
+                        {user.firstName || user.email?.split('@')[0]}
+                      </div>
+                      <div className="text-sm text-gray-500 capitalize">
+                        {userRole.replace('_', ' ')}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {user.email}
+                      </div>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link 
+                    href={userRole === 'recruiter' ? '/recruiter-profile' : '/profile'} 
+                    className="flex items-center w-full"
+                  >
+                    <i className="fas fa-user mr-2 text-gray-500"></i>
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                {(userRole === 'recruiter' || userRole === 'ld_manager' || userRole === 'super_admin') && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="flex items-center w-full">
+                      <i className="fas fa-cog mr-2 text-gray-500"></i>
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={() => window.location.href = '/api/logout'}
+                  className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                >
+                  <i className="fas fa-sign-out-alt mr-2"></i>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu Button */}
@@ -145,7 +196,39 @@ export default function RoleBasedNavigation() {
                   <div className="text-sm text-gray-500 capitalize">
                     {userRole.replace('_', ' ')}
                   </div>
+                  <div className="text-xs text-gray-400">
+                    {user.email}
+                  </div>
                 </div>
+              </div>
+              
+              {/* Mobile Profile & Settings Links */}
+              <div className="px-4 space-y-2">
+                <Link
+                  href={userRole === 'recruiter' ? '/recruiter-profile' : '/profile'}
+                  className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#907AD6] hover:bg-[#DABFFF]/20 rounded-lg transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <i className="fas fa-user mr-2"></i>
+                  Profile
+                </Link>
+                {(userRole === 'recruiter' || userRole === 'ld_manager' || userRole === 'super_admin') && (
+                  <Link
+                    href="/settings"
+                    className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#907AD6] hover:bg-[#DABFFF]/20 rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <i className="fas fa-cog mr-2"></i>
+                    Settings
+                  </Link>
+                )}
+                <button
+                  onClick={() => window.location.href = '/api/logout'}
+                  className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <i className="fas fa-sign-out-alt mr-2"></i>
+                  Sign Out
+                </button>
               </div>
             </div>
           </div>
